@@ -19,8 +19,9 @@ impl Warehouse {
 
     pub fn lower_resource(&mut self, name: &str, dec_value: i32) {}
 
-    pub fn get_resource_count(&mut self, name: &str) -> i32 {
-        return 0;
+    pub fn get_resource_count(&self, name: &str) -> i32 {
+        
+        self.resmap.get(name).copied().unwrap_or(0)
     }
 
 }

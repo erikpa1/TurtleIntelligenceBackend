@@ -1,14 +1,17 @@
 use actix::prelude::*;
 
+
+//Bez env loggera sa nevypisuje logy z async funkcii
+use env_logger;
 use std::fmt;
 use std::{thread, time::Duration};
 
 use super::warehouse::Warehouse;
 
 pub struct App {
-    time_step: u64,
-    speed: u64,
-    warehouse: Warehouse,
+    pub time_step: u64,
+    pub speed: u64,
+    pub warehouse: Warehouse,
 }
 
 impl App {
@@ -23,11 +26,11 @@ impl App {
     pub fn new() -> App {
         let mut app = App::_new();
 
-        app.warehouse.add_resouce("gold".into(), 50);
-        app.warehouse.add_resouce("wood", 50);
-        app.warehouse.add_resouce("iron", 50);
-        app.warehouse.add_resouce("food", 50);
-        app.warehouse.add_resouce("stone", 50);
+        app.warehouse.set_resource("gold", 50);
+        app.warehouse.set_resource("wood", 50);
+        app.warehouse.set_resource("iron", 50);
+        app.warehouse.set_resource("food", 50);
+        app.warehouse.set_resource("stone", 50);
 
         return app;
     }
@@ -39,6 +42,7 @@ impl App {
 }
 
 impl Actor for App {
+
     type Context = Context<Self>;
 
     fn started(&mut self, ctx: &mut Context<Self>) {
