@@ -1,6 +1,7 @@
 #![allow(warnings)]
 
 use std::env;
+use std::sync::Arc;
 use std::thread;
 
 use std::sync::Mutex;
@@ -23,7 +24,9 @@ mod app;
 mod warehouse;
 
 #[get("/api/test")]
-async fn _test_function(data: web::Data<Mutex<app::App>>) -> impl Responder {
+async fn _test_function(data: web::Data<Arc<Mutex<app::App>>>) -> impl Responder {
+
+    println!("Here");
     let tmp = data.lock().unwrap();
 
     let resCount = tmp.warehouse.get_resource_count("gold");
@@ -38,29 +41,20 @@ pub fn mount(reference: &mut ServiceConfig) {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    ctrl_c_thread();
+
     std::env::set_var("RUST_LOG", "actix_web=info");
 
     env_logger::init();
 
-    let mut app = app::App::new();
-    // let mut app = app.start();
+    let mut app = app::App::new();    
+    let mut appArc = Arc::new(Mutex::new(app));
 
-    let mut appData = web::Data::new(Mutex::new(app));
+    let mut appData = web::Data::new(appArc.clone());
 
-    if true == true {
-        thread::spawn(|| {
-            println!("Spawned tokio thread for Ctrl+C interuption");
-            task::block_on(async {
-                loop {
-                    if let Ok(_) = signal::ctrl_c().await {
-                        println!("End signal Hit");
-                    }
-                }
-            });
 
-            // Print whenever a HUP signal is received
-        });
-    }
+    let mut appActor = app::AppActor::new(&appArc);
+    let mut appActor = appActor.start();
 
     HttpServer::new(move || {
         App::new()
@@ -77,4 +71,19 @@ async fn main() -> std::io::Result<()> {
     .bind(("0.0.0.0", 5000))?
     .run()
     .await
+}
+
+
+fn ctrl_c_thread() {
+    thread::spawn(|| {
+        println!("Spawned tokio thread for Ctrl+C interuption");
+        task::block_on(async {
+            loop {
+                if let Ok(_) = signal::ctrl_c().await {
+                    println!("End signal Hit");
+                    std::process::exit(0);
+                }
+            }
+        });
+    });
 }

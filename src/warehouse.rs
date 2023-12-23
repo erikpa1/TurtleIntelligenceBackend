@@ -17,11 +17,18 @@ impl Warehouse {
 
     pub fn add_resouce(&mut self, name: &str, inc_value: i32) {}
 
-    pub fn lower_resource(&mut self, name: &str, dec_value: i32) {}
+    pub fn lower_resource(&mut self, name: &str, dec_value: i32) {
+        let value = self.resmap.get(name).copied().unwrap_or(0);
+        let mut new_value = value - dec_value;
 
-    pub fn get_resource_count(&self, name: &str) -> i32 {
-        
-        self.resmap.get(name).copied().unwrap_or(0)
+        if new_value < 0 {
+            new_value = 0
+        } 
+
+        self.resmap.insert(name.into(), new_value);
     }
 
+    pub fn get_resource_count(&self, name: &str) -> i32 {
+        self.resmap.get(name).copied().unwrap_or(0)
+    }
 }

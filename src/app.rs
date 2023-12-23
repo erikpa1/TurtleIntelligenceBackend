@@ -1,9 +1,12 @@
 use actix::prelude::*;
 
 
+use std::borrow::BorrowMut;
+use std::sync::Mutex;
 //Bez env loggera sa nevypisuje logy z async funkcii
 use env_logger;
 use std::fmt;
+use std::sync::Arc;
 use std::{thread, time::Duration};
 
 use super::warehouse::Warehouse;
@@ -36,13 +39,36 @@ impl App {
     }
 
     pub fn step(&mut self) {
-        println!("Doing cycle: {}", self.time_step);
+        // println!("Doing cycle: {}", self.time_step);
         self.time_step += 1;
+        self.warehouse.lower_resource("gold", 1)
     }
 }
 
-impl Actor for App {
+pub struct AppActor {
+    app: Arc<Mutex<App>>,
+}
 
+impl AppActor {
+    pub fn new(app: &Arc<Mutex<App>>) -> AppActor {
+        AppActor {
+            app: app.clone()
+        }
+    }
+
+    pub fn step(&mut self) {
+
+        let mut appResult = self.app.lock();
+
+        if let Ok(mut app) = appResult {
+            app.step();
+        }
+        
+
+    }
+}
+
+impl Actor for AppActor {
     type Context = Context<Self>;
 
     fn started(&mut self, ctx: &mut Context<Self>) {
