@@ -39,7 +39,7 @@ impl App {
     }
 
     pub fn step(&mut self) {
-        // println!("Doing cycle: {}", self.time_step);
+        println!("Doing cycle: {}", self.time_step);
         self.time_step += 1;
         self.warehouse.lower_resource("gold", 1)
     }
