@@ -7,33 +7,41 @@ use std::fmt;
 use std::sync::{Arc, Mutex};
 use std::{thread, time::Duration};
 
+use super::constans;
+use super::industry::Industry;
 use super::warehouse::Warehouse;
-
-
 
 pub struct App {
     pub time_step: u64,
     pub speed: u64,
+    pub population: u64,
     pub warehouse: Warehouse,
+    pub industry: Industry,
 }
 
 impl App {
     fn _new() -> App {
         App {
-            warehouse: Warehouse::new(),
             time_step: 0,
             speed: 1,
+            population: 4,
+
+            warehouse: Warehouse::new(),
+            industry: Industry::new(),
         }
     }
 
     pub fn new() -> App {
         let mut app = App::_new();
 
-        app.warehouse.set_resource("gold", 50);
-        app.warehouse.set_resource("wood", 50);
-        app.warehouse.set_resource("iron", 50);
-        app.warehouse.set_resource("food", 50);
-        app.warehouse.set_resource("stone", 50);
+        app.warehouse.set_resource(constans::GOLD, 50.0);
+        app.warehouse.set_resource(constans::WOOD_LOGS, 50.0);
+        app.warehouse.set_resource(constans::IRON, 50.0);
+        app.warehouse.set_resource(constans::FOOD, 50.0);
+        app.warehouse.set_resource(constans::STONE, 50.0);
+
+        app.industry.add_farm();
+        app.industry.add_farm();
 
         return app;
     }
@@ -41,7 +49,13 @@ impl App {
     pub fn step(&mut self) {
         println!("Doing cycle: {}", self.time_step);
         self.time_step += 1;
-        self.warehouse.lower_resource("gold", 1)
+
+        for x in &self.industry.farms {
+            self.warehouse.add_resouce("food", x.efectivity)
+        }
+
+        self.warehouse
+            .lower_resource("food", 1.0 * self.population as f32)
     }
 
     pub fn to_json(&self) -> Value {
@@ -93,6 +107,5 @@ impl fmt::Display for App {
         writeln!(f, "{}", 0)
     }
 }
-
 
 pub type AppArcMutext = Arc<Mutex<App>>;

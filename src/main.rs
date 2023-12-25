@@ -23,6 +23,8 @@ use async_std::task;
 mod app;
 mod warehouse;
 mod api;
+mod industry;
+mod constans;
 
 
 #[get("/api/test")]
