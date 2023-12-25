@@ -1,10 +1,10 @@
 #![allow(warnings)]
 
 use std::env;
-use std::sync::Arc;
-use std::thread;
 
-use std::sync::Mutex;
+use std::thread;
+use std::sync::{Arc, Mutex};
+
 use tokio::signal;
 
 use actix_files as fs;
@@ -22,6 +22,8 @@ use async_std::task;
 
 mod app;
 mod warehouse;
+mod api;
+
 
 #[get("/api/test")]
 async fn _test_function(data: web::Data<Arc<Mutex<app::App>>>) -> impl Responder {
@@ -35,9 +37,7 @@ async fn _test_function(data: web::Data<Arc<Mutex<app::App>>>) -> impl Responder
     // HttpResponse::Ok().body("Ok")
 }
 
-pub fn mount(reference: &mut ServiceConfig) {
-    reference.service(_test_function);
-}
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -61,7 +61,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .app_data(web::Data::clone(&appData))
             .app_data(web::FormConfig::default())
-            .configure(mount)
+            .configure(api::mount)
             .service(
                 fs::Files::new("/", "static")
                     .index_file("index.html")

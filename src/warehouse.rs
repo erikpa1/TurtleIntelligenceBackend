@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use serde_json::{json, Value};
+
 pub struct Warehouse {
     resmap: HashMap<String, i32>,
 }
@@ -23,12 +25,18 @@ impl Warehouse {
 
         if new_value < 0 {
             new_value = 0
-        } 
+        }
 
         self.resmap.insert(name.into(), new_value);
     }
 
     pub fn get_resource_count(&self, name: &str) -> i32 {
         self.resmap.get(name).copied().unwrap_or(0)
+    }
+
+    pub fn to_json(&self) -> Value {
+        json!({
+            "resources": self.resmap
+        })
     }
 }

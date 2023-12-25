@@ -1,15 +1,15 @@
 use actix::prelude::*;
-
+use serde_json::{json, Value};
 
 use std::borrow::BorrowMut;
-use std::sync::Mutex;
-//Bez env loggera sa nevypisuje logy z async funkcii
-use env_logger;
+
 use std::fmt;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::{thread, time::Duration};
 
 use super::warehouse::Warehouse;
+
+
 
 pub struct App {
     pub time_step: u64,
@@ -43,6 +43,14 @@ impl App {
         self.time_step += 1;
         self.warehouse.lower_resource("gold", 1)
     }
+
+    pub fn to_json(&self) -> Value {
+        json!({
+            "time_step": self.time_step,
+            "speed": 1,
+            "warehouse": self.warehouse.to_json()
+        })
+    }
 }
 
 pub struct AppActor {
@@ -51,20 +59,15 @@ pub struct AppActor {
 
 impl AppActor {
     pub fn new(app: &Arc<Mutex<App>>) -> AppActor {
-        AppActor {
-            app: app.clone()
-        }
+        AppActor { app: app.clone() }
     }
 
     pub fn step(&mut self) {
-
         let mut appResult = self.app.lock();
 
         if let Ok(mut app) = appResult {
             app.step();
         }
-        
-
     }
 }
 
@@ -90,3 +93,6 @@ impl fmt::Display for App {
         writeln!(f, "{}", 0)
     }
 }
+
+
+pub type AppArcMutext = Arc<Mutex<App>>;
