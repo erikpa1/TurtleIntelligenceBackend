@@ -1,5 +1,7 @@
 #![allow(warnings)]
 
+extern crate alloc;
+
 use std::env;
 
 use std::thread;
@@ -22,10 +24,9 @@ use async_std::task;
 
 mod app;
 mod warehouse;
-mod api;
 mod industry;
 mod constans;
-
+mod api;
 
 #[get("/api/test")]
 async fn _test_function(data: web::Data<Arc<Mutex<app::App>>>) -> impl Responder {

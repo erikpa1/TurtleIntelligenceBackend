@@ -17,6 +17,7 @@ pub struct App {
     pub population: u64,
     pub warehouse: Warehouse,
     pub industry: Industry,
+
 }
 
 impl App {

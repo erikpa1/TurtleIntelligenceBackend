@@ -6,6 +6,7 @@ use serde_json::{json, Value};
 
 use super::app;
 
+
 #[get("/api/simulation/state")]
 async fn _GetAppState(data: web::Data<app::AppArcMutext>) -> impl Responder {
     let application_r = data.lock();
