@@ -1,5 +1,8 @@
+#![allow(warnings)]
+
 extern crate alloc;
 
+use alloc::boxed::Box;
 use alloc::format;
 use alloc::rc::Rc;
 use core::cell::RefCell;
@@ -14,6 +17,7 @@ use app::station::Station;
 use app::stepper::Stepper;
 use math::expr::MathExpresionExecutioner;
 use math::time::TimeExpresionExecutioner;
+
 
 
 fn main() {
@@ -31,8 +35,11 @@ fn main() {
         let milis = rnd.Execute(&"standard(5000, 10000)".into()) as u64;
         let operation_time = TimeExpresionExecutioner::MakeFromMilis(milis);
 
+
+
         station.operation_time = operation_time.into();
-        project.stations.push(Rc::new(RefCell::new(station)))
+        project.AddEntity(Rc::new(RefCell::new(Box::new(station))));
+        // project.stations.push(Rc::new(RefCell::new(station)))
     }
 
     // let station0 = project.stations[0].borrow_mut();
@@ -49,7 +56,7 @@ fn main() {
 
     println!("Count: {}", project.entities.len());
 
-    project.Init();
+    project.Init(&stepper);
 
     while stepper.IsEnd() == false {
         project.Step(&stepper);
@@ -58,20 +65,22 @@ fn main() {
 
         if stepper.step_index == 20 {
             println!("Adding entity to station");
-            project.stations[0].borrow_mut().TakeEntity(&project.entities[0]);
-        }
 
-        if stepper.step_index == 30 {
-            println!("-----------");
-            println!("Machine entities: ");
+            if let Some(station_ref) = project.entities_all.get_mut("Station_1".into()) {
 
-            let station = project.stations[0].borrow();
+                let inworld_mut = station_ref.borrow();
 
-            for entity in &station.entities {
-                let mut entity = entity.borrow();
-                println!("Entity: {}", entity.name);
+                // println!("Is my_type InWorld? {}", inworld_mut.is::<Station>());
+
+                // println!("X - {}", inworld_mut.GetName());
+                // if let Some(station) = inworld_mut.downcast_ref::<Station>() {
+                //     // The entity is a Station
+                //     println!("The entity is a Station: {:?}", station);
+                // }
             }
-            println!("-----------");
+
+
+            // project.stations[0].borrow_mut().TakeEntity(&project.entities[0]);
         }
     }
 

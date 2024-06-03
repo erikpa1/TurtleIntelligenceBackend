@@ -12,3 +12,4 @@ serde_json = "1.0"
 serde = { version = "1", features = ["derive", "rc"] }
 
 actix = "0.13.1"
+lazy_static = "1.4.0"

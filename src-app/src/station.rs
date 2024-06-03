@@ -1,15 +1,24 @@
 use alloc::rc::Rc;
-use alloc::vec;
+use alloc::{format, vec};
+use alloc::fmt::format;
+use alloc::string::String;
 use alloc::vec::Vec;
 use core::convert::Into;
 use core::cell::RefCell;
+use core::clone::Clone;
 use math::time::TimeExpresionExecutioner;
 
 use math::vec3::Position;
 use crate::entity::Entity;
+use crate::inworld::InWorld;
 
 use crate::stepper::Stepper;
 use crate::tool_context::ToolsContext;
+
+use std::sync::atomic::{AtomicUsize, Ordering};
+use lazy_static::lazy_static;
+
+
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum NotEnoughtEntitiesMode {
@@ -23,8 +32,13 @@ pub enum VariableType {
     FUNCTION,
 }
 
+lazy_static! {
+    static ref INSTANCE_COUNT: AtomicUsize = AtomicUsize::new(0);
+}
+
 pub struct Station {
     pub name: String,
+    pub uid: String,
     pub required_entities: u64,
     pub not_enought_entities_mode: NotEnoughtEntitiesMode,
     pub operation_time: String,
@@ -39,9 +53,16 @@ pub struct Station {
 }
 
 impl Station {
+    pub fn GetInstancesCount() -> usize {
+        INSTANCE_COUNT.load(Ordering::SeqCst)
+    }
+
     pub fn New() -> Station {
+        INSTANCE_COUNT.fetch_add(1, Ordering::SeqCst);
+
         Station {
             name: "".into(),
+            uid: format!("Station_{}", Self::GetInstancesCount()),
             required_entities: 0,
             not_enought_entities_mode: NotEnoughtEntitiesMode::HANDICAPED,
             handicap_function: "".into(),
@@ -61,7 +82,6 @@ impl Station {
         self.entities.push(entity.clone());
     }
 
-    pub fn Init(&mut self) {}
 
     pub fn Step(&mut self, stepper: &Stepper, context: &mut ToolsContext) {
         // println!("Entity doing something random [{}]", context.expr.Execute(&"standard()".into()));
@@ -113,5 +133,28 @@ impl Station {
     }
 }
 
+
+impl InWorld for Station {
+    fn GetName(&self) -> String {
+        return self.name.clone();
+    }
+
+    fn GetUid(&self) -> String {
+        return self.uid.clone()
+    }
+
+    fn GetType(&self) -> String {
+        "entity".into()
+    }
+
+    fn Init(&mut self, step: &Stepper, context: &ToolsContext) {
+        println!(
+            "File: {}, Line: {}, {}",
+            file!(),
+            line!(),
+            format!("[{}] received init", &self.name)
+        );
+    }
+}
 
 
