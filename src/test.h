@@ -1,0 +1,4 @@
+
+
+
+#define TESTVAR 0

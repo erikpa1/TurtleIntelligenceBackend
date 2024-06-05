@@ -5,6 +5,7 @@ macro_rules! to_string {
 }
 
 
+#[derive(Debug)]
 pub struct Vec3<T> {
     pub x: T,
     pub y: T,

@@ -5,7 +5,9 @@ use crate::tool_context::ToolsContext;
 
 use std::any::{Any, TypeId};
 
-pub trait InWorld: Any {
+use core::fmt::Debug;
+
+pub trait InWorld: Any + Debug {
 
 
     fn GetPosition(&self) -> Position {
@@ -34,3 +36,4 @@ pub trait InWorld: Any {
         //override
     }
 }
+

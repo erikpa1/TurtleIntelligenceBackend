@@ -1,4 +1,7 @@
 # Logs
+
+cmake-build-debug/
+
 logs
 *.log
 npm-debug.log*

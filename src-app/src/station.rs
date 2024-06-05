@@ -36,6 +36,7 @@ lazy_static! {
     static ref INSTANCE_COUNT: AtomicUsize = AtomicUsize::new(0);
 }
 
+#[derive(Debug)]
 pub struct Station {
     pub name: String,
     pub uid: String,

@@ -5,6 +5,7 @@ extern crate alloc;
 use alloc::boxed::Box;
 use alloc::format;
 use alloc::rc::Rc;
+use core::any::Any;
 use core::cell::RefCell;
 use core::convert::Into;
 use math::*;
@@ -17,7 +18,6 @@ use app::station::Station;
 use app::stepper::Stepper;
 use math::expr::MathExpresionExecutioner;
 use math::time::TimeExpresionExecutioner;
-
 
 
 fn main() {
@@ -34,7 +34,6 @@ fn main() {
 
         let milis = rnd.Execute(&"standard(5000, 10000)".into()) as u64;
         let operation_time = TimeExpresionExecutioner::MakeFromMilis(milis);
-
 
 
         station.operation_time = operation_time.into();
@@ -67,8 +66,11 @@ fn main() {
             println!("Adding entity to station");
 
             if let Some(station_ref) = project.entities_all.get_mut("Station_1".into()) {
+                let tmp = station_ref.borrow_mut();
 
-                let inworld_mut = station_ref.borrow();
+                println!("{:?}", tmp);
+
+
 
                 // println!("Is my_type InWorld? {}", inworld_mut.is::<Station>());
 

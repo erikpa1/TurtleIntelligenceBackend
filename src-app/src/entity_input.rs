@@ -5,10 +5,13 @@ use crate::inworld::InWorld;
 use crate::stepper::Stepper;
 use crate::tool_context::ToolsContext;
 
+
+#[derive(Debug)]
 pub struct InputEntity {
     pub name: String,
     pub position: Position,
 }
+
 
 impl InputEntity {
     pub fn New() -> Self {

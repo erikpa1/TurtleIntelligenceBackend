@@ -17,11 +17,13 @@ use crate::instances_guard::{
 setup_instance_counter!();
 
 
+#[derive(Debug)]
 pub struct Entity {
     pub name: String,
     pub uid: String,
     pub position: Position,
 }
+
 
 impl Entity {
     pub fn New() -> Self {
