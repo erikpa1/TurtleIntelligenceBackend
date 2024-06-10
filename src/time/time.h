@@ -9,6 +9,7 @@
 namespace simstudio {
 
     namespace time {
+        std::string MakeFromMilis(long milis);
 
 
 

@@ -13,7 +13,7 @@
 
 using namespace simstudio;
 
-int main() {
+int main(int argc, char *argv[]) {
 
 
     App app;
