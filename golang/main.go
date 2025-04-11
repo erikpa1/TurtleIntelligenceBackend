@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"turtle/apiApp"
 	"turtle/db"
 
 	"turtle/api"
@@ -69,6 +70,7 @@ func dev_main() {
 	r.GET("/api/main", _MainRoute)
 
 	api.InitApi(r)
+	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)
 
 	if tools.IsInDevelopment() {
