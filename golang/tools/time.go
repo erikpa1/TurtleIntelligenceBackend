@@ -2,6 +2,8 @@ package tools
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,6 +31,28 @@ const (
 	THIS_YEAR_FORMAT     = "2006"
 )
 
+// Duration converts milliseconds to a formatted string
+func DurationFromMillis(millis int64) string {
+	if millis == 0 {
+		return "00:00"
+	}
+
+	seconds := millis / 1000
+	days := seconds / 86400
+	seconds %= 86400
+	hours := seconds / 3600
+	seconds %= 3600
+	minutes := seconds / 60
+	seconds %= 60
+
+	daysStr := fmt.Sprintf("%02d:", days)
+	hoursStr := fmt.Sprintf("%02d:", hours)
+	minutesStr := fmt.Sprintf("%02d:", minutes)
+	secondsStr := fmt.Sprintf("%02d", seconds)
+
+	return daysStr + hoursStr + minutesStr + secondsStr
+}
+
 // GetTimeNow returns the current UTC time
 func GetTimeNow() time.Time {
 	return time.Now().UTC()
@@ -42,6 +66,11 @@ func GetTimeFromMillis(millis int64) time.Time {
 // GetTimeNowMillis returns the current time in milliseconds
 func GetTimeNowMillis() int64 {
 	return GetTimeNow().UnixMilli()
+}
+
+// GetTimeNowMillis returns the current time in milliseconds
+func GetNow() Milliseconds {
+	return Milliseconds(GetTimeNow().UnixMilli())
 }
 
 // GetTimeNowSeconds returns the current time in seconds
@@ -293,4 +322,24 @@ func max(a, b time.Time) time.Time {
 		return a
 	}
 	return b
+}
+
+func ParseElapsedTimeToMillis(timeStr string) (int64, error) {
+	parts := strings.Split(timeStr, ":")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("invalid time format")
+	}
+
+	minutes, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return 0, err
+	}
+
+	seconds, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0, err
+	}
+
+	totalMillis := int64(minutes*60*1000 + seconds*1000)
+	return totalMillis, nil
 }

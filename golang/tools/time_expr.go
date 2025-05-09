@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"turtle/tools/timeexpr"
 )
 
 // TimeExpr represents the methods for time expressions
@@ -11,7 +12,7 @@ type TimeExpr struct{}
 
 // MakeFromSecondsFull converts seconds to a formatted time string with full details (days, hours, minutes, seconds).
 func (TimeExpr) MakeFromSecondsFull(seconds float64) string {
-	return TimeExpr{}.MakeFromMillisFull(seconds * 1000)
+	return timeexpr.MakeFromMillisFull(seconds * 1000)
 }
 
 // MakeFromSeconds converts seconds to a formatted time string (hours, minutes, seconds).
@@ -56,25 +57,6 @@ func (TimeExpr) MakeFromMillis(millis float64) string {
 		return fmt.Sprintf("%s%s", minutesStr, secondsStr)
 	}
 	return fmt.Sprintf("00:%s", secondsStr)
-}
-
-// MakeFromMillisFull converts milliseconds to a full formatted time string with days, hours, minutes, and seconds.
-func (TimeExpr) MakeFromMillisFull(millis float64) string {
-	if millis == 0 {
-		return "00:00"
-	}
-
-	seconds := millis / 1000
-	days, rem := divmod(seconds, 86400)
-	hours, rem := divmod(rem, 3600)
-	minutes, seconds := divmod(rem, 60)
-
-	daysStr := fmt.Sprintf("%02d:", int(days))
-	hoursStr := fmt.Sprintf("%02d:", int(hours))
-	minutesStr := fmt.Sprintf("%02d:", int(minutes))
-	secondsStr := fmt.Sprintf("%02d", int(seconds))
-
-	return fmt.Sprintf("%s%s%s%s", daysStr, hoursStr, minutesStr, secondsStr)
 }
 
 // SecondsFromTimeString converts a time string (e.g. "1:02:30") to seconds.

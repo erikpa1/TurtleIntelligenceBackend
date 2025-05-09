@@ -7,6 +7,16 @@ import (
 	"strconv"
 )
 
+func LicenceDisabled() bool {
+	return true
+}
+func LicenseSource() string {
+	return ""
+}
+func GetLicense() string {
+	return ""
+}
+
 // EmptyObject is used for handling errors in argument parsing
 type EmptyObject struct{}
 

@@ -55,6 +55,44 @@ func MakeFromMillis(millis float64) string {
 	return fmt.Sprintf("00:%s", secondsStr)
 }
 
+func MakeFromMillisPretty(millis float64) string {
+	if millis == 0 {
+		return "0s"
+	}
+
+	seconds := millis / 1000
+	days, rem := divmod(seconds, 86400)
+	hours, rem := divmod(rem, 3600)
+	minutes, seconds := divmod(rem, 60)
+
+	var parts []string
+
+	if days > 0 {
+		parts = append(parts, fmt.Sprintf("%dd", int(days)))
+	}
+	if hours > 0 {
+		parts = append(parts, fmt.Sprintf("%dh", int(hours)))
+	}
+	if minutes > 0 {
+		parts = append(parts, fmt.Sprintf("%dm", int(minutes)))
+	}
+	// Always include seconds
+	parts = append(parts, fmt.Sprintf("%ds", int(seconds)))
+
+	return fmt.Sprintf("%s", join(parts, " "))
+}
+
+func join(parts []string, sep string) string {
+	if len(parts) == 0 {
+		return ""
+	}
+	result := parts[0]
+	for _, part := range parts[1:] {
+		result += sep + part
+	}
+	return result
+}
+
 // MakeFromMillisFull converts milliseconds to a full formatted time string with days, hours, minutes, and seconds.
 func MakeFromMillisFull(millis float64) string {
 	if millis == 0 {

@@ -21,3 +21,7 @@ func FormatPercentage(number float64) string {
 	formattedPercentage := fmt.Sprintf("%.2f%%", percentage)
 	return formattedPercentage
 }
+
+func To4NumberFormatter(numba int) string {
+	return fmt.Sprintf("%0*d", 4, numba)
+}

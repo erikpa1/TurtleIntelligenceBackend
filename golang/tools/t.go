@@ -14,6 +14,8 @@ var trs map[string]map[string]interface{} = make(map[string]map[string]interface
 
 // initT initializes the translations from the JSON files located in "./static/translation/".
 func InitT() {
+	defer Recover("Failed to load translations")
+
 	folder := "./static/translation/"
 
 	// Walk through the directory to find all the translation files.

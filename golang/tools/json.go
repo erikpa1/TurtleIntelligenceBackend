@@ -6,12 +6,29 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"turtle/lg"
 )
 
 // SafeJson provides safe methods to parse, access, and modify JSON Data.
 type SafeJson struct {
 	Data          map[string]interface{}
 	OptimizeSpace bool
+}
+
+func UnmarshalToSafeJson(str string) *SafeJson {
+
+	data := make(map[string]interface{})
+
+	err := json.Unmarshal([]byte(str), &data)
+
+	if err != nil {
+		lg.LogE(err.Error())
+	}
+
+	return &SafeJson{
+		Data:          data,
+		OptimizeSpace: true,
+	}
 }
 
 // NewSafeJson initializes a SafeJson instance.
@@ -40,6 +57,33 @@ func (s *SafeJson) GetString(key, notFound string) string {
 	return notFound
 }
 
+// GetString retrieves a string value or a default if the key is not found.
+func (s *SafeJson) GetInterface(key string, notFound interface{}) interface{} {
+	if val, ok := s.Data[key]; ok {
+		return val
+	}
+	return notFound
+}
+
+// GetString retrieves a string value or a default if the key is not found.
+func (s *SafeJson) GetStringMatrix(key string) [][]string {
+	data, okData := s.Data[key]
+
+	if okData {
+		marshaled, err := json.Marshal(data)
+
+		if err == nil {
+			tmp := make([][]string, 0)
+			json.Unmarshal(marshaled, &tmp)
+			return tmp
+		}
+
+	}
+
+	return make([][]string, 0)
+
+}
+
 // GetInt retrieves an int value or a default if the key is not found.
 func (s *SafeJson) GetInt(key string, notFound int) int {
 	if val, ok := s.Data[key].(float64); ok {
@@ -52,6 +96,20 @@ func (s *SafeJson) GetInt(key string, notFound int) int {
 func (s *SafeJson) GetInt64(key string, notFound int64) int64 {
 	if val, ok := s.Data[key].(float64); ok {
 		return int64(val)
+	}
+	return notFound
+}
+
+// GetInt retrieves an int value or a default if the key is not found.
+func (s *SafeJson) GetFloat64(key string, notFound float64) float64 {
+	if val, ok := s.Data[key].(float64); ok {
+		return float64(val)
+	}
+	return notFound
+}
+func (s *SafeJson) GetBool(key string, notFound bool) bool {
+	if val, ok := s.Data[key].(bool); ok {
+		return bool(val)
 	}
 	return notFound
 }
@@ -70,6 +128,17 @@ func (s *SafeJson) GetDouble(key string, notFound float64) float64 {
 		return val
 	}
 	return notFound
+}
+
+func (s *SafeJson) GetSafeJson(key string) *SafeJson {
+	if val, ok := s.Data[key].(map[string]interface{}); ok {
+		tmp := NewSafeJson()
+		tmp.Data = val
+
+		return tmp
+	}
+	return nil
+
 }
 
 func (s *SafeJson) GetObjectArray(key string) []*SafeJson {
@@ -285,4 +354,38 @@ func (s *SafeJson) Dump() string {
 		return "{}"
 	}
 	return string(bytes)
+}
+
+func MarshalWithoutDefaults(v interface{}) ([]byte, error) {
+	// Reflect the value and ensure it's a struct
+	val := reflect.ValueOf(v)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	if val.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("input must be a struct or pointer to a struct")
+	}
+
+	// Create a map to hold non-zero values
+	nonZeroFields := make(map[string]interface{})
+
+	typ := val.Type()
+	for i := 0; i < val.NumField(); i++ {
+		field := val.Field(i)
+		fieldType := typ.Field(i)
+
+		// Skip unexported fields
+		if !field.CanInterface() {
+			continue
+		}
+
+		// Check if the field has a zero value
+		zeroValue := reflect.Zero(field.Type()).Interface()
+		if !reflect.DeepEqual(field.Interface(), zeroValue) {
+			nonZeroFields[fieldType.Name] = field.Interface()
+		}
+	}
+
+	// Marshal the filtered map to JSON
+	return json.Marshal(nonZeroFields)
 }

@@ -18,6 +18,10 @@ type ReportSection struct {
 	ChartData       [][]interface{}        `json:"chart_data"` // []{[string, float64]}
 }
 
+func (self *ReportSection) AddData(data ...string) {
+	self.Data = append(self.Data, data)
+}
+
 func (self *ReportSection) AddChartData(data ...any) {
 	self.ChartData = append(self.ChartData, data)
 }
@@ -67,6 +71,6 @@ func (rs *ReportStructure) AddSectionData(data ...string) {
 	if rs.ActiveSection == nil {
 		rs.StartSection() // Start a new section if no active section exists.
 	}
-	rs.ActiveSection.Data = append(rs.ActiveSection.Data, data)
+	rs.ActiveSection.AddData(data...)
 
 }

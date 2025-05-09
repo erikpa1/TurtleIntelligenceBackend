@@ -3,6 +3,7 @@ package tools
 import (
 	"fmt"
 	"sync"
+	"turtle/lg"
 )
 
 type ConstructFunction func() interface{}
@@ -26,7 +27,15 @@ func Instance() *ClassFactory {
 }
 
 func (f *ClassFactory) RegisterConstructor(typeName string, constructor ConstructFunction) {
-	f.constructors[typeName] = constructor
+
+	_, ok := f.constructors[typeName]
+
+	if ok {
+		lg.LogE("Entity [", typeName, "] in factory already exits")
+	} else {
+		f.constructors[typeName] = constructor
+	}
+
 }
 
 func (f *ClassFactory) HasContructor(typeName string) bool {

@@ -2,18 +2,25 @@ package tools
 
 import (
 	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"turtle/lg"
 )
 
 func VecFromJStr[T any](data string) []T {
-	var result []T
-	err := json.Unmarshal([]byte(data), &result)
 
-	if err != nil {
-		lg.LogStackTraceErr(err, "JSON: ", data)
+	if data == "" {
+		return []T{}
+	} else {
+		var result []T
+		err := json.Unmarshal([]byte(data), &result)
+
+		if err != nil {
+			lg.LogStackTraceErr(err, "JSON: ", data)
+		}
+
+		return result
 	}
 
-	return result
 }
 
 func ObjFromJsonPtr[T any](data string) *T {
@@ -23,6 +30,20 @@ func ObjFromJsonPtr[T any](data string) *T {
 	if err != nil {
 		lg.LogStackTraceErr(err, "JSON: ", data)
 		return nil
+	}
+
+	return result
+}
+
+func QueryHeader[T any](c *gin.Context) T {
+	var result T
+
+	headerValue := c.GetHeader("query")
+	err := json.Unmarshal([]byte(headerValue), &result)
+
+	if err != nil {
+		lg.LogStackTraceErr(err, "JSON: ", headerValue)
+		return result
 	}
 
 	return result

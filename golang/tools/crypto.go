@@ -4,12 +4,32 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"strings"
+
 	"github.com/google/uuid"
 )
 
+var ShortUidFunc func(string) string = nil
+
+func ShortUid(pool string) string {
+
+	if ShortUidFunc != nil {
+		return ShortUidFunc(pool)
+	} else {
+		newUUID, _ := uuid.NewRandom()
+		return newUUID.String()
+	}
+
+}
+
 func GetUUID4() string {
+	//newUUID, _ := uuid.NewRandom()
+	return GetUUID4_Shorter()
+}
+
+func GetUUID4_Shorter() string {
 	newUUID, _ := uuid.NewRandom()
-	return newUUID.String()
+	return strings.Replace(newUUID.String(), "-", "", -1)
 }
 
 func ShortenUUIDs(strings []string) map[string]string {

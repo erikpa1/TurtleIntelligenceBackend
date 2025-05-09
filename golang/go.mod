@@ -10,12 +10,15 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20241229022435-d12709533de6
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/tidwall/gjson v1.18.0
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/crypto v0.31.0
 	golang.org/x/oauth2 v0.24.0
+	gorm.io/driver/sqlite v1.5.7
+	gorm.io/gorm v1.25.12
 	modernc.org/sqlite v1.34.4
 )
 
@@ -33,7 +36,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.23.0 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
@@ -66,9 +68,6 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/mysql v1.5.7 // indirect
-	gorm.io/driver/sqlite v1.5.7 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 	modernc.org/gc/v3 v3.0.0-20240107210532-573471604cb6 // indirect
 	modernc.org/libc v1.55.3 // indirect
 	modernc.org/mathutil v1.6.0 // indirect

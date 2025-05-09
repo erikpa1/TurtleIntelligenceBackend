@@ -1,13 +1,21 @@
 package tools
 
 import (
-	"github.com/RyanCarrier/dijkstra/v2"
 	"turtle/lg"
+
+	"github.com/RyanCarrier/dijkstra/v2"
 )
 
 type PathResult struct {
 	Path     []string
 	Distance float64
+	NotFound bool
+}
+
+func NewPathResult() PathResult {
+	tmp := PathResult{}
+	tmp.Path = make([]string, 0)
+	return tmp
 }
 
 type Graph struct {
@@ -40,9 +48,10 @@ func (self *Graph) AddArc(a, b string, distance float64) {
 	b_i, b_ok := self.uidToIndex[b]
 
 	if a_ok && b_ok {
-		err := self.djikstraGraph.AddArc(a_i, b_i, uint64(distance*100))
-		if err != nil {
-			lg.LogE("Unable to find connection between")
+		//Obojstranny connection sa robi o uroven NAD!!!
+		err1 := self.djikstraGraph.AddArc(a_i, b_i, uint64(distance*100))
+		if err1 != nil {
+			lg.LogE("Unable to find connection between", err1)
 		}
 	} else {
 		if a_ok == false {
@@ -67,9 +76,8 @@ func (self *Graph) Shortest(a, b string) PathResult {
 
 		if err == nil {
 			var uidPath = make([]string, len(shortest.Path))
-
-			for _, val := range shortest.Path {
-				uidPath = append(uidPath, self.indexToUid[val])
+			for i, val := range shortest.Path {
+				uidPath[i] = self.indexToUid[val]
 			}
 			return PathResult{
 				Distance: float64(shortest.Distance) / 100,

@@ -6,10 +6,16 @@ import (
 	"turtle/lg"
 )
 
-func Recover(message string) {
+func Recover(message string, onErrr ...func(any)) {
 	if r := recover(); r != nil {
 		lg.LogStackTraceErr(message, r)
+		lg.LogW(r)
 		debug.PrintStack()
+
+		for _, receiver := range onErrr {
+			receiver(r)
+		}
+
 	}
 }
 
