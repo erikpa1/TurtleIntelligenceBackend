@@ -8,10 +8,8 @@ import (
 	"os/exec"
 	"strings"
 	"time"
-	"turtle/apiApp"
-	"turtle/db"
-
 	"turtle/api"
+	"turtle/apiApp"
 	"turtle/auth"
 	"turtle/credentials"
 
@@ -161,7 +159,7 @@ func main() {
 
 	models.RegisterClazzFactory()
 
-	db.InitGorm()
+	//db.InitGorm()
 
 	lg.LogI("Starting infinity twin application")
 	lg.LogI("DbName: ", credentials.GetDBName())
