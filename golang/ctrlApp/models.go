@@ -26,9 +26,12 @@ func DeleteModel(uid primitive.ObjectID) {
 	db.DeleteEntity(CT_MODELS, bson.M{
 		"_id": uid,
 	})
-
 }
 
 func ListModels() []modelsApp.Model {
 	return db.QueryEntitiesAsCopy[modelsApp.Model](CT_MODELS, bson.M{})
+}
+
+func GetModel(uid primitive.ObjectID) *modelsApp.Model {
+	return db.QueryEntity[modelsApp.Model](CT_MODELS, bson.M{"_id": uid})
 }

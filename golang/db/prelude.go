@@ -114,6 +114,16 @@ func UpdateEntity(collection string, entity any) {
 	}
 }
 
+func UpdateOneCustom(collection string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) error {
+	_, err := DB.Col(collection).UpdateOne(context.TODO(), filter, update, opts...)
+
+	if err != nil {
+		lg.LogStackTraceErr(err)
+		return err
+	}
+	return nil
+}
+
 func UpdateEntitiesWhere(collection string, filter bson.M, data any) {
 	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, bson.M{"$set": data})
 
