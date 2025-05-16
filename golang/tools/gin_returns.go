@@ -1,8 +1,8 @@
 package tools
 
 import (
-	"bytes"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"mime/multipart"
 	"net/http"
 	"time"
@@ -10,62 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const CONTENT_TYPE_OCTET = "application/octet-stream"
-const CONTENT_TYPE_JSON = "application/json"
-
 func AutoReturn(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, data)
-}
-
-func AutoJsonOrErrorNotFound(c *gin.Context, data any, err error) {
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{})
-	} else {
-		c.JSON(http.StatusOK, data)
-	}
-}
-
-func AutoZipFileOrErrorNotFound(c *gin.Context, data []byte, err error, contentType string) {
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{})
-	} else {
-		c.Header("Content-Encoding", "gzip")
-
-		c.Data(http.StatusOK, contentType, data)
-	}
-}
-
-func AutoFileJsonOrErrorNotFound(c *gin.Context, data []byte, err error) {
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{})
-	} else {
-		c.Data(http.StatusOK, "application/json", data)
-	}
-}
-func AutoFileOrErrorNotFound(c *gin.Context, data []byte, err error) {
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{})
-	} else {
-		c.Data(http.StatusOK, "application/octet-stream", data)
-	}
-}
-
-func AutoFileDownloadOrErrorNotFound(c *gin.Context, fileName string, data []byte, err error) {
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{})
-	} else {
-		reader := bytes.NewReader(data)
-		// Set headers for file download
-		c.Header("Content-Description", "File Transfer")
-		c.Header("Content-Disposition", "attachment; filename="+fileName)
-		c.Header("Content-Type", "application/octet-stream")
-		c.Header("Content-Transfer-Encoding", "binary")
-		c.Header("Expires", "0")
-		c.Header("Cache-Control", "must-revalidate")
-		c.Header("Pragma", "public")
-		c.Header("Content-Length", fmt.Sprintf("%d", len(data)))
-		c.DataFromReader(http.StatusOK, int64(len(data)), "application/octet-stream", reader, nil)
-	}
 }
 
 func AutoNotFound(c *gin.Context, data any) {
@@ -74,6 +20,7 @@ func AutoNotFound(c *gin.Context, data any) {
 	} else {
 		c.JSON(http.StatusOK, data)
 	}
+
 }
 
 func AutoErrorReturn(c *gin.Context, err error) {
@@ -141,4 +88,12 @@ func WriteCookie(c *gin.Context, key string, value string) {
 		false, // secure
 		false, // httpOnly
 	)
+}
+
+func MongoObjectIdFromQuery(c *gin.Context) primitive.ObjectID {
+	objectId, err := primitive.ObjectIDFromHex(c.Query("uid"))
+	if err != nil {
+		return primitive.NilObjectID
+	}
+	return objectId
 }

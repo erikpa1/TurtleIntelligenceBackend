@@ -5,7 +5,7 @@ import (
 )
 
 type Entity struct {
-	Uid          primitive.ObjectID            `json:"uid" bson:"uid,omitempty"`
+	Uid          primitive.ObjectID            `json:"uid" bson:"_id,omitempty"`
 	Model        primitive.ObjectID            `json:"model" bson:"model"`
 	Dependencies map[string]primitive.ObjectID `json:"dependencies" bson:"dependencies"`
 	Type         string                        `json:"type" bson:"type"`
