@@ -15,10 +15,12 @@ func _SaveWorld(c *gin.Context) {
 	//TODO
 
 	type SaveWorldResponse struct {
-		Uid      string               `json:"uid"`
-		Modified []*modelsApp.Entity  `json:"modified"`
-		Created  []*modelsApp.Entity  `json:"created"`
-		Deleted  []primitive.ObjectID `json:"deleted"`
+		Uid                string                        `json:"uid"`
+		Modified           []*modelsApp.Entity           `json:"modified"`
+		Created            []*modelsApp.Entity           `json:"created"`
+		Deleted            []primitive.ObjectID          `json:"deleted"`
+		CreatedConnections []*modelsApp.EntityConnection `json:"connections"`
+		DeletedConnections []primitive.ObjectID          `json:"deletedConnections"`
 	}
 
 	request := tools.ObjFromJson[SaveWorldResponse](c.PostForm("data"))

@@ -25,9 +25,6 @@ func UpdateEntities(entities []*modelsApp.Entity) {
 }
 
 func DeleteEntities(entities []primitive.ObjectID) {
-
-	db.UpdateEntitiesWhere(CT_ENTITIES, bson.M{"_id": entities}, entities)
-
 	db.DeleteEntities(CT_ENTITIES, bson.M{"_id": bson.M{"$in": entities}})
 }
 

@@ -15,3 +15,10 @@ type Entity struct {
 	VisUid       string                        `json:"visUid" bson:"visUid"`
 	TypeData     map[string]interface{}        `json:"typeData" bson:"typeData"`
 }
+
+type EntityConnection struct {
+	Uid      primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	A        primitive.ObjectID `json:"a" bson:"a"`
+	B        primitive.ObjectID `json:"b" bson:"b"`
+	IsTwoWay bool               `json:"isTwoWay" bson:"isTwoWay"`
+}
