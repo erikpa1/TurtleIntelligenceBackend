@@ -8,6 +8,7 @@ import (
 	"turtle/ctrlApp"
 	"turtle/lg"
 	"turtle/modelsApp"
+	"turtle/simulation"
 	"turtle/tools"
 )
 
@@ -62,7 +63,7 @@ func _GetWorld(c *gin.Context) {
 
 func _PlayWorld(c *gin.Context) {
 	uid := tools.MongoObjectIdFromQuery(c)
-	ctrlApp.PlayWorld(uid)
+	simulation.RunSimulation(uid, bson.M{})
 }
 
 func init_api_world(r *gin.Engine) {
