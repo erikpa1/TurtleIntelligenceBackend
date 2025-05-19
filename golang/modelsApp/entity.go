@@ -18,6 +18,7 @@ type Entity struct {
 
 type EntityConnection struct {
 	Uid      primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	Model    primitive.ObjectID `json:"model" bson:"model"`
 	A        primitive.ObjectID `json:"a" bson:"a"`
 	B        primitive.ObjectID `json:"b" bson:"b"`
 	IsTwoWay bool               `json:"isTwoWay" bson:"isTwoWay"`

@@ -16,12 +16,12 @@ func _SaveWorld(c *gin.Context) {
 	//TODO
 
 	type SaveWorldResponse struct {
-		Uid                string                        `json:"uid"`
-		Modified           []*modelsApp.Entity           `json:"modified"`
-		Created            []*modelsApp.Entity           `json:"created"`
-		Deleted            []primitive.ObjectID          `json:"deleted"`
-		CreatedConnections []*modelsApp.EntityConnection `json:"connections"`
-		DeletedConnections []primitive.ObjectID          `json:"deletedConnections"`
+		Uid                primitive.ObjectID      `json:"uid"`
+		Modified           []*modelsApp.Entity     `json:"modified"`
+		Created            []*modelsApp.Entity     `json:"created"`
+		Deleted            []primitive.ObjectID    `json:"deleted"`
+		CreatedConnections [][2]primitive.ObjectID `json:"createdConnections"`
+		DeletedConnections [][2]primitive.ObjectID `json:"deletedConnections"`
 	}
 
 	request := tools.ObjFromJson[SaveWorldResponse](c.PostForm("data"))
@@ -31,9 +31,22 @@ func _SaveWorld(c *gin.Context) {
 		ctrlApp.CreateEntities(request.Created)
 	}
 
+	lg.LogOk(request.CreatedConnections)
+	if len(request.CreatedConnections) > 0 {
+		ctrlApp.CreateConnections(request.Uid, request.CreatedConnections)
+	}
+
 	lg.LogOk(request.Modified)
 	if len(request.Modified) > 0 {
 		ctrlApp.UpdateEntities(request.Modified)
+	}
+
+	lg.LogOk(request.DeletedConnections)
+	if len(request.DeletedConnections) > 0 {
+
+		for _, conn := range request.DeletedConnections {
+			ctrlApp.DeleteConnection(conn[0], conn[1])
+		}
 	}
 
 	lg.LogOk(request.Deleted)
@@ -51,9 +64,10 @@ func _GetWorld(c *gin.Context) {
 
 	if model != nil {
 		tools.AutoReturn(c, bson.M{
-			"uid":      model.Uid,
-			"name":     model.Name,
-			"entities": ctrlApp.ListEntitiesOfWorld(model.Uid),
+			"uid":         model.Uid,
+			"name":        model.Name,
+			"entities":    ctrlApp.ListEntitiesOfWorld(model.Uid),
+			"connections": ctrlApp.ListConnectionsOfWorld(model.Uid),
 		})
 	} else {
 		tools.AutoNotFound(c, "notfound")

@@ -9,6 +9,7 @@ import (
 
 const CT_MODELS = "models"
 const CT_MODEL_ENTITIES = "model_entities"
+const CT_MODEL_CONNECTIONS = "model_connections"
 
 func COUModel(ct *modelsApp.Model) {
 	if ct.Uid.IsZero() {
@@ -20,6 +21,10 @@ func COUModel(ct *modelsApp.Model) {
 
 func DeleteModel(uid primitive.ObjectID) {
 	db.DeleteEntities(CT_MODEL_ENTITIES, bson.M{
+		"model": uid,
+	})
+
+	db.DeleteEntities(CT_MODEL_CONNECTIONS, bson.M{
 		"model": uid,
 	})
 
