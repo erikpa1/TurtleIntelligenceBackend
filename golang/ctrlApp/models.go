@@ -20,6 +20,9 @@ func COUModel(ct *modelsApp.Model) {
 }
 
 func DeleteModel(uid primitive.ObjectID) {
+
+	DeleteActorsOfModel(uid)
+
 	db.DeleteEntities(CT_MODEL_ENTITIES, bson.M{
 		"model": uid,
 	})
