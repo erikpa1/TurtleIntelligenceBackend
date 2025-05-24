@@ -12,6 +12,7 @@ import (
 func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) {
 
 	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
+	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
 
 	for _, entity := range entities {
 		lg.LogI(entity)
@@ -19,6 +20,8 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) {
 
 	world := NewSimWorld()
 	world.IsOnline = true
+	world.LoadEntities(entities)
+	world.LoadConnections(connections)
 
 	go func() {
 		tools.Recover("Failed to run simulation")
