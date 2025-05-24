@@ -1,7 +1,8 @@
 package simulation
 
 type BufferBehaviour struct {
-	World *SimWorld
+	World  *SimWorld
+	Entity SimEntity
 }
 
 func NewBufferBehaviour() *BufferBehaviour {
@@ -9,8 +10,21 @@ func NewBufferBehaviour() *BufferBehaviour {
 }
 
 // Implementacia IBehaviour
+
 func (self *BufferBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
+}
+
+func (self *BufferBehaviour) SetEntity(entity *SimEntity) {
+	self.Entity = *entity
+}
+
+func (self *BufferBehaviour) Init1() {
+
+}
+
+func (self *BufferBehaviour) Init2() {
+
 }
 
 func (self *BufferBehaviour) Step() {

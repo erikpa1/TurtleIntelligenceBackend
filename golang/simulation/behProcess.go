@@ -1,7 +1,8 @@
 package simulation
 
 type ProcessBehaviour struct {
-	World *SimWorld
+	World  *SimWorld
+	Entity SimEntity
 }
 
 func NewProcessBehaviour() *ProcessBehaviour {
@@ -13,8 +14,20 @@ func (self *ProcessBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
 }
 
+func (self *ProcessBehaviour) Init1() {
+
+}
+
+func (self *ProcessBehaviour) Init2() {
+
+}
+
 func (self *ProcessBehaviour) Step() {
 
+}
+
+func (self *ProcessBehaviour) SetEntity(entity *SimEntity) {
+	self.Entity = *entity
 }
 
 // Taker behaviour

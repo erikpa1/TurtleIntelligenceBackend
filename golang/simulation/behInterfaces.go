@@ -2,7 +2,10 @@ package simulation
 
 type ISimBehaviour interface {
 	SetWorld(world *SimWorld)
+	SetEntity(entity *SimEntity)
 	Step()
+	Init1()
+	Init2()
 }
 
 type ActorTakerBehaviour interface {

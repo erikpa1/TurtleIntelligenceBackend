@@ -6,11 +6,10 @@ import (
 )
 
 type SimEntity struct {
-	Uid       primitive.ObjectID
-	Name      string
-	Type      string
-	Behaviour ISimBehaviour
-	Wold      *SimWorld
+	Uid  primitive.ObjectID
+	Name string
+	Type string
+	Wold *SimWorld
 }
 
 func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
@@ -18,13 +17,4 @@ func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
 	self.Name = def.Name
 	self.Type = def.Type
 
-	if self.Type == "spawn" {
-		self.Behaviour = NewSpawnBehaviour()
-	} else if self.Type == "process" {
-		self.Behaviour = NewProcessBehaviour()
-	} else {
-		self.Behaviour = NewUndefinedBehaviour()
-	}
-
-	self.Behaviour.SetWorld(self.Wold)
 }

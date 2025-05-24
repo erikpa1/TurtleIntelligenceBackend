@@ -1,10 +1,16 @@
 package simulation
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
+	"turtle/tools"
+)
 
 type SpawnBehaviour struct {
-	World      *SimWorld
-	SpawnLimit int64 `mapstructure:"spawn_limit"`
+	World  *SimWorld
+	Entity SimEntity
+
+	NextSpawnTime tools.Seconds
 }
 
 func NewSpawnBehaviour() *SpawnBehaviour {
@@ -21,5 +27,18 @@ func (self *SpawnBehaviour) SetWorld(world *SimWorld) {
 }
 
 func (self *SpawnBehaviour) Step() {
+	lg.LogI("Spawn is doing step, next spawn time:", self.NextSpawnTime)
 
+}
+
+func (self *SpawnBehaviour) Init1() {
+
+}
+
+func (self *SpawnBehaviour) Init2() {
+
+}
+
+func (self *SpawnBehaviour) SetEntity(entity *SimEntity) {
+	self.Entity = *entity
 }

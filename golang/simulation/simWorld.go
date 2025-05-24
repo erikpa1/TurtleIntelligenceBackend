@@ -2,22 +2,19 @@ package simulation
 
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/ctrlApp"
 	"turtle/lg"
 	"turtle/modelsApp"
-	"turtle/server"
-	"turtle/tools"
 )
 
 type SimWorld struct {
 	Uid  primitive.ObjectID
 	Name string
 
-	SimEntities    map[primitive.ObjectID]*SimEntity
+	SimBehaviours  map[primitive.ObjectID]ISimBehaviour
 	SimActors      map[primitive.ObjectID]*SimActor
-	SimConnections map[primitive.ObjectID][]*SimEntity
+	SimConnections map[primitive.ObjectID][]ISimBehaviour
 
 	ActorsDefinitions map[primitive.ObjectID]*modelsApp.Actor
 
@@ -30,6 +27,12 @@ func NewSimWorld() *SimWorld {
 	tmp := &SimWorld{}
 	tmp.Stepper.End = 100
 	tmp.IsOnline = true
+
+	tmp.SimBehaviours = make(map[primitive.ObjectID]ISimBehaviour)
+	tmp.SimActors = make(map[primitive.ObjectID]*SimActor)
+	tmp.SimConnections = make(map[primitive.ObjectID][]ISimBehaviour)
+	tmp.ActorsDefinitions = make(map[primitive.ObjectID]*modelsApp.Actor)
+
 	return tmp
 }
 
@@ -38,7 +41,22 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 		simEntity := SimEntity{}
 		simEntity.FromEntity(entity)
 
-		self.SimEntities[entity.Uid] = &simEntity
+		var behaviour ISimBehaviour = NewUndefinedBehaviour()
+
+		entityType := entity.Type
+
+		if entityType == "spawn" {
+			behaviour = NewSpawnBehaviour()
+		} else if entityType == "process" {
+			behaviour = NewProcessBehaviour()
+		} else {
+			lg.LogE("Unknown entity type [%s]", entityType)
+		}
+
+		behaviour.SetWorld(self)
+		behaviour.SetEntity(&simEntity)
+
+		self.SimBehaviours[entity.Uid] = behaviour
 
 	}
 }
@@ -49,44 +67,45 @@ func (self *SimWorld) LoadConnections(connections []*modelsApp.EntityConnection)
 		array, exists := self.SimConnections[connection.A]
 
 		if exists == false {
-			array = []*SimEntity{}
+			array = []ISimBehaviour{}
 			self.SimConnections[connection.A] = array
 		}
 
-		simEntity, found := self.SimEntities[connection.B]
+		simBehaviour, found := self.SimBehaviours[connection.B]
 
 		if found {
-			self.SimConnections[connection.A] = append(array, simEntity)
+			self.SimConnections[connection.A] = append(array, simBehaviour)
 		} else {
 			lg.LogE("Unable to find entity [%s] in world", connection.B.Hex())
 		}
 	}
 }
 
-func (self *SimWorld) RunSimulation() {
+func (self *SimWorld) PrepareSimulation() {
 
-	var second tools.Seconds = 0
+	for _, behaviour := range self.SimBehaviours {
+		behaviour.Init1()
+	}
 
-	for second = 0; second < self.Stepper.End; second++ {
-		self.Step()
-		self.Stepper.Step()
-
-		server.MYIO.EmitSync("simstep", bson.M{
-			"second": second,
-		})
+	for _, behaviour := range self.SimBehaviours {
+		behaviour.Init2()
 	}
 
 }
 
-func (self *SimWorld) GetConnectionsOf(entity primitive.ObjectID) []*SimEntity {
+func (self *SimWorld) GetConnectionsOf(entity primitive.ObjectID) []ISimBehaviour {
 
 	entities, exists := self.SimConnections[entity]
 
 	if exists {
 		return entities
 	} else {
-		return []*SimEntity{}
+		return []ISimBehaviour{}
 	}
+
+}
+
+func (self *SimWorld) ClearStates() {
 
 }
 
