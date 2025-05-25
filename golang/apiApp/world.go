@@ -77,7 +77,7 @@ func _GetWorld(c *gin.Context) {
 
 func _PlayWorld(c *gin.Context) {
 	uid := tools.MongoObjectIdFromQuery(c)
-	simulation.RunSimulation(uid, bson.M{})
+	c.String(200, simulation.RunSimulation(uid, bson.M{}))
 }
 
 func _PauseWorld(c *gin.Context) {

@@ -56,7 +56,7 @@ func PauseSimulation(uid primitive.ObjectID) {
 	}
 }
 
-func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) {
+func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 
 	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
@@ -137,4 +137,6 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) {
 		delete(RUNNING_SIMS, runSim.Uid)
 		RUNNING_SIMS_LOCK.Unlock()
 	}()
+
+	return runSim.Uid.Hex()
 }

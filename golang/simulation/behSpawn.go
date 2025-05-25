@@ -32,7 +32,7 @@ func (self *SpawnBehaviour) SetWorld(world *SimWorld) {
 }
 
 func (self *SpawnBehaviour) Init1() {
-
+	self._CalculateNextSpawn()
 }
 
 func (self *SpawnBehaviour) Init2() {
