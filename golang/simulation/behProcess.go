@@ -31,8 +31,8 @@ func (self *ProcessBehaviour) SetEntity(entity *SimEntity) {
 }
 
 // Taker behaviour
-func (self *ProcessBehaviour) TakeActor(actor *SimActor) {
-
+func (self *ProcessBehaviour) TakeActor(actor *SimActor) bool {
+	return false
 }
 
 func (self *ProcessBehaviour) CanTakeActor(actor *SimActor) bool {

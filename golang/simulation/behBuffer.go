@@ -33,8 +33,8 @@ func (self *BufferBehaviour) Step() {
 
 //Entity taker behavour
 
-func (self *BufferBehaviour) TakeActor(actor *SimActor) {
-
+func (self *BufferBehaviour) TakeActor(actor *SimActor) bool {
+	return false
 }
 
 func (self *BufferBehaviour) CanTakeActor(actor *SimActor) bool {

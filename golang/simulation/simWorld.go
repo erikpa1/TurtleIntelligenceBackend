@@ -13,7 +13,7 @@ type SimWorld struct {
 	Name string
 
 	SimBehaviours  map[primitive.ObjectID]ISimBehaviour
-	SimActors      map[primitive.ObjectID]*SimActor
+	SimActors      map[int64]*SimActor
 	SimConnections map[primitive.ObjectID][]ISimBehaviour
 
 	ActorsDefinitions map[primitive.ObjectID]*modelsApp.Actor
@@ -21,6 +21,9 @@ type SimWorld struct {
 	Stepper    SimStepper
 	IsOnline   bool
 	IdsCounter int64
+
+	StatesCreatedActors   []*SimActor
+	StatesDestroyedActors []int64
 }
 
 func NewSimWorld() *SimWorld {
@@ -29,9 +32,11 @@ func NewSimWorld() *SimWorld {
 	tmp.IsOnline = true
 
 	tmp.SimBehaviours = make(map[primitive.ObjectID]ISimBehaviour)
-	tmp.SimActors = make(map[primitive.ObjectID]*SimActor)
+	tmp.SimActors = make(map[int64]*SimActor)
 	tmp.SimConnections = make(map[primitive.ObjectID][]ISimBehaviour)
 	tmp.ActorsDefinitions = make(map[primitive.ObjectID]*modelsApp.Actor)
+
+	tmp.StatesCreatedActors = make([]*SimActor, 0)
 
 	return tmp
 }
@@ -50,7 +55,7 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 		} else if entityType == "process" {
 			behaviour = NewProcessBehaviour()
 		} else {
-			lg.LogE("Unknown entity type [%s]", entityType)
+			lg.LogE(fmt.Sprintf("Unknown entity type [%s]", entityType))
 		}
 
 		behaviour.SetWorld(self)
@@ -107,12 +112,21 @@ func (self *SimWorld) GetConnectionsOf(entity primitive.ObjectID) []ISimBehaviou
 
 func (self *SimWorld) ClearStates() {
 
+	self.StatesCreatedActors = make([]*SimActor, 0)
 }
 
 func (self *SimWorld) Step() {
-
 	lg.LogI(fmt.Sprintf("Step (%d/%d)", self.Stepper.Now, self.Stepper.End))
 
+	for _, behaviour := range self.SimBehaviours {
+		behaviour.Step()
+	}
+
+}
+
+func (self *SimWorld) UnspawnActor(actor *SimActor) {
+	self.StatesDestroyedActors = append(self.StatesDestroyedActors, actor.Id)
+	delete(self.SimActors, actor.Id)
 }
 
 func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
@@ -131,11 +145,13 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 		}
 	}
 
-	actor := SimActor{}
+	actor := NewSimActor()
 	actor.Id = self.IdsCounter
 	self.IdsCounter += 1
 	actor.FromActorDefinition(definition)
 
-	return &actor
+	self.StatesCreatedActors = append(self.StatesCreatedActors, actor)
+
+	return actor
 
 }

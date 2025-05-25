@@ -80,9 +80,27 @@ func _PlayWorld(c *gin.Context) {
 	simulation.RunSimulation(uid, bson.M{})
 }
 
+func _PauseWorld(c *gin.Context) {
+	uid := tools.MongoObjectIdFromQuery(c)
+	simulation.PauseSimulation(uid)
+}
+
+func _StopWorld(c *gin.Context) {
+	uid := tools.MongoObjectIdFromQuery(c)
+	simulation.StopSimulation(uid)
+}
+
+func _ResumeWorld(c *gin.Context) {
+	uid := tools.MongoObjectIdFromQuery(c)
+	simulation.ResumeSimulation(uid)
+}
+
 func init_api_world(r *gin.Engine) {
 	r.GET("/api/w", auth.LoginRequired, _GetWorld)
 	r.POST("/api/w/save", auth.LoginRequired, _SaveWorld)
 	r.POST("/api/w/simulate", _PlayWorld)
+	r.POST("/api/w/stop", _StopWorld)
+	r.POST("/api/w/pause", _PauseWorld)
+	r.POST("/api/w/resume", _ResumeWorld)
 
 }

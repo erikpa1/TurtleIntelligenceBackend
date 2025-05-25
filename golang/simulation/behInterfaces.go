@@ -9,7 +9,7 @@ type ISimBehaviour interface {
 }
 
 type ActorTakerBehaviour interface {
-	TakeActor(actor *SimActor)
+	TakeActor(actor *SimActor) bool
 	CanTakeActor(actor *SimActor) bool
 }
 

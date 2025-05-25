@@ -5,6 +5,7 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 	"turtle/lg"
 )
@@ -58,6 +59,14 @@ func (s *SafeJson) GetString(key, notFound string) string {
 }
 
 // GetString retrieves a string value or a default if the key is not found.
+func (s *SafeJson) GetPrimitiveObjectId(key string) primitive.ObjectID {
+	if val, ok := s.Data[key].(primitive.ObjectID); ok {
+		return val
+	}
+	return primitive.ObjectID{}
+}
+
+// GetString retrieves a string value or a default if the key is not found.
 func (s *SafeJson) GetInterface(key string, notFound interface{}) interface{} {
 	if val, ok := s.Data[key]; ok {
 		return val
@@ -96,6 +105,14 @@ func (s *SafeJson) GetInt(key string, notFound int) int {
 func (s *SafeJson) GetInt64(key string, notFound int64) int64 {
 	if val, ok := s.Data[key].(float64); ok {
 		return int64(val)
+	}
+	return notFound
+}
+
+// GetInt retrieves an int value or a default if the key is not found.
+func (s *SafeJson) GetSeconds(key string, notFound Seconds) Seconds {
+	if val, ok := s.Data[key].(float64); ok {
+		return Seconds(val)
 	}
 	return notFound
 }
