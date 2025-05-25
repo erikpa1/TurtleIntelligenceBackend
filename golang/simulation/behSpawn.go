@@ -51,10 +51,10 @@ func (self *SpawnBehaviour) Step() {
 
 	if self.ActiveActor == nil {
 
-		lg.LogW(self.NextSpawnTime)
-
 		if actualTime >= self.NextSpawnTime {
 			self._Spawn()
+		} else {
+			lg.LogW(self.NextSpawnTime)
 		}
 	} else {
 		self._TryToAddActorNext()
@@ -64,6 +64,7 @@ func (self *SpawnBehaviour) Step() {
 
 func (self *SpawnBehaviour) _Spawn() {
 	self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActor)
+
 }
 
 func (self *SpawnBehaviour) _CalculateNextSpawn() {
@@ -83,6 +84,8 @@ func (self *SpawnBehaviour) _TryToAddActorNext() {
 				taken := taker.TakeActor(self.ActiveActor)
 
 				if taken {
+					self.ActiveActor = nil
+					self._CalculateNextSpawn()
 					lg.LogE("Passing actor next")
 					return
 				}
