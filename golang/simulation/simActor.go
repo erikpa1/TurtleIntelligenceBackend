@@ -7,10 +7,11 @@ import (
 )
 
 type SimActor struct {
-	Name          string
-	Id            int64
-	DefinitionUid primitive.ObjectID
-	Position      [3]float32
+	Name     string             `json:"name"`
+	Id       int64              `json:"id"`
+	Uid      primitive.ObjectID `json:"definition_uid"`
+	Position [3]float32         `json:"position"`
+	World    *SimWorld          `json:"-"`
 }
 
 func NewSimActor() *SimActor {
@@ -20,6 +21,11 @@ func NewSimActor() *SimActor {
 }
 
 func (self *SimActor) FromActorDefinition(def *modelsApp.Actor) {
-	self.DefinitionUid = def.Uid
+	self.Uid = def.Uid
 	self.Name = fmt.Sprintf("%s_%d", def.Name, self.Id)
+}
+
+func (self *SimActor) UpdatePosition(position [3]float32) {
+	self.Position = position
+	self.World.UpdateActorState(self.Id, "position", self.Position)
 }

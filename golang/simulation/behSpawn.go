@@ -22,10 +22,6 @@ func NewSpawnBehaviour() *SpawnBehaviour {
 	return &SpawnBehaviour{}
 }
 
-func (self *SpawnBehaviour) SpawnActorOfType(actorUid primitive.ObjectID) {
-	self.World.SpawnActorWithUid(actorUid)
-}
-
 // Implementacia IBehaviour
 func (self *SpawnBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
@@ -65,6 +61,10 @@ func (self *SpawnBehaviour) Step() {
 func (self *SpawnBehaviour) _Spawn() {
 	self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActor)
 
+	if self.ActiveActor != nil {
+		self.ActiveActor.Position = self.Entity.Position
+	}
+
 }
 
 func (self *SpawnBehaviour) _CalculateNextSpawn() {
@@ -86,7 +86,6 @@ func (self *SpawnBehaviour) _TryToAddActorNext() {
 				if taken {
 					self.ActiveActor = nil
 					self._CalculateNextSpawn()
-					lg.LogE("Passing actor next")
 					return
 				}
 			}

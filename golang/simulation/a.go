@@ -81,7 +81,7 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 	runSim.CtxCancel = cancel
 
 	RUNNING_SIMS_LOCK.Lock()
-	RUNNING_SIMS[runSim.Uid] = &_RunningSim{}
+	RUNNING_SIMS[runSim.Uid] = runSim
 	RUNNING_SIMS_LOCK.Unlock()
 
 	go func() {
@@ -111,8 +111,8 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 						server.MYIO.EmitSync("simstep", bson.M{
 							"second":    second,
 							"spawned":   world.StatesCreatedActors,
-							"unspawned": []int64{},
-							"states":    []bson.M{},
+							"unspawned": world.StatesDestroyedActors,
+							"states":    world.StatesUpdates,
 						})
 
 						world.ClearStates()

@@ -3,6 +3,8 @@ package simulation
 type ProcessBehaviour struct {
 	World  *SimWorld
 	Entity SimEntity
+
+	ActiveActor *SimActor
 }
 
 func NewProcessBehaviour() *ProcessBehaviour {
@@ -32,9 +34,16 @@ func (self *ProcessBehaviour) SetEntity(entity *SimEntity) {
 
 // Taker behaviour
 func (self *ProcessBehaviour) TakeActor(actor *SimActor) bool {
-	return false
+	canTake := self.CanTakeActor(actor)
+
+	if canTake {
+		self.ActiveActor = actor
+		actor.Position = self.Entity.Position
+	}
+
+	return canTake
 }
 
 func (self *ProcessBehaviour) CanTakeActor(actor *SimActor) bool {
-	return false
+	return self.ActiveActor == nil
 }

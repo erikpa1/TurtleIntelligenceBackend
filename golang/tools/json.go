@@ -60,8 +60,10 @@ func (s *SafeJson) GetString(key, notFound string) string {
 
 // GetString retrieves a string value or a default if the key is not found.
 func (s *SafeJson) GetPrimitiveObjectId(key string) primitive.ObjectID {
-	if val, ok := s.Data[key].(primitive.ObjectID); ok {
-		return val
+	if val, ok := s.Data[key].(string); ok {
+		primitiv, _ := primitive.ObjectIDFromHex(val)
+
+		return primitiv
 	}
 	return primitive.ObjectID{}
 }

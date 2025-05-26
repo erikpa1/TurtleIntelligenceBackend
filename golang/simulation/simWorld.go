@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/ctrlApp"
 	"turtle/lg"
@@ -24,6 +25,7 @@ type SimWorld struct {
 
 	StatesCreatedActors   []*SimActor
 	StatesDestroyedActors []int64
+	StatesUpdates         map[int64]bson.M
 }
 
 func NewSimWorld() *SimWorld {
@@ -37,6 +39,8 @@ func NewSimWorld() *SimWorld {
 	tmp.ActorsDefinitions = make(map[primitive.ObjectID]*modelsApp.Actor)
 
 	tmp.StatesCreatedActors = make([]*SimActor, 0)
+	tmp.StatesDestroyedActors = make([]int64, 0)
+	tmp.StatesUpdates = make(map[int64]bson.M)
 
 	return tmp
 }
@@ -107,12 +111,12 @@ func (self *SimWorld) GetConnectionsOf(entity primitive.ObjectID) []ISimBehaviou
 	} else {
 		return []ISimBehaviour{}
 	}
-
 }
 
 func (self *SimWorld) ClearStates() {
-
 	self.StatesCreatedActors = make([]*SimActor, 0)
+	self.StatesDestroyedActors = make([]int64, 0)
+	self.StatesUpdates = make(map[int64]bson.M)
 }
 
 func (self *SimWorld) Step() {
@@ -153,5 +157,19 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 	self.StatesCreatedActors = append(self.StatesCreatedActors, actor)
 
 	return actor
+
+}
+
+func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
+
+	stateSetter, bsonExists := self.StatesUpdates[key]
+
+	if bsonExists {
+		stateSetter[stateKey] = value
+
+	} else {
+		self.StatesUpdates[key] = bson.M{
+			stateKey: value}
+	}
 
 }
