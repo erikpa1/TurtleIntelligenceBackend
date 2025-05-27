@@ -23,7 +23,7 @@ type SimWorld struct {
 	IsOnline   bool
 	IdsCounter int64
 
-	StatesCreatedActors   []*SimActor
+	StatesCreatedActors   map[int64]*SimActor
 	StatesDestroyedActors []int64
 	StatesUpdates         map[int64]bson.M
 }
@@ -38,7 +38,7 @@ func NewSimWorld() *SimWorld {
 	tmp.SimConnections = make(map[primitive.ObjectID][]ISimBehaviour)
 	tmp.ActorsDefinitions = make(map[primitive.ObjectID]*modelsApp.Actor)
 
-	tmp.StatesCreatedActors = make([]*SimActor, 0)
+	tmp.StatesCreatedActors = make(map[int64]*SimActor, 0)
 	tmp.StatesDestroyedActors = make([]int64, 0)
 	tmp.StatesUpdates = make(map[int64]bson.M)
 
@@ -114,7 +114,7 @@ func (self *SimWorld) GetConnectionsOf(entity primitive.ObjectID) []ISimBehaviou
 }
 
 func (self *SimWorld) ClearStates() {
-	self.StatesCreatedActors = make([]*SimActor, 0)
+	self.StatesCreatedActors = make(map[int64]*SimActor, 0)
 	self.StatesDestroyedActors = make([]int64, 0)
 	self.StatesUpdates = make(map[int64]bson.M)
 }
@@ -129,6 +129,7 @@ func (self *SimWorld) Step() {
 }
 
 func (self *SimWorld) UnspawnActor(actor *SimActor) {
+	actor.World = nil //Make GC life easier
 	self.StatesDestroyedActors = append(self.StatesDestroyedActors, actor.Id)
 	delete(self.SimActors, actor.Id)
 }
@@ -151,10 +152,11 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 
 	actor := NewSimActor()
 	actor.Id = self.IdsCounter
+	actor.World = self
 	self.IdsCounter += 1
 	actor.FromActorDefinition(definition)
 
-	self.StatesCreatedActors = append(self.StatesCreatedActors, actor)
+	self.StatesCreatedActors[actor.Id] = actor
 
 	return actor
 
@@ -162,14 +164,21 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 
 func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
 
-	stateSetter, bsonExists := self.StatesUpdates[key]
+	_, inSpawned := self.StatesCreatedActors[key]
 
-	if bsonExists {
-		stateSetter[stateKey] = value
+	if inSpawned == false {
 
-	} else {
-		self.StatesUpdates[key] = bson.M{
-			stateKey: value}
+		stateSetter, bsonExists := self.StatesUpdates[key]
+
+		if bsonExists {
+			stateSetter[stateKey] = value
+
+		} else {
+			self.StatesUpdates[key] = bson.M{
+				stateKey: value}
+		}
+
+		lg.LogE(self.StatesUpdates)
 	}
 
 }

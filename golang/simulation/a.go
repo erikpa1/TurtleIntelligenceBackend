@@ -85,7 +85,9 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 	RUNNING_SIMS_LOCK.Unlock()
 
 	go func() {
-		tools.Recover("Failed to run simulation")
+		defer tools.Recover("Failed to run simulation", func(e any) {
+			StopSimulation(runSim.Uid)
+		})
 
 		var second tools.Seconds = 0
 

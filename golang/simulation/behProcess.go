@@ -1,14 +1,38 @@
 package simulation
 
+import (
+	"turtle/lg"
+	"turtle/simulation/stats"
+	"turtle/tools"
+)
+
+type ProcessStates int8
+
+const (
+	PROC_STAT_IDLE    = 0
+	PROC_STAT_BLOCKED = 1
+	PROC_STAT_WORKING = 2
+)
+
 type ProcessBehaviour struct {
 	World  *SimWorld
 	Entity SimEntity
 
 	ActiveActor *SimActor
+
+	ProcessTime   string
+	ProcessFinish tools.Seconds
+
+	ActiveState ProcessStates
+
+	Statistics *stats.ProcessStats
 }
 
 func NewProcessBehaviour() *ProcessBehaviour {
-	return &ProcessBehaviour{}
+	return &ProcessBehaviour{
+		ActiveState: PROC_STAT_IDLE,
+		Statistics:  stats.NewProcessStats(),
+	}
 }
 
 // IBehaviour implementation
@@ -26,10 +50,32 @@ func (self *ProcessBehaviour) Init2() {
 
 func (self *ProcessBehaviour) Step() {
 
+	now := self.World.Stepper.Now
+
+	if self.ActiveState == PROC_STAT_IDLE {
+		//DO nothing
+	} else if self.ActiveState == PROC_STAT_BLOCKED {
+		self._TryToPassEntityNext()
+	} else if self.ActiveState == PROC_STAT_WORKING {
+		if now >= self.ProcessFinish {
+			self._FinishManufacturing()
+		}
+	}
+
+	if self.ActiveState == PROC_STAT_IDLE {
+		self.Statistics.IdleTime += 1
+	} else if self.ActiveState == PROC_STAT_BLOCKED {
+		self.Statistics.BlockedTime += 1
+	} else if self.ActiveState == PROC_STAT_WORKING {
+		self.Statistics.ProcessTime += 1
+	}
+
 }
 
 func (self *ProcessBehaviour) SetEntity(entity *SimEntity) {
 	self.Entity = *entity
+	self.ProcessTime = entity.TypeData.GetString("processTime", "00:10")
+
 }
 
 // Taker behaviour
@@ -38,7 +84,8 @@ func (self *ProcessBehaviour) TakeActor(actor *SimActor) bool {
 
 	if canTake {
 		self.ActiveActor = actor
-		actor.Position = self.Entity.Position
+		actor.UpdatePosition(self.Entity.Position)
+		self._StartManufacturing()
 	}
 
 	return canTake
@@ -46,4 +93,51 @@ func (self *ProcessBehaviour) TakeActor(actor *SimActor) bool {
 
 func (self *ProcessBehaviour) CanTakeActor(actor *SimActor) bool {
 	return self.ActiveActor == nil
+}
+
+func (self *ProcessBehaviour) _StartManufacturing() {
+	finishTime := tools.Seconds(tools.AnyExpr_CompileSeconds(self.ProcessTime, 10))
+	self.ProcessFinish = finishTime + self.World.Stepper.Now
+	self.ChangeState(PROC_STAT_WORKING)
+
+	lg.LogOk("Started manufacturing")
+
+}
+
+func (self *ProcessBehaviour) _FinishManufacturing() {
+	self.ProcessFinish = tools.Seconds(tools.MaxInt64())
+
+	lg.LogOk("Finished manufacturing")
+
+	self._TryToPassEntityNext()
+
+}
+
+func (self *ProcessBehaviour) ChangeState(newState ProcessStates) {
+	self.ActiveState = newState
+}
+
+func (self *ProcessBehaviour) _TryToPassEntityNext() {
+
+	connections, hasConnections := self.World.SimConnections[self.Entity.Uid]
+
+	if hasConnections {
+		for _, connection := range connections {
+
+			taker, isITaker := connection.(ActorTakerBehaviour)
+
+			if isITaker {
+				taken := taker.TakeActor(self.ActiveActor)
+
+				if taken {
+					self.ActiveActor = nil
+					self.ChangeState(PROC_STAT_IDLE)
+					return
+				}
+			}
+		}
+	}
+
+	self.ChangeState(PROC_STAT_BLOCKED)
+
 }
