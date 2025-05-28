@@ -58,6 +58,10 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 			behaviour = NewSpawnBehaviour()
 		} else if entityType == "process" {
 			behaviour = NewProcessBehaviour()
+		} else if entityType == "sink" {
+			behaviour = NewSinkBehaviour()
+		} else if entityType == "buffer" {
+			behaviour = NewBufferBehaviour()
 		} else {
 			lg.LogE(fmt.Sprintf("Unknown entity type [%s]", entityType))
 		}
@@ -178,7 +182,6 @@ func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
 				stateKey: value}
 		}
 
-		lg.LogE(self.StatesUpdates)
 	}
 
 }
