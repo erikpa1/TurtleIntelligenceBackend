@@ -58,6 +58,12 @@ func (self *SpawnBehaviour) Step() {
 
 }
 
+func (self *SpawnBehaviour) __Interface() {
+	var _ ISimBehaviour = &SpawnBehaviour{}
+
+	//TODO mozno dorobit providera?
+}
+
 func (self *SpawnBehaviour) _Spawn() {
 	self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActor)
 

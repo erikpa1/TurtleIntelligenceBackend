@@ -112,6 +112,14 @@ func (s *SafeJson) GetInt64(key string, notFound int64) int64 {
 }
 
 // GetInt retrieves an int value or a default if the key is not found.
+func (s *SafeJson) GetInt8(key string, notFound int8) int8 {
+	if val, ok := s.Data[key].(float64); ok {
+		return int8(val)
+	}
+	return notFound
+}
+
+// GetInt retrieves an int value or a default if the key is not found.
 func (s *SafeJson) GetSeconds(key string, notFound Seconds) Seconds {
 	if val, ok := s.Data[key].(float64); ok {
 		return Seconds(val)

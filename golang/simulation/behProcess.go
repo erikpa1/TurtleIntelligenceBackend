@@ -35,6 +35,12 @@ func NewProcessBehaviour() *ProcessBehaviour {
 	}
 }
 
+func (self *ProcessBehaviour) __Interface() {
+	var _ ISimBehaviour = &ProcessBehaviour{}
+	var _ ActorTakerBehaviour = &ProcessBehaviour{}
+
+}
+
 // IBehaviour implementation
 func (self *ProcessBehaviour) SetWorld(world *SimWorld) {
 	self.World = world

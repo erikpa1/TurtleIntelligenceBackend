@@ -62,6 +62,8 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 			behaviour = NewSinkBehaviour()
 		} else if entityType == "buffer" {
 			behaviour = NewBufferBehaviour()
+		} else if entityType == "switch" {
+			behaviour = NewSwitchBehaviour()
 		} else {
 			lg.LogE(fmt.Sprintf("Unknown entity type [%s]", entityType))
 		}

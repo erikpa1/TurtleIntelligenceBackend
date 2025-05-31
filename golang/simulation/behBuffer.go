@@ -19,6 +19,12 @@ func NewBufferBehaviour() *BufferBehaviour {
 	}
 }
 
+func (self *BufferBehaviour) __Interface() {
+	var _ ISimBehaviour = &BufferBehaviour{}
+	var _ ActorTakerBehaviour = &BufferBehaviour{}
+	var _ ActorProviderBehaviour = &BufferBehaviour{}
+}
+
 // Implementacia IBehaviour
 
 func (self *BufferBehaviour) SetWorld(world *SimWorld) {
