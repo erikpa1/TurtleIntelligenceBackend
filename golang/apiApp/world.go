@@ -13,7 +13,6 @@ import (
 )
 
 func _SaveWorld(c *gin.Context) {
-	//TODO
 
 	type SaveWorldResponse struct {
 		Uid                primitive.ObjectID      `json:"uid"`

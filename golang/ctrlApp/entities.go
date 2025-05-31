@@ -41,9 +41,10 @@ func CreateConnections(modelUid primitive.ObjectID, connections [][2]primitive.O
 }
 
 func DeleteEntities(entities []primitive.ObjectID) {
-	db.DeleteEntities(CT_MODEL_CONNECTIONS, bson.M{"$or": bson.M{
-		"a": bson.M{"$in": entities},
-		"b": bson.M{"$in": entities},
+
+	db.DeleteEntities(CT_MODEL_CONNECTIONS, bson.M{"$or": []bson.M{
+		{"a": bson.M{"$in": entities}},
+		{"b": bson.M{"$in": entities}},
 	}})
 	db.DeleteEntities(CT_MODEL_ENTITIES, bson.M{"_id": bson.M{"$in": entities}})
 }
