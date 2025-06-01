@@ -28,7 +28,7 @@ type ProcessBehaviour struct {
 	Statistics *stats.ProcessStats
 }
 
-func NewProcessBehaviour() *ProcessBehaviour {
+func NewProcessBehaviour() ISimBehaviour {
 	return &ProcessBehaviour{
 		ActiveState: PROC_STAT_IDLE,
 		Statistics:  stats.NewProcessStats(),

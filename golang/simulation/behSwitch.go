@@ -16,7 +16,7 @@ type SwitchBehaviour struct {
 	RRIndex int
 }
 
-func NewSwitchBehaviour() *SwitchBehaviour {
+func NewSwitchBehaviour() ISimBehaviour {
 	return &SwitchBehaviour{}
 }
 

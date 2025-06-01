@@ -50,23 +50,15 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 		simEntity := SimEntity{}
 		simEntity.FromEntity(entity)
 
-		var behaviour ISimBehaviour = NewUndefinedBehaviour()
-
 		entityType := entity.Type
 
-		if entityType == "spawn" {
-			behaviour = NewSpawnBehaviour()
-		} else if entityType == "process" {
-			behaviour = NewProcessBehaviour()
-		} else if entityType == "sink" {
-			behaviour = NewSinkBehaviour()
-		} else if entityType == "buffer" {
-			behaviour = NewBufferBehaviour()
-		} else if entityType == "switch" {
-			behaviour = NewSwitchBehaviour()
-		} else {
-			lg.LogE(fmt.Sprintf("Unknown entity type [%s]", entityType))
+		constructor, ok := BEH_FACTORY.Behaviours[entityType]
+
+		if ok == false {
+			constructor = NewUndefinedBehaviour
 		}
+
+		behaviour := constructor()
 
 		behaviour.SetWorld(self)
 		behaviour.SetEntity(&simEntity)

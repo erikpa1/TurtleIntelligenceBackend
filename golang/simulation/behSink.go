@@ -17,7 +17,7 @@ type SinkBehaviour struct {
 	ActiveActor *SimActor
 }
 
-func NewSinkBehaviour() *SinkBehaviour {
+func NewSinkBehaviour() ISimBehaviour {
 	return &SinkBehaviour{}
 }
 

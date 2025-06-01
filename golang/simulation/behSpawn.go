@@ -18,7 +18,7 @@ type SpawnBehaviour struct {
 	ActiveActor *SimActor
 }
 
-func NewSpawnBehaviour() *SpawnBehaviour {
+func NewSpawnBehaviour() ISimBehaviour {
 	return &SpawnBehaviour{}
 }
 

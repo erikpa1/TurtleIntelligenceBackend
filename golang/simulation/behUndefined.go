@@ -5,7 +5,7 @@ type UndefinedBehaviour struct {
 	Entity SimEntity
 }
 
-func NewUndefinedBehaviour() *UndefinedBehaviour {
+func NewUndefinedBehaviour() ISimBehaviour {
 	return &UndefinedBehaviour{}
 }
 

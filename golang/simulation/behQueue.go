@@ -2,7 +2,7 @@ package simulation
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type BufferBehaviour struct {
+type QueueBehaviour struct {
 	World  *SimWorld
 	Entity SimEntity
 
@@ -13,25 +13,25 @@ type BufferBehaviour struct {
 	InitialActor primitive.ObjectID
 }
 
-func NewBufferBehaviour() ISimBehaviour {
-	return &BufferBehaviour{
+func NewQueueBehaviour() ISimBehaviour {
+	return &QueueBehaviour{
 		Actors: make([]*SimActor, 0),
 	}
 }
 
-func (self *BufferBehaviour) __Interface() {
-	var _ ISimBehaviour = &BufferBehaviour{}
-	var _ ActorTakerBehaviour = &BufferBehaviour{}
-	var _ ActorProviderBehaviour = &BufferBehaviour{}
+func (self *QueueBehaviour) __Interface() {
+	var _ ISimBehaviour = &QueueBehaviour{}
+	var _ ActorTakerBehaviour = &QueueBehaviour{}
+	var _ ActorProviderBehaviour = &QueueBehaviour{}
 }
 
 // Implementacia IBehaviour
 
-func (self *BufferBehaviour) SetWorld(world *SimWorld) {
+func (self *QueueBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
 }
 
-func (self *BufferBehaviour) SetEntity(entity *SimEntity) {
+func (self *QueueBehaviour) SetEntity(entity *SimEntity) {
 	self.Entity = *entity
 
 	self.Capacity = entity.TypeData.GetInt64("capacity", 8)
@@ -40,23 +40,23 @@ func (self *BufferBehaviour) SetEntity(entity *SimEntity) {
 
 }
 
-func (self *BufferBehaviour) Init1() {
+func (self *QueueBehaviour) Init1() {
 
 }
 
-func (self *BufferBehaviour) Init2() {
+func (self *QueueBehaviour) Init2() {
 
 }
 
-func (self *BufferBehaviour) Step() {
+func (self *QueueBehaviour) Step() {
 	self._TryToPassActorsNext()
 }
 
-func (self *BufferBehaviour) _TryToPassActorsNext() {
+func (self *QueueBehaviour) _TryToPassActorsNext() {
 
 	if len(self.Actors) > 0 {
 
-		lastOne := self.Actors[len(self.Actors)-1]
+		lastOne := self.Actors[0]
 
 		for _, conn := range self.World.GetConnectionsOf(self.Entity.Uid) {
 
@@ -71,15 +71,18 @@ func (self *BufferBehaviour) _TryToPassActorsNext() {
 				if canTake {
 					iActorTaker.TakeActor(lastOne)
 					lastOne = nil
+
 				}
+
 			}
+
 		}
 	}
+
 }
 
-//Entity taker behavour
-
-func (self *BufferBehaviour) TakeActor(actor *SimActor) bool {
+// Entity taker behavour
+func (self *QueueBehaviour) TakeActor(actor *SimActor) bool {
 	canTake := self.CanTakeActor(actor)
 
 	if canTake {
@@ -89,37 +92,37 @@ func (self *BufferBehaviour) TakeActor(actor *SimActor) bool {
 	return canTake
 }
 
-func (self *BufferBehaviour) CanTakeActor(actor *SimActor) bool {
+func (self *QueueBehaviour) CanTakeActor(actor *SimActor) bool {
 	return false
 }
 
 // Entity provideder behaviour
-func (self *BufferBehaviour) PopActor() *SimActor {
-	return self.PopBack()
+func (self *QueueBehaviour) PopActor() *SimActor {
+	return self.PopFront()
 }
 
-func (self *BufferBehaviour) PopBack() *SimActor {
+func (self *QueueBehaviour) PopFront() *SimActor {
 	if len(self.Actors) == 0 {
 		return nil // or handle empty slice case
 	}
 
 	// Get the last element
-	lastActor := self.Actors[len(self.Actors)-1]
+	lastActor := self.Actors[0]
 
 	// Remove the last element by reslicing
-	self.Actors = self.Actors[:len(self.Actors)-1]
+	self.Actors = self.Actors[1 : len(self.Actors)-1]
 
 	return lastActor
 }
 
-func (self *BufferBehaviour) HasAnyActor() bool {
+func (self *QueueBehaviour) HasAnyActor() bool {
 	return false
 }
 
-func (self *BufferBehaviour) HasActorOfType(actorType string) bool {
+func (self *QueueBehaviour) HasActorOfType(actorType string) bool {
 	return false
 }
 
-func (self *BufferBehaviour) HasActorWithVariable(variable string, value any) bool {
+func (self *QueueBehaviour) HasActorWithVariable(variable string, value any) bool {
 	return true
 }
