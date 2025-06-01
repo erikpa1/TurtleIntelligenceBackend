@@ -12,6 +12,7 @@ import (
 	"turtle/apiApp"
 	"turtle/auth"
 	"turtle/credentials"
+	"turtle/llm/llmApi"
 
 	"turtle/lg"
 	"turtle/models"
@@ -70,6 +71,8 @@ func dev_main() {
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)
+
+	llmApi.InitLLMApi(r)
 
 	if tools.IsInDevelopment() {
 		lg.LogI("Going to take files from: ", "../static")
