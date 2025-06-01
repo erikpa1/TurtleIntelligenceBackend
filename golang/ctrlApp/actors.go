@@ -22,7 +22,7 @@ func CreateActor(ct *modelsApp.Actor) {
 }
 
 func UpdateActor(ct *modelsApp.Actor) {
-	db.UpdateOneCustom(CT_ACTORS, bson.M{"_id": ct.Uid}, ct)
+	db.UpdateOneCustom(CT_ACTORS, bson.M{"_id": ct.Uid}, bson.M{"$set": ct})
 }
 
 func DeleteActor(uid primitive.ObjectID) {
