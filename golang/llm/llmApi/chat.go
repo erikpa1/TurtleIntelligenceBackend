@@ -1,12 +1,12 @@
 package llmApi
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/xyproto/ollamaclient/v2"
-	"github.com/xyproto/usermodel"
+	"github.com/tmc/langchaingo/llms"
+	"github.com/tmc/langchaingo/llms/ollama"
 	"go.mongodb.org/mongo-driver/bson"
 	"turtle/auth"
+	"turtle/lg"
 	"turtle/llm/llmCtrl"
 	"turtle/tools"
 )
@@ -14,24 +14,22 @@ import (
 func _GetChatHistory(c *gin.Context) {
 	query := tools.QueryHeader[bson.M](c)
 	tools.AutoReturn(c, llmCtrl.QueryChatHistory(query))
-
 }
 
 func _ChatAsk(c *gin.Context) {
+	llm, err := ollama.New(ollama.WithModel("deepseek-coder-v2:latest"))
 
-	oc := ollamaclient.New(usermodel.GetTextGenerationModel())
-	oc.Verbose = true
-	if err := oc.PullIfNeeded(); err != nil {
-		fmt.Println("Error:", err)
-		return
+	if err == nil {
+		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, "how are you today?")
+
+		if complErr == nil {
+			lg.LogI(completion)
+		}
+
+	} else {
+		lg.LogE(err)
 	}
-	prompt := "Write a haiku about the color of cows."
-	output, err := oc.GetOutput(prompt)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("\n%s\n", output)
+
 }
 
 func InitLLMChatApi(r *gin.Engine) {
