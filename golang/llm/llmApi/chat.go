@@ -17,10 +17,13 @@ func _GetChatHistory(c *gin.Context) {
 }
 
 func _ChatAsk(c *gin.Context) {
+
+	text := c.PostForm("text")
+
 	llm, err := ollama.New(ollama.WithModel("deepseek-coder-v2:latest"))
 
 	if err == nil {
-		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, "how are you today?")
+		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 
 		if complErr == nil {
 			lg.LogI(completion)
@@ -32,7 +35,12 @@ func _ChatAsk(c *gin.Context) {
 
 }
 
+func _StartChat(c *gin.Context) {
+	tools.AutoReturn(c, llmCtrl.StartLLMChat())
+}
+
 func InitLLMChatApi(r *gin.Engine) {
 	r.GET("/api/llm/chat-history", auth.LoginRequired, _GetChatHistory)
 	r.POST("/api/llm/chat-ask", auth.LoginRequired, _ChatAsk)
+	r.POST("/api/llm/chat/start", auth.LoginRequired, _StartChat)
 }
