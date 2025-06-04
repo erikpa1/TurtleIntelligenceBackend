@@ -64,8 +64,8 @@ func GetTimeFromMillis(millis int64) time.Time {
 }
 
 // GetTimeNowMillis returns the current time in milliseconds
-func GetTimeNowMillis() int64 {
-	return GetTimeNow().UnixMilli()
+func GetTimeNowMillis() Milliseconds {
+	return Milliseconds(GetTimeNow().UnixMilli())
 }
 
 // GetTimeNowMillis returns the current time in milliseconds

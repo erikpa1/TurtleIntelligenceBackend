@@ -19,9 +19,6 @@ type AuthContext struct {
 
 func GetUserFromContext(c *gin.Context) *models.User {
 	tmp := models.NewUser()
-	tmp.Org = "olymp"
-	tmp.Uid = "poseidon"
-	//TODO semka dat uzivatela
 	return tmp
 }
 

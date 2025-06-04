@@ -2,16 +2,32 @@ package ctrl
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/db"
 	"turtle/models"
+	"turtle/tools"
 )
 
 const CT_PROJECTS = "projects"
 
-func ListProjects(org string) []*models.TurtleProject {
+func ListProjects(org primitive.ObjectID) []*models.TurtleProject {
 	return db.QueryEntities[models.TurtleProject](CT_PROJECTS, bson.M{"org": org})
 }
 
-func COUProject(org string, project *models.TurtleProject) {
-	db.COUEntity(CT_PROJECTS, project)
+func COUProject(user *models.User, project *models.TurtleProject) {
+	if project.Uid.IsZero() {
+		project.Org = user.Org
+		project.CreatedBy = user.Uid
+		db.InsertEntity(CT_PROJECTS, project)
+	} else {
+
+		project.UpdatedAt = tools.GetTimeNowMillis()
+
+		db.UpdateOneCustom(CT_PROJECTS,
+			bson.M{
+				"_id": project.Uid,
+				"org": user.Org,
+			},
+			bson.M{"$set": project})
+	}
 }

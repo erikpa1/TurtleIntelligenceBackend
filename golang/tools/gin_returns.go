@@ -97,3 +97,11 @@ func MongoObjectIdFromQuery(c *gin.Context) primitive.ObjectID {
 	}
 	return objectId
 }
+
+func MongoObjectIdFromQueryByKey(c *gin.Context, key string) primitive.ObjectID {
+	objectId, err := primitive.ObjectIDFromHex(c.Query(key))
+	if err != nil {
+		return primitive.NilObjectID
+	}
+	return objectId
+}

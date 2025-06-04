@@ -18,12 +18,10 @@ func _TryLogin(c *gin.Context) {
 
 	//TODO toto naimpelmentovat
 	tmp := models.NewUser()
-	tmp.Uid = "poseidon"
 	tmp.Email = "poseidon@turtle.sk"
 	tmp.Firstname = "Poseidon"
 	tmp.Surname = "The God"
 	tmp.Type = "superadmin"
-	tmp.Org = "olymp"
 
 	tools.AutoReturn(c, tmp)
 

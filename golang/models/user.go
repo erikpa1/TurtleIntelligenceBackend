@@ -1,13 +1,15 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type User struct {
-	Uid       string `json:"uid" bson:"_id"`
-	Email     string `json:"email" bson:"email"`
-	Firstname string `json:"firstname" bson:"firstname"`
-	Surname   string `json:"surname" bson:"surname"`
-	Password  string `json:"password" bson:"password"`
-	Type      string `json:"type" bson:"type"`
-	Org       string `json:"org" bson:"org"`
+	Uid       primitive.ObjectID
+	Email     string
+	Firstname string
+	Surname   string
+	Password  string
+	Type      string
+	Org       primitive.ObjectID
 }
 
 func NewUser() *User {
@@ -16,17 +18,7 @@ func NewUser() *User {
 	tmp.Password = ""
 	tmp.Surname = ""
 	tmp.Type = "admin"
-	tmp.Uid = "inmemoryuser"
 	return &tmp
-}
-
-// Interface Implementetion
-func (self *User) GetUid() string {
-	return self.Uid
-}
-
-func (self *User) SetUid(uid string) {
-	self.Uid = uid
 }
 
 func (self *User) FromAnotherUserNoPass(another *User) {

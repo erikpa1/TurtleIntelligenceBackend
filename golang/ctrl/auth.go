@@ -3,6 +3,7 @@ package ctrl
 import (
 	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/credentials"
 	"turtle/db"
 	"turtle/lg"
@@ -22,7 +23,7 @@ func GetUsers() []*models.User {
 	return db.QueryEntities[models.User](CT_USERS, bson.M{}, &opts)
 }
 
-func GetUser(uid string) *models.User {
+func GetUser(uid primitive.ObjectID) *models.User {
 	return db.QueryEntity[models.User](CT_USERS, bson.M{"uid": uid})
 }
 
@@ -68,8 +69,10 @@ func CheckInfinityAuth(token string) (*models.User, error) {
 		return nil, errors.New("uid not found in token")
 	}
 
+	userId, _ := primitive.ObjectIDFromHex(uid)
+
 	// Get the user by UID
-	user := GetUser(uid)
+	user := GetUser(userId)
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -108,11 +111,19 @@ func UserExists(email string, password string) bool {
 }
 
 func COUUser(user *models.User) {
+
+	//TODO toto je nejake divne
 	from_dbuser := GetUser(user.Uid)
 
 	if from_dbuser != nil {
 		from_dbuser.FromAnotherUserNoPass(user)
-		db.COUEntity(CT_USERS, from_dbuser)
+
+		if from_dbuser.Uid.IsZero() {
+			db.InsertEntity(CT_USERS, from_dbuser)
+		} else {
+			db.UpdateOneCustom(CT_USERS, bson.M{"_id": user.Uid}, bson.M{"$set": from_dbuser})
+		}
+
 	} else {
 		user.Password = EncryptPassword(user.Password)
 		db.InsertEntity(CT_USERS, user)

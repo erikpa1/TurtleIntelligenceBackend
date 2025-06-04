@@ -1,18 +1,18 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/tools"
+)
+
 type TurtleProject struct {
-	Uid         string `json:"uid"`
-	Name        string `json:"name"`
-	At          int64  `json:"at"`
-	CreatedBy   string `json:"created_by" bson:"created_by"`
-	Org         string `json:"org"`
-	Description string `json:"description"`
-}
+	Uid       primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	CreatedBy primitive.ObjectID
+	Org       primitive.ObjectID
 
-func (self *TurtleProject) GetUid() string {
-	return self.Uid
-}
+	Name        string
+	Description string
 
-func (self *TurtleProject) SetUid(uid string) {
-	self.Uid = uid
+	CreatedAt tools.Milliseconds
+	UpdatedAt tools.Milliseconds
 }
