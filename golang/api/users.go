@@ -21,7 +21,7 @@ func _TryLogin(c *gin.Context) {
 	tmp.Email = "poseidon@turtle.sk"
 	tmp.Firstname = "Poseidon"
 	tmp.Surname = "The God"
-	tmp.Type = "superadmin"
+	tmp.Type = 3
 
 	tools.AutoReturn(c, tmp)
 

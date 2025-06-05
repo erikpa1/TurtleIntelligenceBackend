@@ -2,13 +2,22 @@ package models
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+type UserType int8
+
+const (
+	USER_TYPE_USER       = 0
+	USER_TYPE_EDITOR     = 1
+	USER_TYPE_ADMIN      = 2
+	USER_TYPE_SUPERADMIN = 3
+)
+
 type User struct {
 	Uid       primitive.ObjectID
 	Email     string
 	Firstname string
 	Surname   string
 	Password  string
-	Type      string
+	Type      int8
 	Org       primitive.ObjectID
 }
 
@@ -17,7 +26,7 @@ func NewUser() *User {
 	tmp.Firstname = ""
 	tmp.Password = ""
 	tmp.Surname = ""
-	tmp.Type = "admin"
+	tmp.Type = USER_TYPE_USER
 	return &tmp
 }
 
@@ -26,4 +35,19 @@ func (self *User) FromAnotherUserNoPass(another *User) {
 	self.Surname = another.Surname
 	self.Type = another.Type
 	self.Uid = another.Uid
+}
+
+func (self *User) IsSuperAdmin() bool {
+	return self.Type >= USER_TYPE_SUPERADMIN
+}
+func (self *User) IsAdmin() bool {
+	return self.Type >= USER_TYPE_ADMIN
+}
+
+func (self *User) IsEditor() bool {
+	return self.Type >= USER_TYPE_EDITOR
+}
+
+func (self *User) IsSimpleUser() bool {
+	return self.Type == USER_TYPE_USER
 }
