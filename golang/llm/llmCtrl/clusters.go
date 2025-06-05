@@ -33,8 +33,11 @@ func DeleteLLMCluster(user *models.User, uid primitive.ObjectID) {
 func COULLMCluster(user *models.User, cluster *llmModels.LLMCluster) {
 
 	if user.IsAdmin() {
+
+		cluster.Org = user.Org
+
 		if cluster.Uid.IsZero() {
-			cluster.Org = user.Org
+
 			db.InsertEntity(CT_LLM_CLUSTERS, cluster)
 		} else {
 			db.UpdateOneCustom(CT_LLM_CLUSTERS, bson.M{
