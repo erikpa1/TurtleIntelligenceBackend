@@ -33,7 +33,7 @@ func DeleteModelsOfCluster(user *models.User, uid primitive.ObjectID) {
 }
 
 func DeleteLLMModel(user *models.User, uid primitive.ObjectID) {
-	if user.IsAdmin() {
+	if user.IsAdminWithError() {
 		db.DeleteEntities(CT_LLM_MODELS, bson.M{
 			"org": user.Org,
 			"_id": uid,

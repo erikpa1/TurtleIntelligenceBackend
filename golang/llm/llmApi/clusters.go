@@ -54,15 +54,22 @@ func _GetLLMModel(c *gin.Context) {
 	tools.AutoReturn(c, llmCtrl.GetLLMModel(user, uid))
 }
 
-func InitLLMClusters(r *gin.Engine) {
+func InitClustersOnly(r *gin.Engine) {
 	r.GET("/api/llm/clusters", auth.LoginRequired, _ListLLMClusters)
 	r.GET("/api/llm/cluster", auth.LoginRequired, _GetLLMCluster)
 	r.POST("/api/llm/cluster", auth.LoginRequired, _COULLMCluster)
 	r.DELETE("/api/llm/cluster", auth.LoginRequired, _DeleteLLMCluster)
+}
 
-	r.GET("/api/llms", auth.LoginRequired, _ListLlmModels)
-	r.GET("/api/llm", auth.LoginRequired, _GetLLMModel)
-	r.POST("/api/llm", auth.LoginRequired, _COULlmModel)
-	r.DELETE("/api/llm", auth.LoginRequired, _DeleteLlmModel)
+func InitModelsOnly(r *gin.Engine) {
 
+	r.GET("/api/llm/models", auth.LoginRequired, _ListLlmModels)
+	r.GET("/api/llm/model", auth.LoginRequired, _GetLLMModel)
+	r.POST("/api/llm/model", auth.LoginRequired, _COULlmModel)
+	r.DELETE("/api/llm/model", auth.LoginRequired, _DeleteLlmModel)
+}
+
+func InitLlmAndClusters(r *gin.Engine) {
+	InitClustersOnly(r)
+	InitModelsOnly(r)
 }

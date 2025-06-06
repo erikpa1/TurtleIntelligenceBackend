@@ -1,6 +1,9 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
+)
 
 type UserType int8
 
@@ -30,6 +33,15 @@ func NewUser() *User {
 	return &tmp
 }
 
+func NewSuperAdmin() *User {
+	tmp := User{}
+	tmp.Firstname = "Poisedon"
+	tmp.Password = ""
+	tmp.Surname = "The Olympian"
+	tmp.Type = USER_TYPE_SUPERADMIN
+	return &tmp
+}
+
 func (self *User) FromAnotherUserNoPass(another *User) {
 	self.Firstname = another.Firstname
 	self.Surname = another.Surname
@@ -40,6 +52,7 @@ func (self *User) FromAnotherUserNoPass(another *User) {
 func (self *User) IsSuperAdmin() bool {
 	return self.Type >= USER_TYPE_SUPERADMIN
 }
+
 func (self *User) IsAdmin() bool {
 	return self.Type >= USER_TYPE_ADMIN
 }
@@ -50,4 +63,13 @@ func (self *User) IsEditor() bool {
 
 func (self *User) IsSimpleUser() bool {
 	return self.Type == USER_TYPE_USER
+}
+
+func (self *User) IsAdminWithError() bool {
+	if self.IsAdmin() {
+		return true
+	} else {
+		lg.LogE(self.Uid.Hex(), "is only", self.Type)
+		return false
+	}
 }

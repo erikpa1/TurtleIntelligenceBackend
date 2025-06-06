@@ -18,7 +18,8 @@ type AuthContext struct {
 }
 
 func GetUserFromContext(c *gin.Context) *models.User {
-	tmp := models.NewUser()
+	tmp := models.NewSuperAdmin()
+
 	return tmp
 }
 

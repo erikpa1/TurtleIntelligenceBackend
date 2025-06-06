@@ -4,6 +4,6 @@ import "github.com/gin-gonic/gin"
 
 func InitLLMApi(r *gin.Engine) {
 	InitLLMChatApi(r)
-	InitLLMClusters(r)
+	InitLlmAndClusters(r)
 	InitLLMAgents(r)
 }
