@@ -1,6 +1,7 @@
 package llmCtrl
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
@@ -16,6 +17,7 @@ import (
 )
 
 const CT_LLM_AGENTS = "llm_agents"
+const CT_LLM_AGENT_TESTS = "llm_agent_tests"
 
 func ExampleAgent() {
 	agent_hierarchy := bson.M{
@@ -104,17 +106,8 @@ func ListLLMAgents(user *models.User) []*llmModels.LLMAgent {
 	})
 }
 
-func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {
-	if user.IsAdmin() {
-		db.DeleteEntity(CT_LLM_AGENTS, bson.M{
-			"_id": uid,
-			"org": user.Org,
-		})
-	}
-}
-
 func COULLMAgent(user *models.User, agent *llmModels.LLMAgent) {
-	if user.IsAdmin() {
+	if user.IsAdminWithError() {
 		agent.Org = user.Org
 		agent.UpdatedAt = tools.GetTimeNowMillis()
 
@@ -148,7 +141,19 @@ User request: %s`, agent.AgentProps.Role, agent.AgentProps.SystemPrompt, userTex
 	return prompt
 }
 
-func TestLLMAgent(c *gin.Context, user *models.User, text string) {
+func GetAgent(org primitive.ObjectID, uid primitive.ObjectID) *llmModels.LLMAgent {
+
+	return db.QueryEntity[llmModels.LLMAgent](CT_LLM_AGENTS,
+		bson.M{
+			"_id": uid,
+			"org": org,
+		})
+}
+
+func TestLLMAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
+
+	result := llmModels.AgentTestResponse{}
+	result.AgentUid = agentUid
 
 	ollmodel := ollama.WithModel("mistral:7b")
 	keepAlive := ollama.WithKeepAlive("10h")
@@ -160,13 +165,58 @@ func TestLLMAgent(c *gin.Context, user *models.User, text string) {
 		prompt := GetSuitableAgentPrompt(user, text)
 
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
+		result.ResultRaw = completion
+
 		if complErr == nil {
-			lg.LogI(completion)
+
+			serializationErr := json.Unmarshal([]byte(completion), &result.Result)
+
+			if serializationErr == nil {
+				if result.Result.SelectedAgent != agentUid {
+					result.State = 2
+					//In this case there was an bad agent selected
+				} else {
+					result.State = 1
+					//In this case agent was selected right
+				}
+			} else {
+				result.Error = serializationErr.Error()
+				result.State = 0
+			}
+
 		} else {
+			result.Error = complErr.Error()
+			result.State = 0
 			lg.LogE(completion)
+
 		}
 	} else {
+		result.Error = err.Error()
+		result.State = 0
 		lg.LogE(err)
 	}
 
+	db.InsertEntity(CT_LLM_AGENT_TESTS, &result)
+
+	return result
+}
+
+func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {
+	if user.IsAdminWithError() {
+
+		DeleteAgentTestHistory(user, uid)
+
+		db.DeleteEntity(CT_LLM_AGENTS, bson.M{
+			"_id": uid,
+			"org": user.Org,
+		})
+	}
+}
+
+func DeleteAgentTestHistory(user *models.User, uid primitive.ObjectID) {
+	if user.IsAdminWithError() {
+		db.DeleteEntity(CT_LLM_AGENT_TESTS, bson.M{
+			"agentUid": uid,
+		})
+	}
 }

@@ -7,8 +7,8 @@ import (
 )
 
 type LLMAgent struct {
-	Uid            primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
-	Org            primitive.ObjectID `json:"org" bson:"org,omitempty"`
+	Uid            primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	Org            primitive.ObjectID `json:"org" bson:"org"`
 	UserLevel      int8               `json:"userLevel"` //Not everyone can call anything
 	Name           string             `json:"name"`
 	Description    string             `json:"description"`
@@ -22,6 +22,8 @@ type LLMAgent struct {
 	XApiKey        primitive.ObjectID  `json:"xApiKey" bson:"xApiKey"`
 	Args           []LLMAgentParameter `json:"args"`
 	AgentProps     LLMAgentParams      `json:"agentProps" bson:"inline"`
+	CommandExample string              `json:"commandExample" bson:"commandExample"`
+	UseReasoning   bool                `json:"useReasoning" bson:"useReasoning"`
 }
 
 type LLMAgentParams struct {
@@ -46,4 +48,23 @@ type LLMAgentPerformance struct {
 	UserText       string             `json:"userText" bson:"userText"`
 	UserEvaluation int8               `json:"userEvaluation" bson:"userEvaluation"`
 	At             tools.Milliseconds `json:"at"`
+}
+
+type Mistral7bResponse struct {
+	SelectedAgent primitive.ObjectID `json:"selected_agent" bson:"selected_agent"`
+	Confidence    float32            `json:"confidence"`
+	Parameters    bson.M             `json:"parameters"`
+	Reasoning     string             `json:"reasoning"`
+}
+
+type AgentTestResponse struct {
+	Uid       primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	AgentUid  primitive.ObjectID `json:"agentUid" bson:"agentUid"`
+	Org       primitive.ObjectID `json:"org" bson:"org"`
+	At        tools.Milliseconds `json:"at"`
+	State     int8               `json:"state"`
+	Result    Mistral7bResponse  `json:"result"`
+	ResultRaw string             `json:"resultRaw"`
+	Error     string             `json:"error"`
+	Text      string             `json:"text"`
 }
