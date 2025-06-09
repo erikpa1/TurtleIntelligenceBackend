@@ -169,9 +169,28 @@ func TestLLMAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 
 		if complErr == nil {
 
-			serializationErr := json.Unmarshal([]byte(completion), &result.Result)
+			resultBson := bson.M{}
+
+			serializationErr := json.Unmarshal([]byte(completion), &resultBson)
 
 			if serializationErr == nil {
+
+				uid, uuidOk := primitive.ObjectIDFromHex(resultBson["selected_agent"].(string))
+
+				if uuidOk == nil {
+					result.Result.SelectedAgent = uid
+				}
+
+				var xYz map[string]interface{}
+
+				xYz["hello"] = ""
+
+				result.Result.Confidence = float32(resultBson["confidence"].(float64))
+				result.Result.Parameters = bson.M(resultBson["parameters"].(map[string]interface{}))
+				result.Result.Reasoning = resultBson["reasoning"].(string)
+
+				result.AgentUid = result.Result.SelectedAgent
+
 				if result.Result.SelectedAgent != agentUid {
 					result.State = 2
 					//In this case there was an bad agent selected

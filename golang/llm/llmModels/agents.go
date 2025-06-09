@@ -24,6 +24,7 @@ type LLMAgent struct {
 	AgentProps     LLMAgentParams      `json:"agentProps" bson:"inline"`
 	CommandExample string              `json:"commandExample" bson:"commandExample"`
 	UseReasoning   bool                `json:"useReasoning" bson:"useReasoning"`
+	IsConfidential bool                `json:"isConfidential" bson:"isConfidential"` //Confidential znamen ze nemoze logovat, obsahuje data
 }
 
 type LLMAgentParams struct {
@@ -58,13 +59,14 @@ type Mistral7bResponse struct {
 }
 
 type AgentTestResponse struct {
-	Uid       primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
-	AgentUid  primitive.ObjectID `json:"agentUid" bson:"agentUid"`
-	Org       primitive.ObjectID `json:"org" bson:"org"`
-	At        tools.Milliseconds `json:"at"`
-	State     int8               `json:"state"`
-	Result    Mistral7bResponse  `json:"result"`
-	ResultRaw string             `json:"resultRaw"`
-	Error     string             `json:"error"`
-	Text      string             `json:"text"`
+	Uid              primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	AgentUid         primitive.ObjectID `json:"agentUid" bson:"agentUid"`
+	ResponseAgentUid primitive.ObjectID `json:"responseAgentUid" bson:"responseAgentUid"`
+	Org              primitive.ObjectID `json:"org" bson:"org"`
+	At               tools.Milliseconds `json:"at"`
+	State            int8               `json:"state"`
+	Result           Mistral7bResponse  `json:"result"`
+	ResultRaw        string             `json:"resultRaw"`
+	Error            string             `json:"error"`
+	Text             string             `json:"text"`
 }
