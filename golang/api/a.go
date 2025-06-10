@@ -9,4 +9,5 @@ func InitApi(r *gin.Engine) {
 	initApiProjects(r)
 	initApiScenes(r)
 	initApiTools(r)
+	InitDocumentsApi(r)
 }
