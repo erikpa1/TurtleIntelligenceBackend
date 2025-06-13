@@ -13,6 +13,7 @@ import (
 	"turtle/auth"
 	"turtle/credentials"
 	"turtle/llm/llmApi"
+	"turtle/llm/llmCtrl"
 
 	"turtle/lg"
 	"turtle/models"
@@ -63,6 +64,8 @@ func dev_main() {
 	mime.AddExtensionType(".xyz", "text/plain")
 	mime.AddExtensionType(".gzip", "application/x-gzip-compressed")
 	mime.AddExtensionType(".gz", "application/x-gzip-compressed")
+
+	llmCtrl.InitOllama()
 
 	// r.Use()
 

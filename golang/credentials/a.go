@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+var APP_NAME = "INTL"
+
+var APP_NAME_SMALL = "intl"
+
 func LicenceDisabled() bool {
 	return true
 }
