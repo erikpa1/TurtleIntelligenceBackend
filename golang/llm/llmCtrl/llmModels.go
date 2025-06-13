@@ -58,3 +58,14 @@ func COULLMModel(user *models.User, model *llmModels.LlmModel) {
 		}
 	}
 }
+
+func ListAgenticOrNormalModels() []*llmModels.LlmModel {
+	agents := db.QueryEntities[llmModels.LlmModel](CT_LLM_MODELS, bson.M{"isAgentic": true})
+
+	if len(agents) > 0 {
+		return agents
+	} else {
+		return db.QueryEntities[llmModels.LlmModel](CT_LLM_MODELS, bson.M{"isAgentic": false})
+	}
+
+}

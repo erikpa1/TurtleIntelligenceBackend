@@ -150,7 +150,81 @@ func GetAgent(org primitive.ObjectID, uid primitive.ObjectID) *llmModels.LLMAgen
 		})
 }
 
-func TestLLMAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
+func FindAgent(c *gin.Context, user *models.User, text string) llmModels.AgentTestResponse {
+
+	models := ListAgenticOrNormalModels()
+
+	for _, model := range models {
+		response := ChatModel(c, user, model, text)
+
+		if response != nil {
+			db.InsertEntity(CT_LLM_AGENT_TESTS, response)
+
+			return *response
+		}
+	}
+
+	return llmModels.AgentTestResponse{}
+
+}
+
+func ChatModel(c *gin.Context, user *models.User, model *llmModels.LlmModel, text string) *llmModels.AgentTestResponse {
+
+	result := llmModels.AgentTestResponse{}
+
+	ollmodel := ollama.WithModel(model.ModelVersion)
+	keepAlive := ollama.WithKeepAlive(model.Ttl)
+
+	llm, err := ollama.New(ollmodel, keepAlive)
+
+	if err == nil {
+
+		prompt := GetSuitableAgentPrompt(user, text)
+
+		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
+		result.ResultRaw = completion
+
+		if complErr == nil {
+
+			resultBson := bson.M{}
+
+			serializationErr := json.Unmarshal([]byte(completion), &resultBson)
+
+			if serializationErr == nil {
+
+				uid, uuidOk := primitive.ObjectIDFromHex(resultBson["selected_agent"].(string))
+
+				if uuidOk == nil {
+					result.Result.SelectedAgent = uid
+				}
+
+				result.Result.Confidence = float32(resultBson["confidence"].(float64))
+				result.Result.Parameters = bson.M(resultBson["parameters"].(map[string]interface{}))
+				result.Result.Reasoning = resultBson["reasoning"].(string)
+
+				result.AgentUid = result.Result.SelectedAgent
+
+			} else {
+				result.Error = serializationErr.Error()
+				result.State = 0
+			}
+
+		} else {
+			result.Error = complErr.Error()
+			result.State = 0
+			lg.LogE(completion)
+
+		}
+	} else {
+		result.Error = err.Error()
+		result.State = 0
+		lg.LogE(err)
+	}
+
+	return nil
+}
+
+func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
 
 	result := llmModels.AgentTestResponse{}
 	result.AgentUid = agentUid
@@ -180,10 +254,6 @@ func TestLLMAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 				if uuidOk == nil {
 					result.Result.SelectedAgent = uid
 				}
-
-				var xYz map[string]interface{}
-
-				xYz["hello"] = ""
 
 				result.Result.Confidence = float32(resultBson["confidence"].(float64))
 				result.Result.Parameters = bson.M(resultBson["parameters"].(map[string]interface{}))

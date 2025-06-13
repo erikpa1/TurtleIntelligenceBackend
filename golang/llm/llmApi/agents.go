@@ -30,7 +30,7 @@ func _TestLLMAgent(c *gin.Context) {
 	text := c.PostForm("text")
 	agent, _ := primitive.ObjectIDFromHex(c.PostForm("agent"))
 
-	tools.AutoReturn(c, llmCtrl.TestLLMAgent(c, user, agent, text))
+	tools.AutoReturn(c, llmCtrl.ChatAgent(c, user, agent, text))
 
 }
 
