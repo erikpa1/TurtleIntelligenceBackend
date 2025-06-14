@@ -1,12 +1,13 @@
-package ctrl
+package ctrlApp
 
 import (
 	"bytes"
 	"fmt"
 	"github.com/ledongthuc/pdf"
+	"turtle/modelsApp"
 )
 
-func UploadAndPreprocessPdfFile(file []byte) {
+func COUDocument(document *modelsApp.Document, documentData []byte) {
 
 	pdf.DebugOn = true
 
@@ -25,4 +26,9 @@ func UploadAndPreprocessPdfFile(file []byte) {
 	buf.ReadFrom(b)
 	content := buf.String()
 	fmt.Println(content)
+
+}
+
+func DeleteDocument() {
+
 }

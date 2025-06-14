@@ -238,7 +238,9 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 
 		prompt := GetSuitableAgentPrompt(user, text)
 
+		lg.LogI("Going to ask llm")
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
+		lg.LogOk("LLM responded")
 		result.ResultRaw = completion
 
 		if complErr == nil {
