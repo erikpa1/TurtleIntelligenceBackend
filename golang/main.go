@@ -12,6 +12,7 @@ import (
 	"turtle/apiApp"
 	"turtle/auth"
 	"turtle/credentials"
+	"turtle/db"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
 
@@ -53,6 +54,8 @@ func use_cors(r *gin.Engine) {
 
 }
 func dev_main() {
+
+	db.DB.InstallJavaScriptFunctions()
 
 	lg.LogOk("Working directory: ", vfs.GetWorkingDirectory())
 

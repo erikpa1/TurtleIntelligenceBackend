@@ -56,6 +56,9 @@ func ExampleEmbedding() {
 		queryEmbeding, _ := embedder.CreateEmbedding(context.Background(), []string{query})
 
 		for _, docEmbedding := range docEmbeddings {
+
+			db.DB.VectorSearch(context.Background(), ctrlApp.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
+
 			for _, firstRow := range docEmbedding.Embedding {
 				lg.LogOk(cosineSimilarity(queryEmbeding[0], firstRow))
 			}

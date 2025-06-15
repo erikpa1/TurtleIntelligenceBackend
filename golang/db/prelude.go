@@ -264,6 +264,7 @@ func NewAnyDBConnection() AnyDBConnection {
 	conn.SetIsCosmos(credentials.GetDBConnStr())
 	conn.IsCosmos = false
 	conn.Mongo = client
+
 	return conn
 }
 
