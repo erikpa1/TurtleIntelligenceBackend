@@ -10,16 +10,16 @@ import (
 
 const CT_LLM_MODELS = "llm_models"
 
-func ListLLMModels(org primitive.ObjectID) []*llmModels.LlmModel {
-	return db.QueryEntities[llmModels.LlmModel](CT_LLM_MODELS, bson.M{
+func ListLLMModels(org primitive.ObjectID) []*llmModels.LLM {
+	return db.QueryEntities[llmModels.LLM](CT_LLM_MODELS, bson.M{
 		"org": org,
 	})
 }
-func GetLLMModel(user *models.User, uid primitive.ObjectID) *llmModels.LlmModel {
-	return db.QueryEntity[llmModels.LlmModel](CT_LLM_MODELS,
+func GetLLMModel(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
+	return db.QueryEntity[llmModels.LLM](CT_LLM_MODELS,
 		bson.M{
 			"org": user.Org,
-			"uid": uid,
+			"_id": uid,
 		})
 }
 
@@ -41,7 +41,7 @@ func DeleteLLMModel(user *models.User, uid primitive.ObjectID) {
 	}
 }
 
-func COULLMModel(user *models.User, model *llmModels.LlmModel) {
+func COULLMModel(user *models.User, model *llmModels.LLM) {
 	if user.IsAdmin() {
 
 		if model.Uid.IsZero() {
@@ -59,13 +59,13 @@ func COULLMModel(user *models.User, model *llmModels.LlmModel) {
 	}
 }
 
-func ListAgenticOrNormalModels() []*llmModels.LlmModel {
-	agents := db.QueryEntities[llmModels.LlmModel](CT_LLM_MODELS, bson.M{"isAgentic": true})
+func ListAgenticOrNormalModels() []*llmModels.LLM {
+	agents := db.QueryEntities[llmModels.LLM](CT_LLM_MODELS, bson.M{"isAgentic": true})
 
 	if len(agents) > 0 {
 		return agents
 	} else {
-		return db.QueryEntities[llmModels.LlmModel](CT_LLM_MODELS, bson.M{"isAgentic": false})
+		return db.QueryEntities[llmModels.LLM](CT_LLM_MODELS, bson.M{"isAgentic": false})
 	}
 
 }

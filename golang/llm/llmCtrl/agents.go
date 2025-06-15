@@ -168,7 +168,7 @@ func FindAgent(c *gin.Context, user *models.User, text string) llmModels.AgentTe
 
 }
 
-func ChatModel(c *gin.Context, user *models.User, model *llmModels.LlmModel, text string) *llmModels.AgentTestResponse {
+func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 
 	result := llmModels.AgentTestResponse{}
 

@@ -6,4 +6,5 @@ func InitLLMApi(r *gin.Engine) {
 	InitLLMChatApi(r)
 	InitLlmAndClusters(r)
 	InitLLMAgents(r)
+	InitOllamaApi(r)
 }

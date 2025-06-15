@@ -17,5 +17,5 @@ type Document struct {
 
 type DocumentEmbedding struct {
 	Uid       primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
-	Embedding []float64          `json:"embeding"`
+	Embedding [][]float32        `json:"embedding"`
 }

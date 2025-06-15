@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 
 	"github.com/google/uuid"
@@ -52,4 +53,54 @@ func ShortenUUIDs(strings []string) map[string]string {
 	}
 
 	return uidMap
+}
+
+func StringToObjectID(s string) (primitive.ObjectID, error) {
+	//Generated from https://claude.ai/chat/c447750c-f01c-40c1-942c-b34634d26263
+	// ObjectID needs exactly 24 hex characters (12 bytes)
+	const objectIDLength = 24
+
+	// Convert string to byte slice for manipulation
+	bytes := []byte(s)
+
+	// Create a 24-character hex string
+	hexStr := ""
+
+	// Convert each byte to hex and build the string
+	for i := 0; i < len(bytes) && len(hexStr) < objectIDLength; i++ {
+		hexStr += fmt.Sprintf("%02x", bytes[i])
+	}
+
+	// Pad with zeros if too short
+	for len(hexStr) < objectIDLength {
+		hexStr += "0"
+	}
+
+	// Truncate if too long
+	if len(hexStr) > objectIDLength {
+		hexStr = hexStr[:objectIDLength]
+	}
+
+	// Convert hex string to ObjectID
+	objectID, err := primitive.ObjectIDFromHex(hexStr)
+	if err != nil {
+		return primitive.NilObjectID, fmt.Errorf("failed to create ObjectID: %w", err)
+	}
+
+	return objectID, nil
+}
+
+// Alternative simpler version that directly manipulates bytes
+func StringToObjectIDSimple(s string) primitive.ObjectID {
+	var objectID primitive.ObjectID
+
+	// Convert string to bytes
+	bytes := []byte(s)
+
+	// Copy up to 12 bytes (ObjectID is 12 bytes)
+	copy(objectID[:], bytes)
+
+	// If string was shorter than 12 bytes, remaining bytes are already zero
+
+	return objectID
 }

@@ -38,7 +38,7 @@ func _GetLLMCluster(c *gin.Context) {
 
 func _COULlmModel(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	data := tools.ObjFromJson[llmModels.LlmModel](c.PostForm("data"))
+	data := tools.ObjFromJson[llmModels.LLM](c.PostForm("data"))
 	llmCtrl.COULLMModel(user, &data)
 }
 

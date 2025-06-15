@@ -2,9 +2,10 @@ package llmModels
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type LlmModel struct {
+type LLM struct {
 	Uid                        primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
 	Org                        primitive.ObjectID `json:"org"`
+	Cluster                    primitive.ObjectID `json:"cluster"`
 	Name                       string             `json:"name"`
 	Description                string             `json:"description"`
 	ModelVersion               string             `json:"modelVersion" bson:"modelVersion"`
