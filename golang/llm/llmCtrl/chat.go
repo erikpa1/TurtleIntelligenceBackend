@@ -137,35 +137,41 @@ func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, pr
 
 			return AskLangChainModel(c, model, prompt)
 		} else {
-			cluster := GetLLMCluster(user, model.Cluster)
-
-			if cluster != nil {
-				if strings.Contains(cluster.Url, "localhost") ||
-					strings.Contains(cluster.Url, "127.0.0.1") ||
-					strings.Contains(cluster.Url, "0.0.0.0") {
-
-					lg.LogOk(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
-
-					return AskLangChainModel(c, model, prompt)
-				}
-			} else {
-				resp, err := http.Get(fmt.Sprintf("%s%s", cluster.Url, "/api/llm/ask"))
-
-				if err != nil {
-					fmt.Printf("Error: %v\n", err)
-				}
-				defer resp.Body.Close()
-
-				if resp.StatusCode == 200 {
-					lg.LogE(resp)
-				}
-
-				lg.LogE("Cluster is invalid")
-			}
+			return AskModelRemote(c, user, model, prompt)
 		}
 	} else {
 		lg.LogE("Model don't exists anymore")
 	}
 
 	return "--unanswered--"
+}
+
+func AskModelRemote(c *gin.Context, user *models.User, model *llmModels.LLM, prompt string) string {
+	cluster := GetLLMCluster(user, model.Cluster)
+
+	if cluster != nil {
+		if strings.Contains(cluster.Url, "localhost") ||
+			strings.Contains(cluster.Url, "127.0.0.1") ||
+			strings.Contains(cluster.Url, "0.0.0.0") {
+
+			lg.LogOk(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
+
+			return AskLangChainModel(c, model, prompt)
+		}
+	} else {
+		resp, err := http.Get(fmt.Sprintf("%s%s", cluster.Url, "/api/llm/ask"))
+
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == 200 {
+			lg.LogE(resp)
+		}
+
+		lg.LogE("Cluster is invalid")
+	}
+
+	return ""
 }
