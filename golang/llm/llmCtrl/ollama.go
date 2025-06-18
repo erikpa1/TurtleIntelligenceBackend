@@ -84,6 +84,29 @@ func ListAndCheckRunningOllamas() []string {
 	return []string{}
 }
 
+func InstallOllama(cluster primitive.ObjectID, model string) string {
+	if cluster.IsZero() {
+
+		finalCommand := fmt.Sprintf("ollama pull %s", model)
+
+		lg.LogOk("Final command: ", finalCommand)
+
+		cmd := exec.Command(
+			"sh",
+			"-c",
+			finalCommand,
+		)
+		// Capture the output
+		output, err := cmd.Output()
+		if err != nil {
+			lg.LogE(err.Error())
+		}
+		return string(output)
+	}
+	//TODO naimplementovat RPC
+	return ""
+}
+
 func OllamaList() string {
 	cmd := exec.Command(
 		"sh",

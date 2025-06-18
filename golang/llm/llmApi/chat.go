@@ -2,12 +2,9 @@ package llmApi
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tmc/langchaingo/llms"
-	"github.com/tmc/langchaingo/llms/ollama"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/auth"
-	"turtle/lg"
 	"turtle/llm/llmCtrl"
 	"turtle/tools"
 )
@@ -34,28 +31,13 @@ func _AskModelStream(c *gin.Context) {
 func _ChatAsk(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
+	modelUid, _ := primitive.ObjectIDFromHex(c.PostForm("modelUid"))
 	conversation, _ := primitive.ObjectIDFromHex(c.PostForm("chatUid"))
 	text := c.PostForm("text")
 
 	llmCtrl.AddUserQuestion(user, conversation, text)
-
-	ollmodel := ollama.WithModel("deepseek-coder-v2:latest")
-	keepAlive := ollama.WithKeepAlive("10h")
-
-	llm, err := ollama.New(ollmodel, keepAlive)
-
-	if err == nil {
-		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
-		if complErr == nil {
-			lg.LogI(completion)
-
-			llmCtrl.AddChatAnswer(user, conversation, completion)
-		} else {
-			lg.LogE(completion)
-		}
-	} else {
-		lg.LogE(err)
-	}
+	completion := llmCtrl.AskModel(c, user, modelUid, text)
+	llmCtrl.AddChatAnswer(user, conversation, completion)
 
 }
 

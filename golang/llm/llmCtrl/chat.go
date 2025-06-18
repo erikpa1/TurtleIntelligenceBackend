@@ -91,10 +91,15 @@ func AskModelStream(c *gin.Context, user *models.User, modelUid primitive.Object
 	model := GetLLMModel(user, modelUid)
 
 	if model != nil {
-		if model.Cluster.IsZero() {
+		if len(model.Clusters) == 0 {
+			lg.LogOk(fmt.Sprintf("Going to ask on local model [%s]", model.ModelVersion))
+
 			AskLangChainModelStream(c, model, prompt)
 		} else {
-			cluster := GetLLMCluster(user, model.Cluster)
+
+			clusterUid := GetRoundRobinCluster(model.Clusters, model.Uid)
+
+			cluster := GetLLMCluster(user, clusterUid)
 
 			if cluster != nil {
 				if strings.Contains(cluster.Url, "localhost") ||
@@ -131,23 +136,24 @@ func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, pr
 	model := GetLLMModel(user, modelUid)
 
 	if model != nil {
-		if model.Cluster.IsZero() {
-
-			lg.LogOk(fmt.Sprintf("Going to ask localhost LLM"))
-
+		if len(model.Clusters) == 0 {
+			lg.LogOk(fmt.Sprintf("Going to ask localhost LLM: %s", model.ModelVersion))
 			return AskLangChainModel(c, model, prompt)
 		} else {
 			return AskModelRemote(c, user, model, prompt)
 		}
 	} else {
 		lg.LogE("Model don't exists anymore")
+		tools.AutoNotFound(c, "llm.notfound")
 	}
 
 	return "--unanswered--"
 }
 
 func AskModelRemote(c *gin.Context, user *models.User, model *llmModels.LLM, prompt string) string {
-	cluster := GetLLMCluster(user, model.Cluster)
+	clusterUid := GetRoundRobinCluster(model.Clusters, model.Uid)
+
+	cluster := GetLLMCluster(user, clusterUid)
 
 	if cluster != nil {
 		if strings.Contains(cluster.Url, "localhost") ||

@@ -8,7 +8,6 @@ import (
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
 	"net/http"
-	"turtle/lg"
 	"turtle/llm/llmModels"
 )
 
@@ -30,11 +29,10 @@ func AskLangChainModel(c *gin.Context, model *llmModels.LLM, prompt string) stri
 		if complErr == nil {
 			return completion
 		} else {
-			lg.LogE(complErr)
-			return completion
+			return complErr.Error()
 		}
 	} else {
-		lg.LogE(err)
+		return err.Error()
 	}
 
 	return "--unanswered--"

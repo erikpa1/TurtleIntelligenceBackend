@@ -1,8 +1,10 @@
 package llmCtrl
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/credentials"
 	"turtle/db"
 	"turtle/llm/llmModels"
 	"turtle/models"
@@ -50,8 +52,14 @@ func COULLMCluster(user *models.User, cluster *llmModels.LLMCluster) {
 }
 
 func GetLLMCluster(user *models.User, uid primitive.ObjectID) *llmModels.LLMCluster {
-	return db.QueryEntity[llmModels.LLMCluster](CT_LLM_CLUSTERS, bson.M{
-		"org": uid,
-		"_id": user.Org,
-	})
+
+	if uid.IsZero() {
+		return &llmModels.LLMCluster{Url: fmt.Sprintf("localhost:%s", credentials.GetPort())}
+	} else {
+		return db.QueryEntity[llmModels.LLMCluster](CT_LLM_CLUSTERS, bson.M{
+			"org": uid,
+			"_id": user.Org,
+		})
+	}
+
 }
