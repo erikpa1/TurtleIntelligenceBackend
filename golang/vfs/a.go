@@ -334,3 +334,9 @@ func GetFileStringFromWD(folder string, filePath string) (string, error) {
 	}
 	return string(data), nil
 }
+
+func GetFilePathFromWD(container string, file string) string {
+	finalPath := filepath.Join(GetWorkingDirectory(), file)
+	return finalPath
+
+}

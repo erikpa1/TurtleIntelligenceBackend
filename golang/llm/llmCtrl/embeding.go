@@ -5,16 +5,15 @@ import (
 	"github.com/tmc/langchaingo/llms/ollama"
 	"go.mongodb.org/mongo-driver/bson"
 	"math"
-	"turtle/ctrlApp"
 	"turtle/db"
+	"turtle/documents"
 	"turtle/lg"
-	"turtle/modelsApp"
 	"turtle/tools"
 )
 
 func ExampleEmbedding() {
 
-	documents := []string{
+	examples := []string{
 		"The quick brown fox jumps over the lazy dog",
 		"Machine learning is a subset of artificial intelligence",
 		"Go is a programming language developed by Google",
@@ -31,10 +30,10 @@ func ExampleEmbedding() {
 
 	lg.LogE(err)
 
-	for _, document := range documents {
+	for _, document := range examples {
 		ojbId, _ := tools.StringToObjectID(document)
 		embeddings, _ := embedder.CreateEmbedding(context.Background(), []string{document})
-		ctrlApp.AddDocumentEmbedding(ojbId, embeddings)
+		documents.AddDocumentEmbedding(ojbId, embeddings)
 
 		lg.LogOk(embeddings)
 	}
@@ -48,7 +47,7 @@ func ExampleEmbedding() {
 		"text processing",
 	}
 
-	docEmbeddings := db.QueryEntities[modelsApp.DocumentEmbedding](ctrlApp.CT_DOC_EMBEDDINGS, bson.M{})
+	docEmbeddings := db.QueryEntities[documents.DocumentEmbedding](documents.CT_DOC_EMBEDDINGS, bson.M{})
 
 	for _, query := range queries {
 		lg.LogI("Going to find: ", query)
@@ -57,7 +56,7 @@ func ExampleEmbedding() {
 
 		for _, docEmbedding := range docEmbeddings {
 
-			db.DB.VectorSearch(context.Background(), ctrlApp.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
+			db.DB.VectorSearch(context.Background(), documents.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
 
 			for _, firstRow := range docEmbedding.Embedding {
 				lg.LogOk(cosineSimilarity(queryEmbeding[0], firstRow))

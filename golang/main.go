@@ -13,6 +13,7 @@ import (
 	"turtle/auth"
 	"turtle/credentials"
 	"turtle/db"
+	"turtle/documents"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
 
@@ -74,6 +75,7 @@ func dev_main() {
 
 	r.GET("/api/main", _MainRoute)
 
+	documents.InitApi(r)
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)
