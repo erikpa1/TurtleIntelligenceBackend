@@ -75,7 +75,7 @@ func dev_main() {
 
 	r.GET("/api/main", _MainRoute)
 
-	documents.InitApi(r)
+	documents.InitDocumentsApi(r)
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)

@@ -26,7 +26,7 @@ func ListDocument(user *models.User) []*Document {
 
 func InsertDocument(document *Document, documentData []byte) {
 
-	document.Uid = primitive.ObjectID{}
+	document.Uid = primitive.NewObjectID()
 
 	db.InsertEntity(CT_DOC, document)
 
@@ -36,7 +36,9 @@ func InsertDocument(document *Document, documentData []byte) {
 
 	filePath := vfs.GetFilePathFromWD("documents", fileName)
 
-	ExtractPdfTextInMemory(documentData)
+	pdfText := ExtractPdfTextInMemory(documentData)
+
+	lg.LogE(pdfText)
 
 	if document.HasEmbedding {
 		if CreateDocFileEmbedding(filePath) != nil {
@@ -70,16 +72,13 @@ func ExtractPdfTextInMemory(data []byte) string {
 	}
 	buf.ReadFrom(b)
 	content := buf.String()
-	lg.LogE(content)
-	// Work with your PDF...
-
-	return ""
+	return content
 }
 
 func CreateDocFileEmbedding(filePath string) error {
 	pdf.DebugOn = true
 
-	f, r, err := pdf.Open("./pdf_test.pdf")
+	f, r, err := pdf.Open(filePath)
 
 	if err != nil {
 		panic(err)

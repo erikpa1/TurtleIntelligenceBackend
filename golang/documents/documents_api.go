@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"io"
 	"turtle/auth"
+	"turtle/lg"
 	"turtle/tools"
 )
 
@@ -22,7 +23,9 @@ func _PostPdfDocument(c *gin.Context) {
 	} else {
 
 		file, _, err := c.Request.FormFile("pdf")
+
 		if err != nil {
+			lg.LogE(err.Error())
 			c.JSON(400, gin.H{"error": "Failed to get file"})
 			return
 		}
@@ -35,17 +38,18 @@ func _PostPdfDocument(c *gin.Context) {
 			return
 		}
 
-		InsertDocument(nil, data)
+		document := &Document{}
+		document.Extension = "pdf"
+
+		InsertDocument(document, data)
 
 	}
 
 }
 
-func InitApi(r *gin.Engine) {
-	group := r.Group("/api/documents")
-
-	group.GET("/", auth.LoginOrApp, _ListDocuments)
-	group.POST("/upload", auth.LoginOrApp, _PostPdfDocument)
-	group.DELETE("/delete", auth.LoginOrApp, _PostPdfDocument)
+func InitDocumentsApi(r *gin.Engine) {
+	r.GET("/api/documents", auth.LoginOrApp, _ListDocuments)
+	r.POST("/api/documents/upload", auth.LoginOrApp, _PostPdfDocument)
+	r.DELETE("/api/documents/delete", auth.LoginOrApp, _PostPdfDocument)
 
 }
