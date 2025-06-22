@@ -15,11 +15,14 @@ func _ListDocuments(c *gin.Context) {
 
 func _PostPdfDocument(c *gin.Context) {
 
+	user := auth.GetUserFromContext(c)
 	fileIsBig := false
+
+	uploadParams := tools.ObjFromJson[InsertDocumentParams](c.PostForm("data"))
 
 	//TODO upravit taktiez toto
 	if fileIsBig {
-		//DO nothing
+		//DO nothing`
 	} else {
 
 		file, _, err := c.Request.FormFile("pdf")
@@ -38,18 +41,17 @@ func _PostPdfDocument(c *gin.Context) {
 			return
 		}
 
-		document := &Document{}
-		document.Extension = "pdf"
-
-		InsertDocument(document, data)
+		CreateAndUploadDocument(c, user, &uploadParams, data)
+		lg.LogI("Uploaded document")
 
 	}
 
 }
 
 func InitDocumentsApi(r *gin.Engine) {
-	r.GET("/api/documents", auth.LoginOrApp, _ListDocuments)
-	r.POST("/api/documents/upload", auth.LoginOrApp, _PostPdfDocument)
-	r.DELETE("/api/documents/delete", auth.LoginOrApp, _PostPdfDocument)
+	//Z nejakeho dovodu vo vite nefunguje /api/documents
+	r.GET("/api/docs", auth.LoginOrApp, _ListDocuments)
+	r.POST("/api/docs/upload", auth.LoginOrApp, _PostPdfDocument)
+	r.DELETE("/api/docs/delete", auth.LoginOrApp, _PostPdfDocument)
 
 }

@@ -3,66 +3,39 @@ package llmCtrl
 import (
 	"context"
 	"github.com/tmc/langchaingo/llms/ollama"
-	"go.mongodb.org/mongo-driver/bson"
 	"math"
-	"turtle/db"
-	"turtle/documents"
-	"turtle/lg"
-	"turtle/tools"
 )
 
-func ExampleEmbedding() {
-
-	examples := []string{
-		"The quick brown fox jumps over the lazy dog",
-		"Machine learning is a subset of artificial intelligence",
-		"Go is a programming language developed by Google",
-		"MongoDB is a NoSQL document database",
-		"Ollama allows you to run large language models locally",
-		"Vector embeddings represent text as numerical vectors",
-		"Cosine similarity measures the angle between two vectors",
-		"Natural language processing helps computers understand human language",
-	}
-
-	embedder, err := ollama.New(
+func CreateStringEmbedding(ctx context.Context, embedingString string) ([][]float32, error) {
+	embedder, llmErr := ollama.New(
 		ollama.WithModel("nomic-embed-text"), // You can change this to your preferred embedding model
 	)
 
-	lg.LogE(err)
-
-	for _, document := range examples {
-		ojbId, _ := tools.StringToObjectID(document)
-		embeddings, _ := embedder.CreateEmbedding(context.Background(), []string{document})
-		documents.AddDocumentEmbedding(ojbId, embeddings)
-
-		lg.LogOk(embeddings)
+	if llmErr != nil {
+		return [][]float32{}, llmErr
 	}
 
-	// Search examples
-	queries := []string{
-		"lazy dog",
-		"programming languages",
-		"artificial intelligence",
-		"database storage",
-		"text processing",
-	}
+	embeddings, err := embedder.CreateEmbedding(ctx, []string{embedingString})
+	return embeddings, err
 
-	docEmbeddings := db.QueryEntities[documents.DocumentEmbedding](documents.CT_DOC_EMBEDDINGS, bson.M{})
+}
 
-	for _, query := range queries {
-		lg.LogI("Going to find: ", query)
-
-		queryEmbeding, _ := embedder.CreateEmbedding(context.Background(), []string{query})
-
-		for _, docEmbedding := range docEmbeddings {
-
-			db.DB.VectorSearch(context.Background(), documents.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
-
-			for _, firstRow := range docEmbedding.Embedding {
-				lg.LogOk(cosineSimilarity(queryEmbeding[0], firstRow))
-			}
-		}
-	}
+func ExampleEmbedding() {
+	//
+	//for _, query := range queries {
+	//	lg.LogI("Going to find: ", query)
+	//
+	//	queryEmbeding, _ := embedder.CreateEmbedding(context.Background(), []string{query})
+	//
+	//	for _, docEmbedding := range docEmbeddings {
+	//
+	//		db.DB.VectorSearch(context.Background(), documents.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
+	//
+	//		for _, firstRow := range docEmbedding.Embedding {
+	//			lg.LogOk(cosineSimilarity(queryEmbeding[0], firstRow))
+	//		}
+	//	}
+	//}
 
 }
 

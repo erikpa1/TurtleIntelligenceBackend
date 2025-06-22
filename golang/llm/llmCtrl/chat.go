@@ -131,6 +131,22 @@ func AskModelStream(c *gin.Context, user *models.User, modelUid primitive.Object
 
 }
 
+func AskModelForDescription(c *gin.Context, user *models.User, modelUid primitive.ObjectID, userQuery string) string {
+	finalPrompt := fmt.Sprintf(`
+SYSTEM: You are document analyst, you describe document with 200 words maximum
+INSTRUCTIONS:
+1. Analyze the user query
+2. Extract the text
+3. Respond in the following JSON format:
+{
+  "description": "description",
+}
+USER QUERY: {%s}
+`, userQuery)
+
+	return AskModel(c, user, modelUid, finalPrompt)
+}
+
 func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, prompt string) string {
 
 	model := GetLLMModel(user, modelUid)

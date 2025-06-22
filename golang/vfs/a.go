@@ -3,10 +3,10 @@ package vfs
 import (
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -14,14 +14,10 @@ import (
 	"turtle/lg"
 )
 
-func GetEnvOrDefault(key string, defaultValue string) string {
-	var value = os.Getenv(key)
-
-	if value == "" {
-		return defaultValue
-	}
-
-	return value
+type ListFileInfoStruct struct {
+	FilePath string `json:"file_path"`
+	Size     int64  `json:"size"`
+	Modified string `json:"modified"`
 }
 
 func GetExeFile() string {
@@ -122,6 +118,21 @@ func GetFileFolder(filePath string) string {
 	return filepath.Dir(filePath)
 }
 
+// GetFileFolder - Returns the folder for a given file path
+func GetFilePath(filePath string) string {
+	finalPath := filepath.Join(GetWorkingDirectory(), filePath)
+	return finalPath
+}
+
+// GetFileFolder - Returns the folder for a given file path
+func CreateFolder(folderPath string) {
+	finalPath := filepath.Join(GetWorkingDirectory(), folderPath)
+	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
+	if err != nil {
+		lg.LogI("Create folder error:", err)
+	}
+}
+
 // FindPreviewFromPostfix - Finds preview image by appending a postfix
 func FindPreviewFromPostfix(filePath string, postFix string) string {
 	folder := GetFileFolder(filePath)
@@ -161,33 +172,32 @@ func IsLinux() bool {
 	return runtime.GOOS == "linux"
 }
 
+func IsDarwin() bool {
+	return runtime.GOOS == "darwin"
+}
+
 // GetWorkingDirectory - Returns the appropriate working directory based on OS
 func GetWorkingDirectory() string {
 	if IsLinux() {
 		return credentials.LinuxWorkspace()
-	}
-	return filepath.Join(os.Getenv("LOCALAPPDATA"), "TurtleEngine")
-}
-
-func GetDarwinWorkspace() string {
-
-	fromEnv := GetEnvOrDefault("INFINITY_TWIN_DARWIN_WORKSPACE", "")
-
-	if fromEnv == "" {
-		usr, err := user.Current()
-		appSupportPath := filepath.Join(usr.HomeDir, "Library", "Application Support")
-		if err == nil {
-			return appSupportPath + "/" + "TurtleEngine"
-		} else {
-			lg.LogE(err)
-		}
-
-	} else {
-		return fromEnv + "/" + "TurtleEngine"
+	} else if IsDarwin() {
+		return credentials.GetDarwinWorkspace()
 	}
 
-	return "../infinity_twin_storage" + "/" + "TurtleEngine"
+	basePath := ""
 
+	stPath := credentials.GetStoragePath()
+
+	switch credentials.GetStoragePath() {
+	case "LOCALAPPDATA":
+		basePath = os.Getenv("LOCALAPPDATA")
+	case "ProgramData":
+		basePath = os.Getenv("ProgramData")
+	default:
+		basePath = stPath
+	}
+
+	return filepath.Join(basePath, credentials.GetAppName())
 }
 
 // GetFileFolderNew - Similar to GetFileFolder but normalizes path
@@ -205,6 +215,55 @@ func WriteFileToWD(folder, filePath string, data []byte) error {
 		return err
 	}
 	return ioutil.WriteFile(finalPath, data, 0644)
+}
+
+func UploadFileChunk(folder, filePath string, data []byte, offset int) error {
+	wdPath := GetWorkingDirectory()
+	finalPath := filepath.Join(wdPath, folder, filePath)
+
+	lg.LogE("Chunking: ", finalPath)
+
+	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
+	if err != nil {
+		return err
+	}
+	// Open the file in append mode, create if it doesn't exist
+	file, err := os.OpenFile(finalPath, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to open file: %w", err)
+	}
+	defer file.Close()
+
+	// Get file info to check its size
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return fmt.Errorf("failed to get file info: %w", err)
+	}
+
+	// Check if the offset is valid
+	fileSize := fileInfo.Size()
+	if offset > int(fileSize) {
+		return fmt.Errorf("invalid offset: offset %d is greater than file size %d", offset, fileSize)
+	}
+
+	// If offset is specified, seek to that position
+	if offset > 0 {
+		if _, err := file.Seek(int64(offset), io.SeekStart); err != nil {
+			return fmt.Errorf("failed to seek to offset: %w", err)
+		}
+	} else {
+		// If no offset provided, seek to end of file for appending
+		if _, err := file.Seek(0, io.SeekEnd); err != nil {
+			return fmt.Errorf("failed to seek to end of file: %w", err)
+		}
+	}
+
+	// Write the data to the file
+	if _, err := file.Write(data); err != nil {
+		return fmt.Errorf("failed to write data: %w", err)
+	}
+
+	return nil
 }
 
 // WriteFileToWDNew - Similar to WriteFileToWD but without a folder prefix
@@ -296,9 +355,69 @@ func WriteFileStringToWDNewBase64(filePath, content string) error {
 }
 
 // ListFiles - Returns a list of all files in a folder
-func ListFiles(folder string) ([]string, error) {
-	finalPath := filepath.Join(GetWorkingDirectory(), folder)
-	return filepath.Glob(filepath.Join(finalPath, "*"))
+func ListFiles(folderPath string) ([]string, error) {
+	var fileList []string
+
+	prefix := filepath.Join(GetWorkingDirectory(), folderPath)
+
+	// Walk through the directory
+	err := filepath.Walk(prefix, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err // Return the error if accessing a file fails
+		}
+
+		// Check if the current item is a file (not a directory)
+		if !info.IsDir() {
+
+			replaced := strings.Replace(path, prefix+"\\", "", -1)
+			replaced = strings.Replace(replaced, "\\", "/", -1)
+			fileList = append(fileList, replaced) // Add the file to the list
+		}
+		return nil
+	})
+
+	if err != nil {
+		lg.LogE(err)
+		return nil, err // Return error if Walk fails
+	}
+
+	return fileList, nil
+}
+
+// ListFiles - Returns a list of all files in a folder
+func ListFilesWithInfo(folderPath string) ([]ListFileInfoStruct, error) {
+	var fileList []ListFileInfoStruct
+
+	prefix := filepath.Join(GetWorkingDirectory(), folderPath)
+
+	// Walk through the directory
+	err := filepath.Walk(prefix, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err // Return the error if accessing a file fails
+		}
+
+		// Check if the current item is a file (not a directory)
+		if !info.IsDir() {
+
+			replaced := strings.Replace(path, prefix+"\\", "", -1)
+			replaced = strings.Replace(replaced, "\\", "/", -1)
+
+			tmp := ListFileInfoStruct{}
+			tmp.FilePath = replaced
+			tmp.Size = info.Size()
+			tmp.Modified = info.ModTime().String()
+
+			fileList = append(fileList, tmp) // Add the file to the list
+		}
+		return nil
+	})
+
+	if err != nil {
+		lg.LogE(err)
+		return nil, err // Return error if Walk fails
+	}
+
+	return fileList, nil
 }
 
 // GetFileBytesFromWDNew - Reads bytes from a file in the working directory
@@ -333,6 +452,40 @@ func GetFileStringFromWD(folder string, filePath string) (string, error) {
 		return "", err
 	}
 	return string(data), nil
+}
+
+func GetFolderSize(folder string) int64 {
+	finalPath := filepath.Join(GetWorkingDirectory(), folder)
+
+	var size int64
+
+	err := filepath.Walk(finalPath, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		if !info.IsDir() { // Only add file sizes
+			size += info.Size()
+		}
+		return nil
+	})
+	if err != nil {
+		return 0
+	}
+	return size
+}
+
+func DeleteFile(folderPath string, file string) error {
+	finalPath := filepath.Join(GetWorkingDirectory(), folderPath, file)
+
+	error := os.Remove(finalPath)
+
+	lg.LogE("Going to delete: ", finalPath)
+
+	if error != nil {
+		lg.LogE(error)
+	}
+
+	return error
 }
 
 func GetFilePathFromWD(container string, file string) string {

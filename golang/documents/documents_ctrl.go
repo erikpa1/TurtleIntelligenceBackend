@@ -2,21 +2,23 @@ package documents
 
 import (
 	"bytes"
+	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/ledongthuc/pdf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/db"
 	"turtle/lg"
+	"turtle/llm/llmCtrl"
 	"turtle/models"
-	"turtle/vfs"
 )
 
 const CT_DOC = "docs"
+const CT_DOC_EXTRACT = "docs_extracts"
 const CT_DOC_EMBEDDINGS = "docs_embeddings"
 
 func ListDocument(user *models.User) []*Document {
-	//TODO vytvorit safe databazu, ktora pracuje aj s uzivatelom
 
 	return db.QueryEntities[Document](CT_DOC, bson.M{
 		"org": user.Org,
@@ -24,9 +26,20 @@ func ListDocument(user *models.User) []*Document {
 
 }
 
-func InsertDocument(document *Document, documentData []byte) {
+type InsertDocumentParams struct {
+	Name             string             `json:"name"`
+	Description      string             `json:"description"`
+	LLMDescription   bool               `json:"llmDescription"`
+	CreateEmbedding  bool               `json:"createEmbedding"`
+	DescriptionModel primitive.ObjectID `json:"descriptionModel"`
+}
 
+func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *InsertDocumentParams, documentData []byte) {
+
+	document := &Document{}
 	document.Uid = primitive.NewObjectID()
+	document.Name = uploadParams.Name
+	document.Description = uploadParams.Description
 
 	db.InsertEntity(CT_DOC, document)
 
@@ -34,24 +47,53 @@ func InsertDocument(document *Document, documentData []byte) {
 
 	db.SC.UploadFile("documents", fileName, documentData)
 
-	filePath := vfs.GetFilePathFromWD("documents", fileName)
+	if uploadParams.CreateEmbedding || uploadParams.LLMDescription {
+		pdfText, err := ExtractPdfTextInMemory(documentData)
 
-	pdfText := ExtractPdfTextInMemory(documentData)
+		db.InsertEntity(CT_DOC_EXTRACT, bson.M{
+			"_id":     document.Uid,
+			"extract": pdfText,
+		})
 
-	lg.LogE(pdfText)
+		if err != nil {
 
-	if document.HasEmbedding {
-		if CreateDocFileEmbedding(filePath) != nil {
-			db.UpdateOneCustom("documents",
-				bson.M{"_id": document.Uid},
-				bson.M{"hasEmbedding": false},
-			)
+			if uploadParams.CreateEmbedding {
+				embedding, embError := llmCtrl.CreateStringEmbedding(context.Background(), pdfText)
+
+				if err == nil {
+
+					document.HasEmbedding = true
+
+					db.UpdateOneCustom("documents",
+						bson.M{"_id": document.Uid},
+						bson.M{"hasEmbedding": true},
+					)
+
+					AddDocumentEmbedding(document.Uid, embedding)
+				} else {
+					lg.LogE(embError.Error())
+				}
+
+			}
+
+			if uploadParams.LLMDescription {
+				text := llmCtrl.AskModelForDescription(c, user, uploadParams.DescriptionModel, pdfText)
+
+				db.UpdateOneCustom("documents",
+					bson.M{"_id": document.Uid},
+					bson.M{"descriptions": text},
+				)
+
+				lg.LogOk("Uploaded document description")
+
+			}
+
 		}
 	}
 
 }
 
-func ExtractPdfTextInMemory(data []byte) string {
+func ExtractPdfTextInMemory(data []byte) (string, error) {
 	// Create a bytes.Reader which implements io.ReaderAt
 	reader := bytes.NewReader(data)
 
@@ -59,7 +101,7 @@ func ExtractPdfTextInMemory(data []byte) string {
 	pdfReader, err := pdf.NewReader(reader, int64(len(data)))
 	if err != nil {
 		lg.LogE(err.Error())
-		return ""
+		return "", err
 	}
 
 	var buf bytes.Buffer
@@ -68,11 +110,11 @@ func ExtractPdfTextInMemory(data []byte) string {
 
 	if err != nil {
 		lg.LogE(err.Error())
-		return ""
+		return "", err
 	}
 	buf.ReadFrom(b)
 	content := buf.String()
-	return content
+	return content, nil
 }
 
 func CreateDocFileEmbedding(filePath string) error {
@@ -99,11 +141,9 @@ func CreateDocFileEmbedding(filePath string) error {
 }
 
 func AddDocumentEmbedding(documentUid primitive.ObjectID, embedding [][]float32) {
-
 	emb := DocumentEmbedding{}
 	emb.Uid = documentUid
 	emb.Embedding = embedding
-
 	db.InsertEntity(CT_DOC_EMBEDDINGS, emb)
 
 }
