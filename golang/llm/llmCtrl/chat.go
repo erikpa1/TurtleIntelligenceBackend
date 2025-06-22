@@ -149,7 +149,7 @@ USER QUERY: {%s}
 
 func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, prompt string) string {
 
-	model := GetLLMModel(user, modelUid)
+	model := GetLLMOrDefault(user, modelUid)
 
 	if model != nil {
 		if len(model.Clusters) == 0 {
@@ -159,7 +159,7 @@ func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, pr
 			return AskModelRemote(c, user, model, prompt)
 		}
 	} else {
-		lg.LogE("Model don't exists anymore")
+		lg.LogE("Model don't exists anymore [", modelUid, "]")
 		tools.AutoNotFound(c, "llm.notfound")
 	}
 

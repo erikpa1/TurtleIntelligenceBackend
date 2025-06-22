@@ -13,6 +13,12 @@ func _ListDocuments(c *gin.Context) {
 	tools.AutoReturn(c, ListDocument(user))
 }
 
+func _DeletePdfDocument(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	uid := tools.MongoObjectIdFromQuery(c)
+	DeleteDocument(user, uid)
+}
+
 func _PostPdfDocument(c *gin.Context) {
 
 	user := auth.GetUserFromContext(c)
@@ -52,6 +58,6 @@ func InitDocumentsApi(r *gin.Engine) {
 	//Z nejakeho dovodu vo vite nefunguje /api/documents
 	r.GET("/api/docs", auth.LoginOrApp, _ListDocuments)
 	r.POST("/api/docs/upload", auth.LoginOrApp, _PostPdfDocument)
-	r.DELETE("/api/docs/delete", auth.LoginOrApp, _PostPdfDocument)
+	r.DELETE("/api/docs", auth.LoginOrApp, _DeletePdfDocument)
 
 }

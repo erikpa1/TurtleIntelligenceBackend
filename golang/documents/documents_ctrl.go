@@ -26,6 +26,46 @@ func ListDocument(user *models.User) []*Document {
 
 }
 
+func DeleteDocument(user *models.User, documentUid primitive.ObjectID) {
+
+	var docToDelete *Document
+
+	if user.IsAdmin() {
+		docToDelete = db.QueryEntity[Document](CT_DOC, bson.M{
+			"_id": documentUid,
+			"org": user.Org,
+		})
+	} else {
+		docToDelete = db.QueryEntity[Document](CT_DOC, bson.M{
+			"_id":  documentUid,
+			"org":  user.Org,
+			"user": user.Uid,
+		})
+	}
+
+	if docToDelete != nil {
+
+		db.DeleteEntities(CT_DOC_EMBEDDINGS, bson.M{
+			"_id": documentUid,
+			"org": user.Org,
+		})
+
+		db.DeleteEntities(CT_DOC_EXTRACT, bson.M{
+			"_id": documentUid,
+			"org": user.Org,
+		})
+
+		db.SC.DeleteFileNew(fmt.Sprintf("documents/%s.%s", documentUid, docToDelete.Extension))
+
+		db.DeleteEntities(CT_DOC, bson.M{
+			"_id": documentUid,
+			"org": user.Org,
+		})
+
+	}
+
+}
+
 type InsertDocumentParams struct {
 	Name             string             `json:"name"`
 	Description      string             `json:"description"`
@@ -40,6 +80,8 @@ func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *In
 	document.Uid = primitive.NewObjectID()
 	document.Name = uploadParams.Name
 	document.Description = uploadParams.Description
+	document.Org = user.Org
+	document.Extension = "pdf"
 
 	db.InsertEntity(CT_DOC, document)
 
@@ -48,28 +90,31 @@ func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *In
 	db.SC.UploadFile("documents", fileName, documentData)
 
 	if uploadParams.CreateEmbedding || uploadParams.LLMDescription {
-		pdfText, err := ExtractPdfTextInMemory(documentData)
 
-		db.InsertEntity(CT_DOC_EXTRACT, bson.M{
-			"_id":     document.Uid,
-			"extract": pdfText,
-		})
+		pdfText, extractError := ExtractPdfTextInMemory(documentData)
 
-		if err != nil {
+		extraction := DocumentExtraction{}
+		extraction.Uid = document.Uid
+		extraction.Extraction = pdfText
+		extraction.Org = user.Org
+
+		db.InsertEntity(CT_DOC_EXTRACT, extraction)
+
+		if extractError == nil {
 
 			if uploadParams.CreateEmbedding {
 				embedding, embError := llmCtrl.CreateStringEmbedding(context.Background(), pdfText)
 
-				if err == nil {
+				if embError == nil {
 
 					document.HasEmbedding = true
 
 					db.UpdateOneCustom("documents",
 						bson.M{"_id": document.Uid},
-						bson.M{"hasEmbedding": true},
+						bson.M{"$set": bson.M{"hasEmbedding": true}},
 					)
 
-					AddDocumentEmbedding(document.Uid, embedding)
+					AddDocumentEmbedding(user.Org, document.Uid, embedding)
 				} else {
 					lg.LogE(embError.Error())
 				}
@@ -77,17 +122,20 @@ func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *In
 			}
 
 			if uploadParams.LLMDescription {
+				lg.LogI("Going to create LLM description")
 				text := llmCtrl.AskModelForDescription(c, user, uploadParams.DescriptionModel, pdfText)
 
 				db.UpdateOneCustom("documents",
 					bson.M{"_id": document.Uid},
-					bson.M{"descriptions": text},
+					bson.M{"$set": bson.M{"descriptions": text}},
 				)
 
 				lg.LogOk("Uploaded document description")
 
 			}
 
+		} else {
+			lg.LogE(extractError.Error())
 		}
 	}
 
@@ -140,14 +188,11 @@ func CreateDocFileEmbedding(filePath string) error {
 
 }
 
-func AddDocumentEmbedding(documentUid primitive.ObjectID, embedding [][]float32) {
+func AddDocumentEmbedding(org primitive.ObjectID, documentUid primitive.ObjectID, embedding [][]float32) {
 	emb := DocumentEmbedding{}
 	emb.Uid = documentUid
 	emb.Embedding = embedding
+	emb.Org = org
 	db.InsertEntity(CT_DOC_EMBEDDINGS, emb)
-
-}
-
-func DeleteDocument() {
 
 }

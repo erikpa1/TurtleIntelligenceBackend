@@ -19,7 +19,25 @@ func ListLLMModels(org primitive.ObjectID) []*llmModels.LLM {
 		"org": org,
 	})
 }
+
+func GetLLMOrDefault(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
+	if uid.IsZero() {
+		return GetDefaultModel(user)
+	} else {
+		return GetLLMModel(user, uid)
+	}
+}
+
+func GetDefaultModel(user *models.User) *llmModels.LLM {
+	return db.QueryEntity[llmModels.LLM](CT_LLM_MODELS,
+		bson.M{
+			"org":       user.Org,
+			"isDefault": true,
+		})
+}
+
 func GetLLMModel(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
+
 	return db.QueryEntity[llmModels.LLM](CT_LLM_MODELS,
 		bson.M{
 			"org": user.Org,
