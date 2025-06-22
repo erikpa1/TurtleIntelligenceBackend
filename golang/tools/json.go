@@ -416,3 +416,68 @@ func MarshalWithoutDefaults(v interface{}) ([]byte, error) {
 	// Marshal the filtered map to JSON
 	return json.Marshal(nonZeroFields)
 }
+
+func FindFirstJsonString(s string) (string, int, error) {
+	// Look for opening brace or bracket
+	start := -1
+	for i, char := range s {
+		if char == '{' || char == '[' {
+			start = i
+			break
+		}
+	}
+
+	if start == -1 {
+		return "", -1, fmt.Errorf("no JSON start found")
+	}
+
+	// Count brackets to find matching closing bracket
+	openBraces := 0
+	openBrackets := 0
+	inString := false
+	escaped := false
+
+	for i := start; i < len(s); i++ {
+		char := rune(s[i])
+
+		if escaped {
+			escaped = false
+			continue
+		}
+
+		if char == '\\' && inString {
+			escaped = true
+			continue
+		}
+
+		if char == '"' {
+			inString = !inString
+			continue
+		}
+
+		if !inString {
+			switch char {
+			case '{':
+				openBraces++
+			case '}':
+				openBraces--
+			case '[':
+				openBrackets++
+			case ']':
+				openBrackets--
+			}
+
+			// Found complete JSON
+			if openBraces == 0 && openBrackets == 0 {
+				candidate := s[start : i+1]
+				// Validate it's actually JSON
+				var temp interface{}
+				if json.Unmarshal([]byte(candidate), &temp) == nil {
+					return candidate, start, nil
+				}
+			}
+		}
+	}
+
+	return "", -1, fmt.Errorf("no valid JSON found")
+}

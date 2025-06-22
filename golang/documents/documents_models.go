@@ -2,6 +2,7 @@ package documents
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/llm/llmModels"
 	"turtle/tools"
 )
 
@@ -27,9 +28,10 @@ type Document struct {
 }
 
 type DocumentEmbedding struct {
-	Uid       primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
-	Org       primitive.ObjectID `json:"org" bson:"org"`
-	Embedding [][]float32        `json:"embedding"`
+	Uid           primitive.ObjectID  `json:"uid" bson:"_id,omitempty"`
+	Org           primitive.ObjectID  `json:"org""`
+	Embedding     llmModels.Embedding `json:"embedding"`
+	DescEmbedding llmModels.Embedding `json:"descEmbedding" bson:"descEmbedding"`
 }
 
 type DocumentExtraction struct {

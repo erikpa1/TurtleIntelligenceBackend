@@ -10,7 +10,16 @@ import (
 
 func _ListDocuments(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListDocument(user))
+	tools.AutoReturn(c, ListDocuments(user))
+}
+
+func _ListVSearchDocuments(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	query := c.Query("query")
+
+	data, err := ListVSearchDocuments(c, user, query, 0.7)
+
+	tools.AutoReturnOrError(c, err, data)
 }
 
 func _DeletePdfDocument(c *gin.Context) {
@@ -57,6 +66,7 @@ func _PostPdfDocument(c *gin.Context) {
 func InitDocumentsApi(r *gin.Engine) {
 	//Z nejakeho dovodu vo vite nefunguje /api/documents
 	r.GET("/api/docs", auth.LoginOrApp, _ListDocuments)
+	r.GET("/api/doc/vsearch", auth.LoginOrApp, _ListVSearchDocuments)
 	r.POST("/api/docs/upload", auth.LoginOrApp, _PostPdfDocument)
 	r.DELETE("/api/docs", auth.LoginOrApp, _DeletePdfDocument)
 

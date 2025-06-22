@@ -18,7 +18,47 @@ const CT_DOC = "docs"
 const CT_DOC_EXTRACT = "docs_extracts"
 const CT_DOC_EMBEDDINGS = "docs_embeddings"
 
-func ListDocument(user *models.User) []*Document {
+type VSearchResult struct {
+	Similarity float32   `json:"similarity"`
+	Doc        *Document `json:"doc"`
+}
+
+func ListVSearchDocuments(c context.Context, user *models.User, searchQuery string, threshold float32) ([]*VSearchResult, error) {
+
+	resultList := make([]*VSearchResult, 0)
+
+	queryEmbedding, err := llmCtrl.CreateStringEmbedding(c, searchQuery)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, docEmbedding := range db.QueryEntities[DocumentEmbedding](CT_DOC_EMBEDDINGS,
+		bson.M{"org": user.Org}) {
+
+		similarity := docEmbedding.DescEmbedding.GetSimilarity(queryEmbedding)
+
+		if similarity > threshold {
+			resultList = append(resultList, &VSearchResult{
+				Similarity: similarity,
+				Doc:        GetDocument(user, docEmbedding.Uid),
+			})
+		}
+		lg.LogI(similarity)
+
+	}
+
+	return resultList, nil
+}
+
+func GetDocument(user *models.User, docUid primitive.ObjectID) *Document {
+	return db.QueryEntity[Document](CT_DOC, bson.M{
+		"_id": docUid,
+		"org": user.Org,
+	})
+}
+
+func ListDocuments(user *models.User) []*Document {
 
 	return db.QueryEntities[Document](CT_DOC, bson.M{
 		"org": user.Org,
@@ -102,35 +142,43 @@ func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *In
 
 		if extractError == nil {
 
+			if uploadParams.LLMDescription {
+				lg.LogI("Going to create LLM description")
+				descText := llmCtrl.AskModelForDescription(c, user, uploadParams.DescriptionModel, pdfText, 100)
+				lg.LogOk("LLM desc", descText)
+
+				db.UpdateOneCustom(CT_DOC,
+					bson.M{"_id": document.Uid},
+					bson.M{"$set": bson.M{"description": descText}},
+				)
+
+				document.Description = descText
+
+				lg.LogOk("Uploaded document description")
+
+			}
+
 			if uploadParams.CreateEmbedding {
 				embedding, embError := llmCtrl.CreateStringEmbedding(context.Background(), pdfText)
+				descEmbedding, _ := llmCtrl.CreateStringEmbedding(context.Background(), document.Description)
 
 				if embError == nil {
 
 					document.HasEmbedding = true
 
-					db.UpdateOneCustom("documents",
+					db.UpdateOneCustom(CT_DOC,
 						bson.M{"_id": document.Uid},
 						bson.M{"$set": bson.M{"hasEmbedding": true}},
 					)
 
-					AddDocumentEmbedding(user.Org, document.Uid, embedding)
+					AddDocumentEmbedding(user.Org,
+						document.Uid,
+						embedding,
+						descEmbedding,
+					)
 				} else {
 					lg.LogE(embError.Error())
 				}
-
-			}
-
-			if uploadParams.LLMDescription {
-				lg.LogI("Going to create LLM description")
-				text := llmCtrl.AskModelForDescription(c, user, uploadParams.DescriptionModel, pdfText)
-
-				db.UpdateOneCustom("documents",
-					bson.M{"_id": document.Uid},
-					bson.M{"$set": bson.M{"descriptions": text}},
-				)
-
-				lg.LogOk("Uploaded document description")
 
 			}
 
@@ -188,10 +236,15 @@ func CreateDocFileEmbedding(filePath string) error {
 
 }
 
-func AddDocumentEmbedding(org primitive.ObjectID, documentUid primitive.ObjectID, embedding [][]float32) {
+func AddDocumentEmbedding(org primitive.ObjectID,
+	documentUid primitive.ObjectID,
+	embedding [][]float32,
+	descEmbedding [][]float32,
+) {
 	emb := DocumentEmbedding{}
 	emb.Uid = documentUid
 	emb.Embedding = embedding
+	emb.DescEmbedding = descEmbedding
 	emb.Org = org
 	db.InsertEntity(CT_DOC_EMBEDDINGS, emb)
 

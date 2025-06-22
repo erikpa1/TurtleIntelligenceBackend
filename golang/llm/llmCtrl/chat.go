@@ -1,6 +1,7 @@
 package llmCtrl
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -131,9 +132,14 @@ func AskModelStream(c *gin.Context, user *models.User, modelUid primitive.Object
 
 }
 
-func AskModelForDescription(c *gin.Context, user *models.User, modelUid primitive.ObjectID, userQuery string) string {
+func AskModelForDescription(c *gin.Context,
+	user *models.User,
+	modelUid primitive.ObjectID,
+	userQuery string,
+	maxWords int,
+) string {
 	finalPrompt := fmt.Sprintf(`
-SYSTEM: You are document analyst, you describe document with 200 words maximum
+SYSTEM: You are document analyst, you describe document with %d words maximum
 INSTRUCTIONS:
 1. Analyze the user query
 2. Extract the text
@@ -142,9 +148,34 @@ INSTRUCTIONS:
   "description": "description",
 }
 USER QUERY: {%s}
-`, userQuery)
+`, userQuery, maxWords)
 
-	return AskModel(c, user, modelUid, finalPrompt)
+	response := AskModel(c, user, modelUid, finalPrompt)
+
+	maybeJson, _, err := tools.FindFirstJsonString(response)
+
+	if err != nil {
+		lg.LogE(err.Error())
+	}
+
+	converted := bson.M{}
+
+	err = json.Unmarshal([]byte(maybeJson), &converted)
+
+	if err != nil {
+		lg.LogE(err.Error())
+		return ""
+	} else {
+		description, ok := converted["description"].(string)
+
+		if ok {
+			return description
+		} else {
+			lg.LogE("No description found")
+			return ""
+		}
+	}
+
 }
 
 func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, prompt string) string {

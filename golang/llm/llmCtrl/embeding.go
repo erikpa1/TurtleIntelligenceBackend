@@ -3,12 +3,14 @@ package llmCtrl
 import (
 	"context"
 	"github.com/tmc/langchaingo/llms/ollama"
-	"math"
+	"turtle/llm/llmModels"
 )
 
-func CreateStringEmbedding(ctx context.Context, embedingString string) ([][]float32, error) {
+const LLM_EMBEDING = "nomic-embed-text"
+
+func CreateStringEmbedding(ctx context.Context, embedingString string) (llmModels.Embedding, error) {
 	embedder, llmErr := ollama.New(
-		ollama.WithModel("nomic-embed-text"), // You can change this to your preferred embedding model
+		ollama.WithModel(LLM_EMBEDING), // You can change this to your preferred embedding model
 	)
 
 	if llmErr != nil {
@@ -37,32 +39,4 @@ func ExampleEmbedding() {
 	//	}
 	//}
 
-}
-
-func cosineSimilarity(a, b []float32) float64 {
-	if len(a) != len(b) {
-		return 0
-	}
-
-	var dotProduct, normA, normB float64
-
-	for i := 0; i < len(a); i++ {
-		dotProduct += float64(a[i]) * float64(b[i])
-		normA += float64(a[i]) * float64(a[i])
-		normB += float64(b[i]) * float64(b[i])
-	}
-
-	if normA == 0 || normB == 0 {
-		return 0
-	}
-
-	return dotProduct / (math.Sqrt(normA) * math.Sqrt(normB))
-}
-
-// min returns the minimum of two integers
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }

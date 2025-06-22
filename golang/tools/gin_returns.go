@@ -14,6 +14,15 @@ func AutoReturn(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, data)
 }
 
+func AutoReturnOrError(c *gin.Context, err error, data any) {
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, data)
+	}
+
+}
+
 func AutoNotFound(c *gin.Context, data any) {
 	if data == nil {
 		c.JSON(http.StatusNotFound, gin.H{})
