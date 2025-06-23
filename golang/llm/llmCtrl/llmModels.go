@@ -20,6 +20,30 @@ func ListLLMModels(org primitive.ObjectID) []*llmModels.LLM {
 	})
 }
 
+func ListLocalModels(org primitive.ObjectID) []*llmModels.LLM {
+	tmp := make([]*llmModels.LLM, 0)
+
+	for _, model := range ListLLMModels(org) {
+
+		if len(model.Clusters) == 0 {
+			tmp = append(tmp, model)
+		} else {
+			for _, cluster := range model.Clusters {
+
+				if cluster.IsZero() {
+					tmp = append(tmp, model)
+					continue
+				}
+
+			}
+		}
+
+	}
+
+	return tmp
+
+}
+
 func GetLLMOrDefault(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
 	if uid.IsZero() {
 		return GetDefaultModel(user)

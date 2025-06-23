@@ -56,6 +56,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
+	github.com/patrikeh/go-deep v0.0.0-20230427173908-a2775168ab3d // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
 	github.com/pkoukk/tiktoken-go v0.1.6 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect

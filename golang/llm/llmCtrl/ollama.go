@@ -8,7 +8,6 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-	"turtle/credentials"
 	"turtle/lg"
 	"turtle/llm/llmModels"
 )
@@ -23,7 +22,46 @@ var OllamaModelsLock = sync.Mutex{}
 
 func InitOllama() {
 
-	if credentials.IsSlaveApplication() {
+	localModels := ListLocalModels(primitive.ObjectID{})
+
+	modelPort := 1143
+
+	if len(localModels) > 0 {
+
+		lg.LogI("Going to init Ollama")
+
+		var cmd *exec.Cmd
+
+		if runtime.GOOS == "windows" {
+
+			cmdString := fmt.Sprintf("set OLLAMA_HOST=localhost:%d && ollama serve &", modelPort)
+
+			cmd = exec.Command(
+				"cmd",
+				"/C",
+				cmdString,
+			)
+
+		} else {
+			// Unix/Linux/Mac
+			cmd = exec.Command(
+				"sh",
+				"-c",
+				fmt.Sprintf("OLLAMA_HOST=localhost:%d ollama serve &", modelPort),
+			)
+		}
+
+		output, err := cmd.Output()
+		if err != nil {
+			lg.LogE(err.Error())
+		} else {
+			lg.LogOk("LLama probably initialized [", output, "]")
+		}
+	}
+
+	return
+
+	if len(localModels) > 0 {
 
 		organization := primitive.ObjectID{}
 
@@ -45,10 +83,12 @@ func InitOllama() {
 
 					if runtime.GOOS == "windows" {
 
+						cmdString := fmt.Sprintf("set OLLAMA_HOST=localhost:%d && ollama serve && ollama run %s", modelPort, model.ModelVersion)
+
 						cmd = exec.Command(
 							"cmd",
 							"/C",
-							fmt.Sprintf("set OLLAMA_HOST=localhost:%d && ollama serve && ollama run %s", modelPort, model.ModelVersion),
+							cmdString,
 						)
 
 					} else {
@@ -105,6 +145,24 @@ func InstallOllama(cluster primitive.ObjectID, model string) string {
 	}
 	//TODO naimplementovat RPC
 	return ""
+}
+
+func OllamaStart() {
+	cmd := exec.Command(
+		"sh",
+		"-c",
+		"ollama serve &",
+	)
+
+	// Capture the output
+	output, err := cmd.Output()
+
+	if err != nil {
+		lg.LogE(err.Error())
+	} else {
+		lg.LogOk(output)
+	}
+
 }
 
 func OllamaList() string {

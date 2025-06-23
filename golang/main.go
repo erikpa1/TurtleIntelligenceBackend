@@ -16,6 +16,7 @@ import (
 	"turtle/documents"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
+	"turtle/nn"
 
 	"turtle/lg"
 	"turtle/models"
@@ -69,7 +70,11 @@ func dev_main() {
 	mime.AddExtensionType(".gzip", "application/x-gzip-compressed")
 	mime.AddExtensionType(".gz", "application/x-gzip-compressed")
 
-	llmCtrl.InitOllama()
+	go func() {
+		defer func() {
+			llmCtrl.InitOllama()
+		}()
+	}()
 
 	// r.Use()
 
@@ -79,6 +84,7 @@ func dev_main() {
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)
+	nn.InitNNApi(r)
 
 	llmApi.InitLLMApi(r)
 

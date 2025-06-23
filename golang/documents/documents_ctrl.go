@@ -114,6 +114,15 @@ type InsertDocumentParams struct {
 	DescriptionModel primitive.ObjectID `json:"descriptionModel"`
 }
 
+func UpdateDocument(user *models.User, document *Document) {
+	document.Org = user.Org
+	db.UpdateOneCustom(CT_DOC,
+		bson.M{
+			"_id": document.Uid,
+			"org": user.Org,
+		}, bson.M{"$set": document})
+
+}
 func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *InsertDocumentParams, documentData []byte) {
 
 	document := &Document{}

@@ -7,6 +7,7 @@ type LLM struct {
 	Org                        primitive.ObjectID   `json:"org"`
 	Clusters                   []primitive.ObjectID `json:"clusters"`
 	IsDefault                  bool                 `json:"isDefault" bson:"isDefault"`
+	Preload                    bool                 `json:"preload" bson:"preload"`
 	Name                       string               `json:"name"`
 	Description                string               `json:"description"`
 	ModelVersion               string               `json:"modelVersion" bson:"modelVersion"`

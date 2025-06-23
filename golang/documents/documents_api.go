@@ -17,7 +17,7 @@ func _ListVSearchDocuments(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := c.Query("query")
 
-	data, err := ListVSearchDocuments(c, user, query, 0.7)
+	data, err := ListVSearchDocuments(c, user, query, 0.3)
 
 	tools.AutoReturnOrError(c, err, data)
 }
@@ -63,11 +63,18 @@ func _PostPdfDocument(c *gin.Context) {
 
 }
 
+func _UpdateDoc(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	document := tools.ObjFromJson[Document](c.PostForm("data"))
+	UpdateDocument(user, &document)
+}
+
 func InitDocumentsApi(r *gin.Engine) {
 	//Z nejakeho dovodu vo vite nefunguje /api/documents
 	r.GET("/api/docs", auth.LoginOrApp, _ListDocuments)
 	r.GET("/api/doc/vsearch", auth.LoginOrApp, _ListVSearchDocuments)
 	r.POST("/api/docs/upload", auth.LoginOrApp, _PostPdfDocument)
+	r.PUT("/api/docs", auth.LoginOrApp, _UpdateDoc)
 	r.DELETE("/api/docs", auth.LoginOrApp, _DeletePdfDocument)
 
 }

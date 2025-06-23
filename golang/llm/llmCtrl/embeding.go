@@ -3,6 +3,7 @@ package llmCtrl
 import (
 	"context"
 	"github.com/tmc/langchaingo/llms/ollama"
+	"turtle/lg"
 	"turtle/llm/llmModels"
 )
 
@@ -14,10 +15,16 @@ func CreateStringEmbedding(ctx context.Context, embedingString string) (llmModel
 	)
 
 	if llmErr != nil {
+		lg.LogE(llmErr.Error())
 		return [][]float32{}, llmErr
 	}
 
 	embeddings, err := embedder.CreateEmbedding(ctx, []string{embedingString})
+
+	if err != nil {
+		lg.LogE(err.Error())
+	}
+
 	return embeddings, err
 
 }

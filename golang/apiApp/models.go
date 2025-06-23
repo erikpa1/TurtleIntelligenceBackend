@@ -26,8 +26,8 @@ func _ListModels(c *gin.Context) {
 }
 
 func _InitApiModels(r *gin.Engine) {
-	r.POST("/api/models", _CouModel)
-	r.GET("/api/models", _ListModels)
-	r.DELETE("/api/model", _DeleteModel)
+	r.POST("/api/sim-models", _CouModel)
+	r.GET("/api/sim-models", _ListModels)
+	r.DELETE("/api/sim-models", _DeleteModel)
 
 }
