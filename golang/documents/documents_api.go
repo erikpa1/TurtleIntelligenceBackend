@@ -1,9 +1,11 @@
 package documents
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"turtle/auth"
+	"turtle/db"
 	"turtle/lg"
 	"turtle/tools"
 )
@@ -11,6 +13,34 @@ import (
 func _ListDocuments(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	tools.AutoReturn(c, ListDocuments(user))
+}
+
+func _GetDocument(c *gin.Context) {
+	docUid := tools.MongoObjectIdFromQuery(c)
+	user := auth.GetUserFromContext(c)
+	tools.AutoReturn(c, GetDocument(user, docUid))
+
+}
+
+func _GetDocumentFile(c *gin.Context) {
+	docUid := tools.MongoObjectIdFromQuery(c)
+	user := auth.GetUserFromContext(c)
+
+	doc := GetDocument(user, docUid)
+
+	if doc != nil {
+
+		file, err := db.SC.GetFileBytes("documents", doc.FileUidName())
+
+		tools.AutoPdfOrErrorNotFound(c,
+			fmt.Sprintf(doc.FileFullName(), doc.Name),
+			file,
+			err)
+
+	} else {
+		tools.AutoNotFound(c, nil)
+	}
+
 }
 
 func _ListVSearchDocuments(c *gin.Context) {
@@ -71,6 +101,8 @@ func _UpdateDoc(c *gin.Context) {
 
 func InitDocumentsApi(r *gin.Engine) {
 	//Z nejakeho dovodu vo vite nefunguje /api/documents
+	r.GET("/api/doc", auth.LoginOrApp, _GetDocument)
+	r.GET("/api/doc/file", auth.LoginOrApp, _GetDocumentFile)
 	r.GET("/api/docs", auth.LoginOrApp, _ListDocuments)
 	r.GET("/api/doc/vsearch", auth.LoginOrApp, _ListVSearchDocuments)
 	r.POST("/api/docs/upload", auth.LoginOrApp, _PostPdfDocument)

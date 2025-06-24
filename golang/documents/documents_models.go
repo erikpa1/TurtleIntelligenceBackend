@@ -1,6 +1,7 @@
 package documents
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/llm/llmModels"
 	"turtle/tools"
@@ -9,7 +10,7 @@ import (
 type RightsLevel int8
 
 const (
-	RIGHTS_LEVEL_ORGANIZATION             = 0
+	RIGHTS_LEVEL_ORGANIZATION RightsLevel = 0
 	RIGHTS_LEVEL_GROUP        RightsLevel = 1
 	RIGHTS_LEVEL_USER         RightsLevel = 2
 )
@@ -25,6 +26,14 @@ type Document struct {
 	CreatedAt    tools.Milliseconds `json:"createdAt" bson:"createdAt"`
 	UpdatedAt    tools.Milliseconds `json:"updatedAt" bson:"updatedAt"`
 	HasEmbedding bool               `json:"hasEmbedding" bson:"hasEmbedding"`
+}
+
+func (self *Document) FileUidName() string {
+	return fmt.Sprintf("%s.%s", self.Uid.Hex(), self.Extension)
+}
+
+func (self *Document) FileFullName() string {
+	return fmt.Sprintf("%s.%s", self.Name, self.Extension)
 }
 
 type DocumentEmbedding struct {
