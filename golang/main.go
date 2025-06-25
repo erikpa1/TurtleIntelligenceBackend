@@ -15,6 +15,7 @@ import (
 	"turtle/db"
 	"turtle/documents"
 	"turtle/fn"
+	"turtle/knowledge"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
 	"turtle/nn"
@@ -87,6 +88,7 @@ func dev_main() {
 	auth.Init_api_auth0(r)
 	nn.InitNNApi(r)
 	fn.InitFnApi(r)
+	knowledge.InitKnowledgeApi(r)
 
 	llmApi.InitLLMApi(r)
 
