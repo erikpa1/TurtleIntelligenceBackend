@@ -22,3 +22,17 @@ type Knowledge struct {
 	HasEmbedding bool               `json:"hasEmbedding" bson:"hasEmbedding"`
 	TypeData     bson.M             `json:"typeData" bson:"typeData"`
 }
+
+type KnowledgePlainTextTypeData bson.M
+
+func (self *KnowledgePlainTextTypeData) GetEmbeddableString() string {
+
+	tmp, okTmp := (*self)["text"].(string)
+
+	if okTmp {
+		return tmp
+	} else {
+		return ""
+	}
+
+}

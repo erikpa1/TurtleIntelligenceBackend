@@ -1,14 +1,18 @@
 package knowledge
 
 import (
+	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"turtle/db"
+	"turtle/llm/llmCtrl"
+	"turtle/llm/llmModels"
 	"turtle/models"
 )
 
 const CT_KNOWLEDGE = "knowledge"
+const CT_KNOWLEDGE_EMBEDDING = "knowledge_embedding"
 
 func ListKnowledge(user *models.User) []*Knowledge {
 
@@ -24,6 +28,8 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 	knowledge.Org = user.Org
 
 	if knowledge.Uid.IsZero() {
+		knowledge.Uid = primitive.NewObjectID()
+
 		db.InsertEntity(CT_KNOWLEDGE, knowledge)
 	} else {
 		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
@@ -31,6 +37,33 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 			"org": knowledge.Org,
 		}, bson.M{"$set": knowledge})
 	}
+
+	knowledgeTypeData := KnowledgePlainTextTypeData(knowledge.TypeData)
+	embeddableText := knowledge.Description + knowledgeTypeData.GetEmbeddableString()
+	embedding, embError := llmCtrl.CreateStringEmbedding(context.Background(), embeddableText)
+
+	if embError == nil {
+
+		knowledge.HasEmbedding = true
+
+		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
+			"_id": knowledge.Uid,
+			"org": knowledge.Org,
+		}, bson.M{"$set": bson.M{"hasEmbedding": true}})
+
+		COUKnowledgeEmbedding(user, knowledge.Uid, embedding)
+	} else {
+
+		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
+			"_id": knowledge.Uid,
+			"org": knowledge.Org,
+		}, bson.M{"$set": bson.M{"hasEmbedding": false}})
+
+	}
+
+}
+
+func COUKnowledgeEmbedding(user *models.User, knUid primitive.ObjectID, embedding llmModels.Embedding) {
 
 }
 
