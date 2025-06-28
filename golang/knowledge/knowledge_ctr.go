@@ -67,6 +67,10 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 	}
 }
 
+func COUKnowledgeStep(user *models.User, knowledge *Knowledge) {
+
+}
+
 func DeleteKnowledgeEmbedding(user *models.User, uid primitive.ObjectID) {
 	db.DeleteEntities(CT_KNOWLEDGE_EMBEDDING, bson.M{
 		"_id": uid,
