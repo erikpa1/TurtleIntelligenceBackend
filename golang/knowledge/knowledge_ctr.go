@@ -39,7 +39,7 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 	}
 
 	knowledgeTypeData := KnowledgePlainTextTypeData(knowledge.TypeData)
-	embeddableText := knowledge.Description + knowledgeTypeData.GetEmbeddableString()
+	embeddableText := knowledge.Name + " " + knowledge.Description + " " + knowledgeTypeData.GetEmbeddableString()
 	embedding, embError := llmCtrl.CreateStringEmbedding(context.Background(), embeddableText)
 
 	if embError == nil {
@@ -54,17 +54,35 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 		COUKnowledgeEmbedding(user, knowledge.Uid, embedding)
 	} else {
 
+		db.DeleteEntity(CT_KNOWLEDGE_EMBEDDING, bson.M{
+			"_id": knowledge.Uid,
+			"org": knowledge.Org,
+		})
+
 		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
 			"_id": knowledge.Uid,
 			"org": knowledge.Org,
 		}, bson.M{"$set": bson.M{"hasEmbedding": false}})
 
 	}
+}
 
+func DeleteKnowledgeEmbedding(user *models.User, uid primitive.ObjectID) {
+	db.DeleteEntities(CT_KNOWLEDGE_EMBEDDING, bson.M{
+		"_id": uid,
+		"org": user.Org,
+	})
 }
 
 func COUKnowledgeEmbedding(user *models.User, knUid primitive.ObjectID, embedding llmModels.Embedding) {
+	DeleteKnowledgeEmbedding(user, knUid)
 
+	kne := KnowledgeEmbedding{}
+	kne.Embedding = embedding
+	kne.Uid = knUid
+	kne.Org = user.Org
+
+	db.InsertEntity(CT_KNOWLEDGE_EMBEDDING, kne)
 }
 
 func GetKnowledge(user *models.User, knowledgeUid primitive.ObjectID) *Knowledge {
@@ -75,6 +93,9 @@ func GetKnowledge(user *models.User, knowledgeUid primitive.ObjectID) *Knowledge
 }
 
 func DeleteKnowledge(user *models.User, knowledgeUid primitive.ObjectID) {
+
+	DeleteKnowledgeEmbedding(user, knowledgeUid)
+
 	db.DeleteEntity(CT_KNOWLEDGE, bson.M{
 		"_id": knowledgeUid,
 		"org": user.Org,

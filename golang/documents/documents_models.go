@@ -38,7 +38,7 @@ func (self *Document) FileFullName() string {
 
 type DocumentEmbedding struct {
 	Uid           primitive.ObjectID  `json:"uid" bson:"_id,omitempty"`
-	Org           primitive.ObjectID  `json:"org""`
+	Org           primitive.ObjectID  `json:"org"`
 	Embedding     llmModels.Embedding `json:"embedding"`
 	DescEmbedding llmModels.Embedding `json:"descEmbedding" bson:"descEmbedding"`
 }

@@ -3,6 +3,7 @@ package knowledge
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/llm/llmModels"
 )
 
 type KnowledgeType int8
@@ -21,6 +22,12 @@ type Knowledge struct {
 	Type         KnowledgeType      `json:"type"`
 	HasEmbedding bool               `json:"hasEmbedding" bson:"hasEmbedding"`
 	TypeData     bson.M             `json:"typeData" bson:"typeData"`
+}
+
+type KnowledgeEmbedding struct {
+	Uid       primitive.ObjectID  `json:"uid" bson:"_id,omitempty"`
+	Org       primitive.ObjectID  `json:"org"`
+	Embedding llmModels.Embedding `json:"embedding"`
 }
 
 type KnowledgePlainTextTypeData bson.M
