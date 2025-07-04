@@ -16,6 +16,7 @@ import (
 	"turtle/documents"
 	"turtle/fn"
 	"turtle/knowledge"
+	"turtle/llm"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
 	"turtle/nn"
@@ -90,6 +91,7 @@ func dev_main() {
 	fn.InitFnApi(r)
 	knowledge.InitKnowledgeApi(r)
 
+	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)
 
 	if tools.IsInDevelopment() {
