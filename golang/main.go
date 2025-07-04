@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"turtle/agentTools"
 	"turtle/api"
 	"turtle/apiApp"
 	"turtle/auth"
@@ -82,6 +83,8 @@ func dev_main() {
 	// r.Use()
 
 	r.GET("/api/main", _MainRoute)
+
+	agentTools.InitCoreTools()
 
 	documents.InitDocumentsApi(r)
 	api.InitApi(r)
