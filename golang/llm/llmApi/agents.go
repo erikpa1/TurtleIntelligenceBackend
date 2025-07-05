@@ -34,7 +34,16 @@ func _TestLLMAgent(c *gin.Context) {
 
 }
 
+func _GetAllAgentsPrompt(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+
+	tools.AutoReturn(c, llmCtrl.GetOverallAgentsPrompt(user, "[your query here]"))
+}
+
 func InitLLMAgents(r *gin.Engine) {
+
+	r.GET("/api/llm/agent/all/prompt", auth.LoginRequired, _GetAllAgentsPrompt)
+
 	r.GET("/api/llm/agents", auth.LoginRequired, _ListLLMAgents)
 
 	r.GET("/api/llm/agent", auth.LoginRequired, _TestLLMAgent)

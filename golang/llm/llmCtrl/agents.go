@@ -39,7 +39,7 @@ func ExampleAgent() {
 	lg.LogI(agent_hierarchy)
 }
 
-func GetSuitableAgentPrompt(user *models.User, userQuery string) string {
+func GetOverallAgentsPrompt(user *models.User, userQuery string) string {
 
 	//Mistral DOC https://ollama.com/library/mistral
 
@@ -179,7 +179,7 @@ func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text str
 
 	if err == nil {
 
-		prompt := GetSuitableAgentPrompt(user, text)
+		prompt := GetOverallAgentsPrompt(user, text)
 
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
 		result.ResultRaw = completion
@@ -236,7 +236,7 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 
 	if err == nil {
 
-		prompt := GetSuitableAgentPrompt(user, text)
+		prompt := GetOverallAgentsPrompt(user, text)
 
 		lg.LogI("Going to ask llm")
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
