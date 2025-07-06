@@ -16,6 +16,7 @@ import (
 	"turtle/tools"
 )
 
+const CT_LLM_AGENT_TOOLS = "llm_agent_tools"
 const CT_LLM_AGENTS = "llm_agents"
 const CT_LLM_AGENT_TESTS = "llm_agent_tests"
 
@@ -224,6 +225,35 @@ func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text str
 	return nil
 }
 
+func AddToolToAgent(user *models.User, agentUid primitive.ObjectID, toolUid primitive.ObjectID) {
+
+	db.InsertEntity(CT_LLM_AGENT_TOOLS, llmModels.LLMAgentTool{
+		Agent: agentUid,
+		Tool:  toolUid,
+		Org:   user.Org,
+	})
+}
+
+func DeleteTool(user *models.User, relationUid primitive.ObjectID) {
+	db.DeleteEntity(CT_LLM_AGENT_TOOLS, bson.M{
+		"_id": relationUid,
+		"org": user.Org,
+	})
+}
+
+func DeleteToolsOfAgent(user *models.User, agentUid primitive.ObjectID) {
+	db.DeleteEntity(CT_LLM_AGENT_TOOLS, bson.M{
+		"agent": agentUid,
+		"org":   user.Org,
+	})
+}
+
+func AskAgents(c *gin.Context, user *models.User, text string) llmModels.AgentTestResponse {
+
+	return llmModels.AgentTestResponse{}
+
+}
+
 func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
 
 	result := llmModels.AgentTestResponse{}
@@ -296,6 +326,7 @@ func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {
 	if user.IsAdminWithError() {
 
 		DeleteAgentTestHistory(user, uid)
+		DeleteToolsOfAgent(user, uid)
 
 		db.DeleteEntity(CT_LLM_AGENTS, bson.M{
 			"_id": uid,

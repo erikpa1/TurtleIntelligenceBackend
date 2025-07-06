@@ -86,6 +86,7 @@ func dev_main() {
 
 	agentTools.InitCoreTools()
 
+	agentTools.InitAgentToolsApi(r)
 	documents.InitDocumentsApi(r)
 	api.InitApi(r)
 	apiApp.InitApiApp(r)

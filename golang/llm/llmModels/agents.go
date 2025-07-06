@@ -27,6 +27,13 @@ type LLMAgent struct {
 	IsConfidential bool                `json:"isConfidential" bson:"isConfidential"` //Confidential znamen ze nemoze logovat, obsahuje data
 }
 
+type LLMAgentTool struct {
+	Uid   primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	Org   primitive.ObjectID `json:"org" bson:"org"`
+	Agent primitive.ObjectID `json:"agent" bson:"agent"`
+	Tool  primitive.ObjectID `json:"tool" bson:"tool"`
+}
+
 type LLMAgentParams struct {
 	Role               string               `json:"role"`
 	SystemPrompt       string               `json:"systemPrompt" bson:"systemPrompt"`

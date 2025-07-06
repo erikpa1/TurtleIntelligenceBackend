@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/auth"
+	"turtle/lg"
 	"turtle/llm/llmCtrl"
 	"turtle/tools"
 )
@@ -34,10 +35,17 @@ func _ChatAsk(c *gin.Context) {
 	modelUid, _ := primitive.ObjectIDFromHex(c.PostForm("modelUid"))
 	conversation, _ := primitive.ObjectIDFromHex(c.PostForm("chatUid"))
 	text := c.PostForm("text")
+	isAgent := c.Query("isAgentChat") == "true"
 
 	llmCtrl.AddUserQuestion(user, conversation, text)
-	completion := llmCtrl.AskModel(c, user, modelUid, text)
-	llmCtrl.AddChatAnswer(user, conversation, completion)
+
+	if isAgent {
+		respone := llmCtrl.ChatAgent(c, user, modelUid, text)
+		lg.LogE(respone)
+	} else {
+		completion := llmCtrl.AskModel(c, user, modelUid, text)
+		llmCtrl.AddChatAnswer(user, conversation, completion)
+	}
 
 }
 
