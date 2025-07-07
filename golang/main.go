@@ -15,6 +15,7 @@ import (
 	"turtle/credentials"
 	"turtle/db"
 	"turtle/documents"
+	"turtle/flows"
 	"turtle/fn"
 	"turtle/knowledge"
 	"turtle/llm"
@@ -97,6 +98,7 @@ func dev_main() {
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)
+	flows.InitFlowsApi(r)
 
 	if tools.IsInDevelopment() {
 		lg.LogI("Going to take files from: ", "../static")
