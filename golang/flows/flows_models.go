@@ -1,6 +1,7 @@
 package flows
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/tools"
 )
@@ -19,4 +20,5 @@ type Flow struct {
 	Org    primitive.ObjectID     `json:"org" bson:"org"`
 	Name   string                 `json:"name"`
 	States map[string]interface{} `json:"states"`
+	Stages []bson.M               `json:"stages"`
 }
