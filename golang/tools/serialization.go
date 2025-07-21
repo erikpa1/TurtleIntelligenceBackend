@@ -3,6 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"turtle/lg"
 )
 
@@ -47,6 +48,25 @@ func QueryHeader[T any](c *gin.Context) T {
 	}
 
 	return result
+}
+
+func ObjFromBsonPtr[T any](data string) *T {
+
+	dataDict := ObjFromJson[bson.M](data)
+
+	// Convert map to BSON bytes
+	bsonData, err := bson.Marshal(dataDict)
+	if err != nil {
+		lg.LogStackTraceErr(err)
+	}
+
+	var result T
+	err = bson.Unmarshal(bsonData, &result)
+	if err != nil {
+		lg.LogStackTraceErr(err)
+	}
+
+	return &result
 }
 
 func ObjFromJson[T any](data string) T {

@@ -7,7 +7,7 @@ import (
 )
 
 func _ListAgentTools(c *gin.Context) {
-	tools.AutoReturn(c, ListAgentTools())
+	tools.AutoReturn(c, ListAgentsTools())
 
 }
 

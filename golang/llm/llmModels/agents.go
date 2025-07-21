@@ -19,12 +19,13 @@ type LLMAgent struct {
 	CreatedBy      primitive.ObjectID `json:"createdBy"`
 	UpdatedBy      primitive.ObjectID `json:"updatedBy"`
 	Url            string
-	XApiKey        primitive.ObjectID  `json:"xApiKey" bson:"xApiKey"`
-	Args           []LLMAgentParameter `json:"args"`
-	AgentProps     LLMAgentParams      `json:"agentProps" bson:"inline"`
-	CommandExample string              `json:"commandExample" bson:"commandExample"`
-	UseReasoning   bool                `json:"useReasoning" bson:"useReasoning"`
-	IsConfidential bool                `json:"isConfidential" bson:"isConfidential"` //Confidential znamen ze nemoze logovat, obsahuje data
+	XApiKey        primitive.ObjectID   `json:"xApiKey" bson:"xApiKey"`
+	Args           []LLMAgentParameter  `json:"args"`
+	AgentProps     LLMAgentParams       `json:"agentProps" bson:"inline"`
+	CommandExample string               `json:"commandExample" bson:"commandExample"`
+	UseReasoning   bool                 `json:"useReasoning" bson:"useReasoning"`
+	IsConfidential bool                 `json:"isConfidential" bson:"isConfidential"` //Confidential znamen ze nemoze logovat, obsahuje data
+	Tools          []primitive.ObjectID `json:"tools"`
 }
 
 type LLMAgentTool struct {
@@ -76,4 +77,10 @@ type AgentTestResponse struct {
 	ResultRaw        string             `json:"resultRaw"`
 	Error            string             `json:"error"`
 	Text             string             `json:"text"`
+}
+
+type AgentToolCall struct {
+	SelectedTool primitive.ObjectID `json:"selected_tool"`
+	Parameters   bson.M             `json:"parameters"`
+	Reasoning    string             `json:"reasoning"`
 }

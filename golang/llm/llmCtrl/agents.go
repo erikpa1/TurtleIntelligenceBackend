@@ -8,7 +8,9 @@ import (
 	"github.com/tmc/langchaingo/llms/ollama"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"net/http"
 	"strings"
+	"turtle/agentTools"
 	"turtle/db"
 	"turtle/lg"
 	"turtle/llm/llmModels"
@@ -96,6 +98,50 @@ INSTRUCTIONS:
   },
   "reasoning": "Brief explanation of why this agent was chosen"
 }
+`, userQuery)
+
+	return finalPrompt
+}
+
+func GetAgentToolingPrompt(user *models.User, agent *llmModels.LLMAgent, userQuery string) string {
+
+	//Mistral DOC https://ollama.com/library/mistral
+
+	finalPrompt := `
+SYSTEM: You are an AI assistant that can order and use tools of agent. Based on the user's question, select the most appropriate agent and provide the necessary parameters.
+AVAILABLE TOOLS:
+`
+	tools := agentTools.GetToolsListForAgent(agent.Tools)
+
+	for i, tool := range tools {
+		finalPrompt += fmt.Sprintf(`%d. **%s**`, i+1, tool.Uid.Hex())
+		finalPrompt += fmt.Sprintf(`- Description: %s`, tool.Description)
+		if len(tool.Inputs) > 0 {
+			finalPrompt += fmt.Sprintf(`- Required parameters: %s`, tool.Inputs)
+		}
+		//if len(agent.AgentProps.OptionalParameters) > 0 {
+		//	finalPrompt += fmt.Sprintf(`- Optional parameters: %s`, strings.Join(agent.AgentProps.RequiredParameters, ","))
+		//}
+
+		finalPrompt += "\n"
+	}
+
+	finalPrompt += fmt.Sprintf(`
+USER QUERY: {%s}
+
+INSTRUCTIONS:
+1. Analyze the user query and determine which tools are most appropriate
+2. Extract the necessary parameters from the query
+3. Respond in the following JSON ARRAY format:
+[{
+
+  "selected_tool": "tool_name",
+  "parameters": {
+    "param1": "value1",
+    "param2": "value2"
+  },
+  "reasoning": "Brief explanation of why this agent was chosen"
+}]
 `, userQuery)
 
 	return finalPrompt
@@ -268,9 +314,9 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 
 		prompt := GetOverallAgentsPrompt(user, text)
 
-		lg.LogI("Going to ask llm")
+		lg.LogI("1. Going to ask llm")
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
-		lg.LogOk("LLM responded")
+		lg.LogOk("2. LLM responded")
 		result.ResultRaw = completion
 
 		if complErr == nil {
@@ -308,7 +354,7 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 		} else {
 			result.Error = complErr.Error()
 			result.State = 0
-			lg.LogE(completion)
+			lg.LogE(complErr.Error())
 
 		}
 	} else {
@@ -319,7 +365,65 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 
 	db.InsertEntity(CT_LLM_AGENT_TESTS, &result)
 
+	if result.State == 1 {
+		ExecuteAgent(c, user, result.AgentUid, text)
+	}
+
 	return result
+}
+
+func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, query string) {
+
+	agent := GetAgent(user.Org, agentUid)
+
+	if user.Type < agent.UserLevel {
+		c.AbortWithStatusJSON(http.StatusForbidden, bson.M{
+			"reason": fmt.Sprintf("User has no permission for agent %s [%s]", agent.Name, agent.Uid.Hex()),
+		})
+		return
+	}
+
+	toolPrompt := GetAgentToolingPrompt(user, agent, query)
+
+	lg.LogI(toolPrompt)
+
+	ollmodel := ollama.WithModel("mistral:7b")
+	keepAlive := ollama.WithKeepAlive("10h")
+
+	llm, err := ollama.New(ollmodel, keepAlive)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	lg.LogI("3. Going to ask for tooling")
+	completion, complErr := llms.GenerateFromSinglePrompt(c, llm, toolPrompt)
+
+	if complErr != nil {
+		lg.LogE("Failed to call agent: ", complErr.Error())
+		c.AbortWithStatusJSON(http.StatusInternalServerError, complErr.Error())
+		return
+	}
+
+	agentResponse := tools.ObjFromJson[[]llmModels.AgentToolCall](completion)
+
+	if agentResponse == nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, bson.M{
+			"reason": fmt.Sprintf("Failed to parse completion %s, %s", agent.Name, completion),
+		})
+		return
+	} else {
+		for i, suggestedTool := range agentResponse {
+			tool := agentTools.GetAgentTool(suggestedTool.SelectedTool)
+			lg.LogOk(fmt.Sprintf("4.%d Going to call tool: ", i+1, tool.Name))
+			tool.CallFn(suggestedTool.Parameters)
+		}
+
+	}
+
+	lg.LogOk(completion)
+
 }
 
 func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {

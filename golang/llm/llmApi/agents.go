@@ -21,8 +21,8 @@ func _DeleteLLMAgent(c *gin.Context) {
 
 func _COULLMAgent(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	agent := tools.ObjFromJson[llmModels.LLMAgent](c.PostForm("data"))
-	llmCtrl.COULLMAgent(user, &agent)
+	agent := tools.ObjFromJsonPtr[llmModels.LLMAgent](c.PostForm("data"))
+	llmCtrl.COULLMAgent(user, agent)
 }
 
 func _TestLLMAgent(c *gin.Context) {
