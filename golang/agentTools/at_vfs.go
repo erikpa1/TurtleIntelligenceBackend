@@ -1,5 +1,12 @@
 package agentTools
 
+import (
+	"go.mongodb.org/mongo-driver/bson"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/tools"
+)
+
 func InitVfsTools() {
 
 	t1 := &AgentTool{}
@@ -17,7 +24,19 @@ func InitVfsTools() {
 	t1.Description = "Writes to local file system"
 	t1.Inputs = "filePath:string, fileBody:string"
 	t1.Icon = "share.svg"
+	t1.Fn = _VfsWrite
 
 	AGENT_TOOLS[t1.Uid] = t1
+
+}
+
+func _VfsWrite(data bson.M) {
+
+	safe := tools.SafeJson{}
+	safe.Data = data
+
+	lg.LogOkson(data)
+
+	db.SC.UploadFileString("llm", safe.GetString("filePath", "x.txt"), safe.GetString("fileBody", "--not_found--"))
 
 }

@@ -385,7 +385,7 @@ func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 
 	toolPrompt := GetAgentToolingPrompt(user, agent, query)
 
-	lg.LogI(toolPrompt)
+	//lg.LogI(toolPrompt)
 
 	ollmodel := ollama.WithModel("mistral:7b")
 	keepAlive := ollama.WithKeepAlive("10h")
@@ -416,7 +416,7 @@ func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 	} else {
 		for i, suggestedTool := range agentResponse {
 			tool := agentTools.GetAgentTool(suggestedTool.SelectedTool)
-			lg.LogOk(fmt.Sprintf("4.%d Going to call tool: ", i+1, tool.Name))
+			lg.LogI(fmt.Sprintf("4.%d Going to call tool [%s] ", i+1, tool.Name))
 			tool.CallFn(suggestedTool.Parameters)
 		}
 
