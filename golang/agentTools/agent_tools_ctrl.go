@@ -42,6 +42,8 @@ func GetToolsListForAgent(toolUids []primitive.ObjectID) []*AgentTool {
 }
 
 func InitCoreTools() {
-	InitGoogleDiscTools()
+	InitGoogleTools()
+	InitMicrosoftTools()
 	InitVfsTools()
+	InitMathTools()
 }

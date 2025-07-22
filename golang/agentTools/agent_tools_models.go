@@ -14,7 +14,7 @@ type AgentTool struct {
 	Description string             `json:"description" bson:"description"`
 	Icon        string             `json:"icon" bson:"icon"`
 	Inputs      string             `json:"inputType" bson:"inputType"`
-	Fn          func(data bson.M)
+	Fn          func(data bson.M)  `json:"-" bson:"-"`
 }
 
 func (self *AgentTool) CallFn(data bson.M) {

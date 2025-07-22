@@ -16,7 +16,7 @@ func uid(str string) primitive.ObjectID {
 	return tmp
 }
 
-func InitGoogleDiscTools() {
+func InitGoogleTools() {
 
 	t1 := &AgentTool{}
 	t1.Uid = uid("gDiscRead")

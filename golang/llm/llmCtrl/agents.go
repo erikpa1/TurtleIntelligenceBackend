@@ -302,7 +302,7 @@ func AskAgents(c *gin.Context, user *models.User, text string) llmModels.AgentTe
 
 func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
 
-	result := llmModels.AgentTestResponse{}
+	result := llmModels.NewAgentTestResponse()
 	result.AgentUid = agentUid
 
 	ollmodel := ollama.WithModel("mistral:7b")
@@ -316,7 +316,7 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 
 		lg.LogI("1. Going to ask llm")
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
-		lg.LogOk("2. LLM responded")
+		lg.LogI("2. LLM responded")
 		result.ResultRaw = completion
 
 		if complErr == nil {
@@ -366,13 +366,13 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 	db.InsertEntity(CT_LLM_AGENT_TESTS, &result)
 
 	if result.State == 1 {
-		ExecuteAgent(c, user, result.AgentUid, text)
+		ExecuteAgent(c, user, result, result.AgentUid, text)
 	}
 
-	return result
+	return *result
 }
 
-func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, query string) {
+func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.AgentTestResponse, agentUid primitive.ObjectID, query string) {
 
 	agent := GetAgent(user.Org, agentUid)
 
@@ -406,6 +406,8 @@ func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 		return
 	}
 
+	lg.LogOk(completion)
+
 	agentResponse := tools.ObjFromJson[[]llmModels.AgentToolCall](completion)
 
 	if agentResponse == nil {
@@ -414,15 +416,22 @@ func ExecuteAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID
 		})
 		return
 	} else {
+
 		for i, suggestedTool := range agentResponse {
 			tool := agentTools.GetAgentTool(suggestedTool.SelectedTool)
 			lg.LogI(fmt.Sprintf("4.%d Going to call tool [%s] ", i+1, tool.Name))
+
+			resultPipe.AgentToolUsage = append(resultPipe.AgentToolUsage, &llmModels.AgentToolUsage{
+				Uid:        tool.Uid,
+				Name:       tool.Name,
+				Parameters: suggestedTool.Parameters,
+			})
+
 			tool.CallFn(suggestedTool.Parameters)
+
 		}
 
 	}
-
-	lg.LogOk(completion)
 
 }
 

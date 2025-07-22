@@ -77,6 +77,20 @@ type AgentTestResponse struct {
 	ResultRaw        string             `json:"resultRaw"`
 	Error            string             `json:"error"`
 	Text             string             `json:"text"`
+	AgentToolUsage   []*AgentToolUsage  `json:"agentToolUsage"`
+}
+
+func NewAgentTestResponse() *AgentTestResponse {
+	return &AgentTestResponse{
+		AgentToolUsage: make([]*AgentToolUsage, 0),
+	}
+}
+
+type AgentToolUsage struct {
+	Uid        primitive.ObjectID `json:"uid"`
+	Name       string             `json:"name"`
+	Parameters bson.M             `json:"parameters"`
+	ToolResult string             `json:"toolResult"`
 }
 
 type AgentToolCall struct {
