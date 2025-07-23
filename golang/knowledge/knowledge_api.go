@@ -1,9 +1,9 @@
 package knowledge
 
 import (
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _ListKnowledge(c *gin.Context) {

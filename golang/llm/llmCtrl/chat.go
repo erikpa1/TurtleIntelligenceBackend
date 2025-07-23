@@ -3,17 +3,17 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"strings"
-	"turtle/db"
-	"turtle/lg"
-	"turtle/llm/llmModels"
-	"turtle/models"
-	"turtle/tools"
 )
 
 const CT_LLM_CHAT_HISTORY = "llm_chat_history"

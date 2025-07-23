@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/erikpa1/turtle/ctrl"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
-	"turtle/ctrl"
-	"turtle/lg"
-	"turtle/models"
-	"turtle/tools"
 )
 
 func _TryLogin(c *gin.Context) {

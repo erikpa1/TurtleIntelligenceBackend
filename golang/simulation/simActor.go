@@ -2,8 +2,8 @@ package simulation
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/modelsApp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/modelsApp"
 )
 
 type SimActor struct {

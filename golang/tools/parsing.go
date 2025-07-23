@@ -1,8 +1,8 @@
 package tools
 
 import (
+	"github.com/erikpa1/turtle/lg"
 	"strconv"
-	"turtle/lg"
 )
 
 func StringToInt32(value string, defval int32) int32 {

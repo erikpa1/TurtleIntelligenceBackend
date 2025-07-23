@@ -2,9 +2,9 @@ package documents
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/llm/llmModels"
-	"turtle/tools"
 )
 
 type RightsLevel int8

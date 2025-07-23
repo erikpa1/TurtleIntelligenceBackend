@@ -1,10 +1,10 @@
 package llmApi
 
 import (
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/llm/llmCtrl"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
-	"turtle/auth"
-	"turtle/llm/llmCtrl"
-	"turtle/tools"
 )
 
 func _ListOllama(c *gin.Context) {

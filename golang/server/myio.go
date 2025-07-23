@@ -2,11 +2,11 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/tools"
 	"log"
 	"net/http"
 	"time"
-	"turtle/lg"
-	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"

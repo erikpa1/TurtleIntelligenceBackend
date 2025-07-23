@@ -2,9 +2,9 @@ package tools
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
 	"sync"
 	"time"
-	"turtle/lg"
 )
 
 func TryLock(mutex *sync.Mutex) bool {

@@ -2,12 +2,12 @@ package llmCtrl
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/credentials"
-	"turtle/db"
-	"turtle/llm/llmModels"
-	"turtle/models"
 )
 
 const CT_LLM_CLUSTERS = "llm_clusters"

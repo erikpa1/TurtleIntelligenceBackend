@@ -3,12 +3,12 @@ package db
 import (
 	"context"
 	"encoding/json"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/interfaces"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/tools"
 	"strings"
 	"time"
-	"turtle/credentials"
-	"turtle/interfaces"
-	"turtle/lg"
-	"turtle/tools"
 
 	"github.com/tidwall/gjson"
 	"go.mongodb.org/mongo-driver/bson"

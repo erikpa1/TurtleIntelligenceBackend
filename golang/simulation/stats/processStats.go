@@ -1,6 +1,6 @@
 package stats
 
-import "turtle/tools"
+import "github.com/erikpa1/turtle/tools"
 
 type ProcessStats struct {
 	IdleTime    tools.Seconds

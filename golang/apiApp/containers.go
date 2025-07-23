@@ -1,11 +1,11 @@
 package apiApp
 
 import (
+	"github.com/erikpa1/turtle/ctrlApp"
+	"github.com/erikpa1/turtle/modelsApp"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/ctrlApp"
-	"turtle/modelsApp"
-	"turtle/tools"
 )
 
 func _QueryContainers(c *gin.Context) {

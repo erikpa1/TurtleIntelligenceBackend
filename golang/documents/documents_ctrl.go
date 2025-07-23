@@ -4,14 +4,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/llm/llmCtrl"
+	"github.com/erikpa1/turtle/models"
 	"github.com/gin-gonic/gin"
 	"github.com/ledongthuc/pdf"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/db"
-	"turtle/lg"
-	"turtle/llm/llmCtrl"
-	"turtle/models"
 )
 
 const CT_DOC = "docs"

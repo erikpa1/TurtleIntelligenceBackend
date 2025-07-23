@@ -3,10 +3,10 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/erikpa1/turtle/llm/llmModels"
 	"regexp"
 	"sort"
 	"strings"
-	"turtle/llm/llmModels"
 )
 
 // ContentSegment represents a segment with its position and type

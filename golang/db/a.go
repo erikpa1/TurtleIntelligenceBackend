@@ -1,9 +1,9 @@
 package db
 
 import (
+	"github.com/erikpa1/turtle/lg"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"turtle/lg"
 )
 
 type DbCompany struct {

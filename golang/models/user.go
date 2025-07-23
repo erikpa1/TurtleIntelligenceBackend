@@ -1,8 +1,8 @@
 package models
 
 import (
+	"github.com/erikpa1/turtle/lg"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/lg"
 )
 
 type UserType int8

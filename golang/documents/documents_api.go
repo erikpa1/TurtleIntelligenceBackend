@@ -2,12 +2,12 @@ package documents
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"io"
-	"turtle/auth"
-	"turtle/db"
-	"turtle/lg"
-	"turtle/tools"
 )
 
 func _ListDocuments(c *gin.Context) {

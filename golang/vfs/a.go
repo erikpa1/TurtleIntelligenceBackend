@@ -3,6 +3,8 @@ package vfs
 import (
 	"encoding/base64"
 	"fmt"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/lg"
 	"io"
 	"io/ioutil"
 	"os"
@@ -10,8 +12,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"turtle/credentials"
-	"turtle/lg"
 )
 
 type ListFileInfoStruct struct {

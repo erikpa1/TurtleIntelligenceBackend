@@ -3,11 +3,11 @@ package ctrl
 import (
 	"errors"
 	"fmt"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/credentials"
-	"turtle/db"
-	"turtle/lg"
-	"turtle/models"
 
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"

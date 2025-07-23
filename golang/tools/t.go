@@ -3,10 +3,10 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"turtle/lg"
 )
 
 // trs stores translations for each language.

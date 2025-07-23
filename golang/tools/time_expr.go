@@ -2,9 +2,9 @@ package tools
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/tools/timeexpr"
 	"strconv"
 	"strings"
-	"turtle/tools/timeexpr"
 )
 
 // TimeExpr represents the methods for time expressions

@@ -2,9 +2,9 @@ package tools
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
 	"strconv"
 	"strings"
-	"turtle/lg"
 )
 
 func ToIArray[T any](data []T) []interface{} {

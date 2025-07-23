@@ -1,9 +1,9 @@
 package simulation
 
 import (
-	"turtle/lg"
-	"turtle/simulation/stats"
-	"turtle/tools"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/simulation/stats"
+	"github.com/erikpa1/turtle/tools"
 )
 
 type ProcessStates int8

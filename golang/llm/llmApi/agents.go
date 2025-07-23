@@ -1,12 +1,12 @@
 package llmApi
 
 import (
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/llm/llmCtrl"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/auth"
-	"turtle/llm/llmCtrl"
-	"turtle/llm/llmModels"
-	"turtle/tools"
 )
 
 func _ListLLMAgents(c *gin.Context) {

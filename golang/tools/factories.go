@@ -2,8 +2,8 @@ package tools
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
 	"sync"
-	"turtle/lg"
 )
 
 type ConstructFunction func() interface{}

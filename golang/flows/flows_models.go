@@ -1,9 +1,9 @@
 package flows
 
 import (
+	"github.com/erikpa1/turtle/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/tools"
 )
 
 type FlowExecution struct {

@@ -1,6 +1,6 @@
 package simulation
 
-import "turtle/tools"
+import "github.com/erikpa1/turtle/tools"
 
 type SimStepper struct {
 	Now tools.Seconds

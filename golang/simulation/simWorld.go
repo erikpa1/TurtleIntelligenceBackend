@@ -2,11 +2,11 @@ package simulation
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/ctrlApp"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/modelsApp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/ctrlApp"
-	"turtle/lg"
-	"turtle/modelsApp"
 )
 
 type SimWorld struct {

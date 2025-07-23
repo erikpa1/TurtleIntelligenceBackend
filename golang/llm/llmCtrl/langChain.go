@@ -4,11 +4,11 @@ package llmCtrl
 import (
 	"context"
 	"fmt"
+	"github.com/erikpa1/turtle/llm/llmModels"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
 	"net/http"
-	"turtle/llm/llmModels"
 )
 
 func AskLangChainModel(c *gin.Context, model *llmModels.LLM, prompt string) string {

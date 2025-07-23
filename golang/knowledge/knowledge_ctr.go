@@ -2,13 +2,13 @@ package knowledge
 
 import (
 	"context"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/llm/llmCtrl"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"turtle/db"
-	"turtle/llm/llmCtrl"
-	"turtle/llm/llmModels"
-	"turtle/models"
 )
 
 const CT_KNOWLEDGE = "knowledge"

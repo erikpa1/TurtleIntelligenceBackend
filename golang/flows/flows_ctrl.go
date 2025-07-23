@@ -1,12 +1,12 @@
 package flows
 
 import (
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/turtle/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"turtle/db"
-	"turtle/models"
-	"turtle/tools"
 )
 
 const CT_FLOWS = "flows"

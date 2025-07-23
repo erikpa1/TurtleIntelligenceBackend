@@ -2,12 +2,12 @@ package db
 
 import (
 	"context"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/lg"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
-	"turtle/credentials"
-	"turtle/lg"
 )
 
 func ExportMongo(connstr string) {

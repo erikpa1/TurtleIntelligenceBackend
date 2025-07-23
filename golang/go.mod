@@ -1,4 +1,4 @@
-module turtle
+module github.com/erikpa1/turtle
 
 go 1.24.1
 

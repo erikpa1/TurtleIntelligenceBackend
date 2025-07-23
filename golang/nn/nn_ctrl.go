@@ -1,10 +1,10 @@
 package nn
 
 import (
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/db"
-	"turtle/models"
 )
 
 const CT_NN = "nn"

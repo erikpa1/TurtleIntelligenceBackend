@@ -2,11 +2,11 @@ package auth
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/credentials"
+	"github.com/erikpa1/turtle/ctrl"
+	"github.com/erikpa1/turtle/models"
 	"net/http"
 	"strconv"
-	"turtle/credentials"
-	"turtle/ctrl"
-	"turtle/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"

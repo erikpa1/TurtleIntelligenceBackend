@@ -2,11 +2,11 @@ package llmCtrl
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/models"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
-	"turtle/lg"
-	"turtle/models"
 )
 
 func DescribeDocument(c *gin.Context, user *models.User, text string) string {

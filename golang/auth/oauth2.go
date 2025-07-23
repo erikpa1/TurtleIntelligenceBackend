@@ -2,8 +2,8 @@ package auth
 
 import (
 	"fmt"
+	"github.com/erikpa1/turtle/lg"
 	"net/http"
-	"turtle/lg"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"

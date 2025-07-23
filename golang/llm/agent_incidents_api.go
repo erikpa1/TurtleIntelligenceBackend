@@ -1,10 +1,10 @@
 package llm
 
 import (
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _ListIncidents(c *gin.Context) {

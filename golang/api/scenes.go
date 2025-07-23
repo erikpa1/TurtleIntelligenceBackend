@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/turtle/ctrl"
+	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
-	"turtle/auth"
-	"turtle/ctrl"
-	"turtle/models"
-	"turtle/tools"
 )
 
 func _ListScenes(c *gin.Context) {

@@ -1,9 +1,9 @@
 package dbw
 
 import (
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/models"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/lg"
-	"turtle/models"
 )
 
 func QueryOrgEntities(user *models.User) {

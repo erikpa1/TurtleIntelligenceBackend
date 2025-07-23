@@ -3,6 +3,12 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/erikpa1/turtle/agentTools"
+	"github.com/erikpa1/turtle/db"
+	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/turtle/tools"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
@@ -10,12 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strings"
-	"turtle/agentTools"
-	"turtle/db"
-	"turtle/lg"
-	"turtle/llm/llmModels"
-	"turtle/models"
-	"turtle/tools"
 )
 
 const CT_LLM_AGENT_TOOLS = "llm_agent_tools"

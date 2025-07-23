@@ -2,9 +2,9 @@ package tools
 
 import (
 	"encoding/json"
+	"github.com/erikpa1/turtle/lg"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/lg"
 )
 
 func VecFromJStr[T any](data string) []T {
