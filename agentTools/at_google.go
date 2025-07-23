@@ -1,8 +1,8 @@
 package agentTools
 
 import (
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

@@ -3,9 +3,9 @@ package tools
 import (
 	"errors"
 	"fmt"
-	"github.com/erikpa1/turtle/credentials"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/vfs"
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
 	"github.com/golang-jwt/jwt/v5"
 	"os/exec"
 	"strings"

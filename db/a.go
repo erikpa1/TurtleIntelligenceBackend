@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

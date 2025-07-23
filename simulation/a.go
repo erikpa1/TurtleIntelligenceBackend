@@ -2,10 +2,10 @@ package simulation
 
 import (
 	"context"
-	"github.com/erikpa1/turtle/ctrlApp"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/server"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/server"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"sync"

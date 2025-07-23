@@ -4,7 +4,7 @@ package llmCtrl
 import (
 	"context"
 	"fmt"
-	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"

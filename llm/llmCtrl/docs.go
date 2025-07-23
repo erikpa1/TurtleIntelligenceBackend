@@ -2,8 +2,8 @@ package llmCtrl
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"

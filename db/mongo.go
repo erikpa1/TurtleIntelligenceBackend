@@ -2,8 +2,8 @@ package db
 
 import (
 	"context"
-	"github.com/erikpa1/turtle/credentials"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

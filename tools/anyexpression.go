@@ -2,7 +2,7 @@ package tools
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/tools/timeexpr"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools/timeexpr"
 	"math/rand"
 	"regexp"
 	"strconv"

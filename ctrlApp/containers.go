@@ -1,8 +1,8 @@
 package ctrlApp
 
 import (
-	"github.com/erikpa1/turtle/db"
-	"github.com/erikpa1/turtle/modelsApp"
+	"github.com/erikpa1/TurtleIntelligenceBackend/db"
+	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
 	"go.mongodb.org/mongo-driver/bson"
 )
 

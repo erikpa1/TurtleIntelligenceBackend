@@ -2,7 +2,7 @@ package simulation
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/modelsApp"
+	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

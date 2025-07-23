@@ -1,9 +1,9 @@
 package llmCtrl
 
 import (
-	"github.com/erikpa1/turtle/db"
-	"github.com/erikpa1/turtle/llm/llmModels"
-	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/TurtleIntelligenceBackend/db"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"sync"

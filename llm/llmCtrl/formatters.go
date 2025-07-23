@@ -3,7 +3,7 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"regexp"
 	"sort"
 	"strings"

@@ -2,9 +2,9 @@ package auth
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/credentials"
-	"github.com/erikpa1/turtle/ctrl"
-	"github.com/erikpa1/turtle/models"
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/ctrl"
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"net/http"
 	"strconv"
 

@@ -3,10 +3,10 @@ package db
 import (
 	"context"
 	"encoding/json"
-	"github.com/erikpa1/turtle/credentials"
-	"github.com/erikpa1/turtle/interfaces"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/interfaces"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"strings"
 	"time"
 

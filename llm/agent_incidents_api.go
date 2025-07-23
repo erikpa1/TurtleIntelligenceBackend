@@ -1,8 +1,8 @@
 package llm
 
 import (
-	"github.com/erikpa1/turtle/auth"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )

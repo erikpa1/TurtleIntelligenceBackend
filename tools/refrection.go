@@ -2,7 +2,7 @@ package tools
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/interfaces"
+	"github.com/erikpa1/TurtleIntelligenceBackend/interfaces"
 	"reflect"
 	"strings"
 )

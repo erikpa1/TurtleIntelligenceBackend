@@ -3,8 +3,8 @@ package vfs
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/erikpa1/turtle/credentials"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"io"
 	"io/ioutil"
 	"os"

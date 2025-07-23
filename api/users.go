@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/erikpa1/turtle/ctrl"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/models"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/ctrl"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 )
 

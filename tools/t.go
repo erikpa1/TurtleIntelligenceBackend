@@ -3,7 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"io/ioutil"
 	"os"
 	"path/filepath"

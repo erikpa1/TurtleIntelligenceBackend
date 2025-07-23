@@ -2,8 +2,8 @@ package llmCtrl
 
 import (
 	"context"
-	"github.com/erikpa1/turtle/lg"
-	"github.com/erikpa1/turtle/llm/llmModels"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/tmc/langchaingo/llms/ollama"
 )
 

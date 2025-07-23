@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"os"
 	"path/filepath"
 	"strings"

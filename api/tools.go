@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/erikpa1/turtle/auth"
+	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"

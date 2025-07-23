@@ -2,7 +2,7 @@ package tools
 
 import (
 	"context"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

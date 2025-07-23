@@ -2,7 +2,7 @@ package tools
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"strconv"
 	"strings"
 )

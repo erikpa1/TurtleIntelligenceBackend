@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

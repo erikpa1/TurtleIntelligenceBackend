@@ -1,11 +1,11 @@
 package tools
 
-//Copied on https://github.com/erikpa1/TurtleSim/blob/main/TurtleSimCpp/src/serialization/safejson.cpp
+//Copied on https://github.com/erikpa1/TurtleIntelligenceBackendSim/blob/main/TurtleSimCpp/src/serialization/safejson.cpp
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 )

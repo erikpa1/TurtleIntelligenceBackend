@@ -1,9 +1,9 @@
 package flows
 
 import (
-	"github.com/erikpa1/turtle/db"
-	"github.com/erikpa1/turtle/models"
-	"github.com/erikpa1/turtle/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/db"
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"

@@ -2,7 +2,7 @@ package auth
 
 import (
 	"fmt"
-	"github.com/erikpa1/turtle/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
