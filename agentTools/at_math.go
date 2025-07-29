@@ -1,7 +1,7 @@
 package agentTools
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"fmt"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -20,7 +20,7 @@ func InitMathTools() {
 
 }
 
-func _MathMultiply(data bson.M) {
+func _MathMultiply(result *AgentToolResult, data bson.M) {
 
 	safe := tools.SafeJson{}
 	safe.Data = data
@@ -28,6 +28,9 @@ func _MathMultiply(data bson.M) {
 	numberA := safe.GetDouble("numberA", 0)
 	numberB := safe.GetDouble("numberB", 0)
 
-	lg.LogE("Multiply value:", numberA*numberB)
+	resultNumber := numberA * numberB
+
+	result.TextRaw = fmt.Sprintf("%d", resultNumber)
+	result.TextInfo = fmt.Sprintf("Multiply value: %s", resultNumber)
 
 }

@@ -1,6 +1,7 @@
 package agentTools
 
 import (
+	"fmt"
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
@@ -30,13 +31,18 @@ func InitVfsTools() {
 
 }
 
-func _VfsWrite(data bson.M) {
+func _VfsWrite(result *AgentToolResult, data bson.M) {
 
 	safe := tools.SafeJson{}
 	safe.Data = data
 
 	lg.LogOkson(data)
 
-	db.SC.UploadFileString("llm", safe.GetString("filePath", "x.txt"), safe.GetString("fileBody", "--not_found--"))
+	filePath := safe.GetString("filePath", "x.txt")
+	fileBody := safe.GetString("fileBody", "--not_found--")
+
+	db.SC.UploadFileString("llm", filePath, fileBody)
+
+	result.TextInfo = fmt.Sprintf("Created file in: \"%s/%s\"", "llm", filePath)
 
 }

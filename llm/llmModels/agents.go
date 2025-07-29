@@ -1,6 +1,7 @@
 package llmModels
 
 import (
+	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -67,34 +68,22 @@ type Mistral7bResponse struct {
 }
 
 type AgentTestResponse struct {
-	Uid              primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
-	AgentUid         primitive.ObjectID `json:"agentUid" bson:"agentUid"`
-	ResponseAgentUid primitive.ObjectID `json:"responseAgentUid" bson:"responseAgentUid"`
-	Org              primitive.ObjectID `json:"org" bson:"org"`
-	At               tools.Milliseconds `json:"at"`
-	State            int8               `json:"state"`
-	Result           Mistral7bResponse  `json:"result"`
-	ResultRaw        string             `json:"resultRaw"`
-	Error            string             `json:"error"`
-	Text             string             `json:"text"`
-	AgentToolUsage   []*AgentToolUsage  `json:"agentToolUsage"`
+	Uid              primitive.ObjectID           `json:"uid" bson:"_id,omitempty"`
+	AgentName        string                       `json:"agentName" bson:"agentName"`
+	AgentUid         primitive.ObjectID           `json:"agentUid" bson:"agentUid"`
+	ResponseAgentUid primitive.ObjectID           `json:"responseAgentUid" bson:"responseAgentUid"`
+	Org              primitive.ObjectID           `json:"org"`
+	At               tools.Milliseconds           `json:"at"`
+	State            int8                         `json:"state"`
+	Result           Mistral7bResponse            `json:"result"`
+	ResultRaw        string                       `json:"resultRaw"`
+	Error            string                       `json:"error"`
+	Text             string                       `json:"text"`
+	AgentToolUsage   []*agentTools.AgentToolUsage `json:"agentToolUsage"`
 }
 
 func NewAgentTestResponse() *AgentTestResponse {
 	return &AgentTestResponse{
-		AgentToolUsage: make([]*AgentToolUsage, 0),
+		AgentToolUsage: make([]*agentTools.AgentToolUsage, 0),
 	}
-}
-
-type AgentToolUsage struct {
-	Uid        primitive.ObjectID `json:"uid"`
-	Name       string             `json:"name"`
-	Parameters bson.M             `json:"parameters"`
-	ToolResult string             `json:"toolResult"`
-}
-
-type AgentToolCall struct {
-	SelectedTool primitive.ObjectID `json:"selected_tool"`
-	Parameters   bson.M             `json:"parameters"`
-	Reasoning    string             `json:"reasoning"`
 }

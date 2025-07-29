@@ -303,7 +303,6 @@ func AskAgents(c *gin.Context, user *models.User, text string) llmModels.AgentTe
 func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
 
 	result := llmModels.NewAgentTestResponse()
-	result.AgentUid = agentUid
 
 	ollmodel := ollama.WithModel("mistral:7b")
 	keepAlive := ollama.WithKeepAlive("10h")
@@ -383,6 +382,8 @@ func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.Agent
 		return
 	}
 
+	resultPipe.AgentName = agent.Name
+
 	toolPrompt := GetAgentToolingPrompt(user, agent, query)
 
 	//lg.LogI(toolPrompt)
@@ -408,7 +409,7 @@ func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.Agent
 
 	lg.LogOk(completion)
 
-	agentResponse := tools.ObjFromJson[[]llmModels.AgentToolCall](completion)
+	agentResponse := tools.ObjFromJson[[]agentTools.AgentToolCall](completion)
 
 	if agentResponse == nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, bson.M{
@@ -421,13 +422,20 @@ func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.Agent
 			tool := agentTools.GetAgentTool(suggestedTool.SelectedTool)
 			lg.LogI(fmt.Sprintf("4.%d Going to call tool [%s] ", i+1, tool.Name))
 
-			resultPipe.AgentToolUsage = append(resultPipe.AgentToolUsage, &llmModels.AgentToolUsage{
+			agentUsage := &agentTools.AgentToolUsage{
 				Uid:        tool.Uid,
 				Name:       tool.Name,
 				Parameters: suggestedTool.Parameters,
-			})
+			}
 
-			tool.CallFn(suggestedTool.Parameters)
+			resultPipe.AgentToolUsage = append(resultPipe.AgentToolUsage, agentUsage)
+
+			result := &agentTools.AgentToolResult{}
+			result.IsDebug = true
+			result.IsOk = true
+			agentUsage.ToolResult = result
+
+			tool.CallFn(result, suggestedTool.Parameters)
 
 		}
 
