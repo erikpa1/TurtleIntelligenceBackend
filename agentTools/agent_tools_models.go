@@ -20,7 +20,10 @@ type AgentTool struct {
 	Name        string                                     `json:"name" bson:"name"`
 	Description string                                     `json:"description" bson:"description"`
 	Icon        string                                     `json:"icon" bson:"icon"`
-	Inputs      string                                     `json:"inputType" bson:"inputType"`
+	Inputs      string                                     `json:"inputs" bson:"inputs"`
+	Type        string                                     `json:"type" bson:"type"`
+	Provider    string                                     `json:"provider" bson:"provider"`
+	Category    string                                     `json:"category" bson:"category"`
 	Fn          func(result *AgentToolResult, data bson.M) `json:"-" bson:"-"`
 }
 
