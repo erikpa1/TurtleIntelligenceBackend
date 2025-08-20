@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -75,6 +76,11 @@ func (self *SpawnBehaviour) _Spawn() {
 
 func (self *SpawnBehaviour) _CalculateNextSpawn() {
 	self.NextSpawnTime = self.World.Stepper.Now + self.SpawnInterval
+
+	self.World.CreateUpcomingEvent(0, simInternal.SimUpcomingEvent{
+		simInternal.UPC_EVNT_SPAWN,
+		self.NextSpawnTime,
+	})
 }
 
 func (self *SpawnBehaviour) _TryToAddActorNext() {

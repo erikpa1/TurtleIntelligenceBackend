@@ -40,7 +40,7 @@ func NewSafeJson() *SafeJson {
 	}
 }
 
-// ParseString parses a JSON string into the SafeJson's internal map.
+// ParseString parses a JSON string into the SafeJson's simInternal map.
 func (s *SafeJson) ParseString(str string) error {
 	err := json.Unmarshal([]byte(str), &s.Data)
 	if err != nil {

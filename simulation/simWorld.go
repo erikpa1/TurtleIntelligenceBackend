@@ -5,6 +5,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
+	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -26,6 +27,7 @@ type SimWorld struct {
 	StatesCreatedActors   map[int64]*SimActor
 	StatesDestroyedActors []int64
 	StatesUpdates         map[int64]bson.M
+	StatesUpcomingEvents  map[int64]simInternal.SimUpcomingEvent
 }
 
 func NewSimWorld() *SimWorld {
@@ -41,6 +43,7 @@ func NewSimWorld() *SimWorld {
 	tmp.StatesCreatedActors = make(map[int64]*SimActor, 0)
 	tmp.StatesDestroyedActors = make([]int64, 0)
 	tmp.StatesUpdates = make(map[int64]bson.M)
+	tmp.StatesUpcomingEvents = make(map[int64]simInternal.SimUpcomingEvent)
 
 	return tmp
 }
@@ -177,5 +180,12 @@ func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
 		}
 
 	}
+}
 
+func (self *SimWorld) CreateUpcomingEvent(key int64, value simInternal.SimUpcomingEvent) {
+	_, inSpawned := self.StatesCreatedActors[key]
+
+	if inSpawned == false {
+		self.StatesUpcomingEvents[key] = value
+	}
 }

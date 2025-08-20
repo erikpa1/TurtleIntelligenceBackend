@@ -1,6 +1,7 @@
 package apiApp
 
 import (
+	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
 	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
 	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
@@ -26,8 +27,8 @@ func _ListModels(c *gin.Context) {
 }
 
 func _InitApiModels(r *gin.Engine) {
-	r.POST("/api/sim-models", _CouModel)
-	r.GET("/api/sim-models", _ListModels)
-	r.DELETE("/api/sim-models", _DeleteModel)
+	r.POST("/api/sim-models", auth.LoginRequired, _CouModel)
+	r.GET("/api/sim-models", auth.LoginRequired, _ListModels)
+	r.DELETE("/api/sim-models", auth.LoginRequired, _DeleteModel)
 
 }
