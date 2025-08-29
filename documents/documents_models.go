@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -26,6 +27,7 @@ type Document struct {
 	CreatedAt    tools.Milliseconds `json:"createdAt" bson:"createdAt"`
 	UpdatedAt    tools.Milliseconds `json:"updatedAt" bson:"updatedAt"`
 	HasEmbedding bool               `json:"hasEmbedding" bson:"hasEmbedding"`
+	Tags         map[string]bson.M  `json:"tags"`
 }
 
 func (self *Document) FileUidName() string {

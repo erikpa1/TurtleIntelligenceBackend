@@ -17,6 +17,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/nn"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tags"
 	"mime"
 	"net/http"
 	"os/exec"
@@ -95,6 +96,7 @@ func dev_main() {
 	nn.InitNNApi(r)
 	fn.InitFnApi(r)
 	knowledge.InitKnowledgeApi(r)
+	tags.InitTagsApi(r)
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)

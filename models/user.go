@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -72,4 +73,9 @@ func (self *User) IsAdminWithError() bool {
 		lg.LogE(self.Uid.Hex(), "is only", self.Type)
 		return false
 	}
+}
+
+func (self *User) FillOrgQuery(query bson.M) bson.M {
+	query["org"] = self.Org
+	return query
 }

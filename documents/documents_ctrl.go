@@ -85,22 +85,19 @@ func DeleteDocument(user *models.User, documentUid primitive.ObjectID) {
 
 	if docToDelete != nil {
 
-		db.DeleteEntities(CT_DOC_EMBEDDINGS, bson.M{
+		db.DeleteEntities(CT_DOC_EMBEDDINGS, user.FillOrgQuery(bson.M{
 			"_id": documentUid,
-			"org": user.Org,
-		})
+		}))
 
-		db.DeleteEntities(CT_DOC_EXTRACT, bson.M{
+		db.DeleteEntities(CT_DOC_EXTRACT, user.FillOrgQuery(bson.M{
 			"_id": documentUid,
-			"org": user.Org,
-		})
+		}))
 
 		db.SC.DeleteFileNew(fmt.Sprintf("documents/%s.%s", documentUid, docToDelete.Extension))
 
-		db.DeleteEntities(CT_DOC, bson.M{
+		db.DeleteEntities(CT_DOC, user.FillOrgQuery(bson.M{
 			"_id": documentUid,
-			"org": user.Org,
-		})
+		}))
 
 	}
 
