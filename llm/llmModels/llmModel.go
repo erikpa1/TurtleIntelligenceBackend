@@ -1,6 +1,8 @@
 package llmModels
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type LLM struct {
 	Uid                        primitive.ObjectID   `json:"uid" bson:"_id,omitempty"`
@@ -15,4 +17,9 @@ type LLM struct {
 	IsAgentic                  bool                 `json:"isAgentic" bson:"isAgentic"`
 	DefaultTemperature         float32              `json:"defaultTemperature" bson:"defaultTemperature"`
 	CanUserOverrideTemperature bool                 `json:"canUserOverrideTemperature" bson:"canUserOverrideTemperature"`
+}
+
+func (self *LLM) SetMistral7B() {
+	self.ModelVersion = "mistral:7b"
+
 }

@@ -215,8 +215,27 @@ func FindAgent(c *gin.Context, user *models.User, text string) llmModels.AgentTe
 
 }
 
-func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
+func AskTrueFalse(c *gin.Context, user *models.User, text string, trueProbability float32) bool {
+	tmpModel := &llmModels.LLM{}
+	tmpModel.SetMistral7B()
 
+	command := fmt.Sprintf(`
+[INST]
+[SYSTEM] You are helpful assistant, you job is to decise if user request is between TRUE or FALSE in probability.
+%s
+Please format your response as JSON:
+{
+"confidence": 0.2
+}
+[/INST]
+`, text)
+
+	tmp := ChatAgenticModelRaw(c, user, tmpModel, command)
+
+	return tmp.Result.Confidence >= trueProbability
+}
+
+func ChatAgenticModelRaw(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	result := llmModels.AgentTestResponse{}
 
 	ollmodel := ollama.WithModel(model.ModelVersion)
@@ -225,10 +244,10 @@ func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text str
 	llm, err := ollama.New(ollmodel, keepAlive)
 
 	if err == nil {
+		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 
-		prompt := GetOverallAgentsPrompt(user, text)
+		lg.LogI(completion)
 
-		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
 		result.ResultRaw = completion
 
 		if complErr == nil {
@@ -239,15 +258,17 @@ func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text str
 
 			if serializationErr == nil {
 
-				uid, uuidOk := primitive.ObjectIDFromHex(resultBson["selected_agent"].(string))
+				safeOne := &tools.SafeJson{Data: resultBson}
+
+				uid, uuidOk := primitive.ObjectIDFromHex(safeOne.GetString("selected_agent", ""))
 
 				if uuidOk == nil {
 					result.Result.SelectedAgent = uid
 				}
 
-				result.Result.Confidence = float32(resultBson["confidence"].(float64))
-				result.Result.Parameters = bson.M(resultBson["parameters"].(map[string]interface{}))
-				result.Result.Reasoning = resultBson["reasoning"].(string)
+				result.Result.Confidence = float32(safeOne.GetFloat64("confidence", 0))
+				result.Result.Parameters = safeOne.GetSafeJson("parameters").Data
+				result.Result.Reasoning = safeOne.GetString("reasoning", "--no-reason--")
 
 				result.AgentUid = result.Result.SelectedAgent
 
@@ -268,7 +289,12 @@ func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text str
 		lg.LogE(err)
 	}
 
-	return nil
+	return &result
+}
+
+func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
+	prompt := GetOverallAgentsPrompt(user, text)
+	return ChatAgenticModelRaw(c, user, model, prompt)
 }
 
 func AddToolToAgent(user *models.User, agentUid primitive.ObjectID, toolUid primitive.ObjectID) {

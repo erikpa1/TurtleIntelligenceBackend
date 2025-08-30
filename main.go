@@ -90,6 +90,7 @@ func dev_main() {
 
 	agentTools.InitAgentToolsApi(r)
 	documents.InitDocumentsApi(r)
+	documents.InitDocumentCollectionsApi(r)
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	auth.Init_api_auth0(r)

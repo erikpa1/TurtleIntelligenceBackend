@@ -76,6 +76,13 @@ func (self *User) IsAdminWithError() bool {
 }
 
 func (self *User) FillOrgQuery(query bson.M) bson.M {
-	query["org"] = self.Org
+	if query == nil {
+		return bson.M{
+			"org": self.Org,
+		}
+	} else {
+		query["org"] = self.Org
+	}
+
 	return query
 }

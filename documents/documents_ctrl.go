@@ -14,10 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-const CT_DOC = "docs"
-const CT_DOC_EXTRACT = "docs_extracts"
-const CT_DOC_EMBEDDINGS = "docs_embeddings"
-
 type VSearchResult struct {
 	Similarity float32   `json:"similarity"`
 	Doc        *Document `json:"doc"`
@@ -63,6 +59,11 @@ func ListDocuments(user *models.User) []*Document {
 	return db.QueryEntities[Document](CT_DOC, bson.M{
 		"org": user.Org,
 	})
+
+}
+
+func ListDocumentExtracts(user *models.User) []*DocumentExtraction {
+	return db.QueryEntities[DocumentExtraction](CT_DOC_EXTRACT, user.FillOrgQuery(nil))
 
 }
 

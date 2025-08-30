@@ -163,8 +163,11 @@ func (s *SafeJson) GetSafeJson(key string) *SafeJson {
 		tmp.Data = val
 
 		return tmp
+	} else {
+		tmp := NewSafeJson()
+		tmp.Data = make(map[string]interface{})
+		return tmp
 	}
-	return nil
 
 }
 
