@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"fmt"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/stats"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
@@ -36,8 +37,10 @@ func NewProcessBehaviour() ISimBehaviour {
 }
 
 func (self *ProcessBehaviour) __Interface() {
-	var _ ISimBehaviour = &ProcessBehaviour{}
-	var _ ActorTakerBehaviour = &ProcessBehaviour{}
+	procesB := ProcessBehaviour{}
+	var _ ISimBehaviour = &procesB
+	var _ ActorTakerBehaviour = &procesB
+	var _ AIProvider = &procesB
 
 }
 
@@ -146,4 +149,14 @@ func (self *ProcessBehaviour) _TryToPassEntityNext() {
 
 	self.ChangeState(PROC_STAT_BLOCKED)
 
+}
+func (self *ProcessBehaviour) GetAIDescription() string {
+	return fmt.Sprintf(`
+Type: Work center
+Name: %s
+ProcessTime: %s
+`,
+		self.Entity.Name,
+		self.Entity.TypeData.GetString("processTime", "00:10"),
+	)
 }
