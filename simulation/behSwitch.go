@@ -9,7 +9,7 @@ const (
 
 type SwitchBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 
 	Mode SwitchStrategy
 
@@ -36,8 +36,12 @@ func (self *SwitchBehaviour) Init1() {
 func (self *SwitchBehaviour) Init2() {
 }
 
+func (self *SwitchBehaviour) GetEntity() *SimEntity {
+	return self.Entity
+}
+
 func (self *SwitchBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 
 	self.Mode = SwitchStrategy(entity.TypeData.GetInt8("mode", 0))
 }

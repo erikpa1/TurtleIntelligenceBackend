@@ -2,14 +2,15 @@ package simulation
 
 import (
 	"context"
+	"sync"
+	"time"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/server"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"sync"
-	"time"
 )
 
 type _RunningSim struct {
@@ -56,7 +57,7 @@ func PauseSimulation(uid primitive.ObjectID) {
 	}
 }
 
-func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
+func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 
 	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
@@ -110,12 +111,7 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 						world.Step()
 						world.Stepper.Step()
 
-						server.MYIO.EmitSync("simstep", bson.M{
-							"second":    second,
-							"spawned":   world.StatesCreatedActors,
-							"unspawned": world.StatesDestroyedActors,
-							"states":    world.StatesUpdates,
-						})
+						server.MYIO.EmitSync("simstep", world.ToJsonClient())
 
 						world.ClearStates()
 					}
@@ -140,5 +136,8 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) string {
 		RUNNING_SIMS_LOCK.Unlock()
 	}()
 
-	return runSim.Uid.Hex()
+	return bson.M{
+		"runUid":    runSim.Uid,
+		"runStates": world.ToJsonInit(),
+	}
 }

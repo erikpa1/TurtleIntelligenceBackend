@@ -7,7 +7,7 @@ import (
 
 type SinkBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 
 	NextSpawnTime tools.Seconds
 	SpawnInterval tools.Seconds
@@ -34,8 +34,12 @@ func (self *SinkBehaviour) Init2() {
 
 }
 
+func (self *SinkBehaviour) GetEntity() *SimEntity {
+	return self.Entity
+}
+
 func (self *SinkBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 }
 
 func (self *SinkBehaviour) Step() {

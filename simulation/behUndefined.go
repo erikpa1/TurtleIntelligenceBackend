@@ -2,7 +2,7 @@ package simulation
 
 type UndefinedBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 }
 
 func NewUndefinedBehaviour() ISimBehaviour {
@@ -14,8 +14,12 @@ func (self *UndefinedBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
 }
 
+func (self *UndefinedBehaviour) GetEntity() *SimEntity {
+	return self.Entity
+}
+
 func (self *UndefinedBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 }
 
 func (self *UndefinedBehaviour) Init1() {

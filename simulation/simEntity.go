@@ -8,12 +8,13 @@ import (
 )
 
 type SimEntity struct {
-	Uid      primitive.ObjectID
-	Name     string
-	Type     string
-	Position [3]float32
-	TypeData *tools.SafeJson
-	Wold     *SimWorld
+	RuntimeId int64
+	Uid       primitive.ObjectID
+	Name      string
+	Type      string
+	Position  [3]float32
+	TypeData  *tools.SafeJson
+	Wold      *SimWorld
 }
 
 func (self *SimEntity) FromEntity(def *modelsApp.Entity) {

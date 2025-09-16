@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
@@ -20,14 +21,16 @@ type SimWorld struct {
 
 	ActorsDefinitions map[primitive.ObjectID]*modelsApp.Actor
 
-	Stepper    SimStepper
-	IsOnline   bool
-	IdsCounter int64
+	Stepper  SimStepper
+	IsOnline bool
 
 	StatesCreatedActors   map[int64]*SimActor
 	StatesDestroyedActors []int64
 	StatesUpdates         map[int64]bson.M
 	StatesUpcomingEvents  map[int64]simInternal.SimUpcomingEvent
+
+	ActorsIds int64
+	RuntimeId int64
 }
 
 func NewSimWorld() *SimWorld {
@@ -48,10 +51,17 @@ func NewSimWorld() *SimWorld {
 	return tmp
 }
 
+func (self *SimWorld) GetRuntimeId() int64 {
+	tmp := self.RuntimeId
+	self.RuntimeId += 1
+	return tmp
+
+}
 func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 	for _, entity := range entities {
 		simEntity := SimEntity{}
 		simEntity.FromEntity(entity)
+		simEntity.RuntimeId = self.GetRuntimeId()
 
 		entityType := entity.Type
 
@@ -152,9 +162,10 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 	}
 
 	actor := NewSimActor()
-	actor.Id = self.IdsCounter
+	actor.Id = self.ActorsIds
 	actor.World = self
-	self.IdsCounter += 1
+
+	self.ActorsIds += 1
 	actor.FromActorDefinition(definition)
 
 	self.StatesCreatedActors[actor.Id] = actor
@@ -187,5 +198,29 @@ func (self *SimWorld) CreateUpcomingEvent(key int64, value simInternal.SimUpcomi
 
 	if inSpawned == false {
 		self.StatesUpcomingEvents[key] = value
+	}
+}
+
+func (self *SimWorld) ToJsonInit() bson.M {
+
+	entitiesRuntime := map[string]int64{}
+
+	for _, behaiour := range self.SimBehaviours {
+		entity := behaiour.GetEntity()
+		entitiesRuntime[entity.Uid.Hex()] = entity.RuntimeId
+	}
+
+	return bson.M{
+		"runtimeIds": entitiesRuntime,
+	}
+}
+
+func (self *SimWorld) ToJsonClient() bson.M {
+	return bson.M{
+		"second":    self.Stepper.Now,
+		"spawned":   self.StatesCreatedActors,
+		"unspawned": self.StatesDestroyedActors,
+		"states":    self.StatesUpdates,
+		"events":    self.StatesUpcomingEvents,
 	}
 }

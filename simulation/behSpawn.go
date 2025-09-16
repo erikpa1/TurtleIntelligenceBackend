@@ -9,7 +9,7 @@ import (
 
 type SpawnBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 
 	NextSpawnTime tools.Seconds
 	SpawnInterval tools.Seconds
@@ -36,8 +36,12 @@ func (self *SpawnBehaviour) Init2() {
 
 }
 
+func (self *SpawnBehaviour) GetEntity() *SimEntity {
+	return self.Entity
+}
+
 func (self *SpawnBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 	self.SpawnInterval = entity.TypeData.GetSeconds("spawn_interval", 1)
 	self.SpawnLimit = entity.TypeData.GetInt64("spawn_limit", 1)
 	self.SpawnActor = entity.TypeData.GetPrimitiveObjectId("actor")

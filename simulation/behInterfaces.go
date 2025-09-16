@@ -1,8 +1,10 @@
 package simulation
 
+// Todo asi entita by mala mat behaviours a components
 type ISimBehaviour interface {
 	SetWorld(world *SimWorld)
 	SetEntity(entity *SimEntity)
+	GetEntity() *SimEntity
 	Step()
 	Init1()
 	Init2()

@@ -4,7 +4,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type BufferBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 
 	Actors []*SimActor
 
@@ -31,8 +31,12 @@ func (self *BufferBehaviour) SetWorld(world *SimWorld) {
 	self.World = world
 }
 
+func (self *BufferBehaviour) GetEntity() *SimEntity {
+	return self.Entity
+}
+
 func (self *BufferBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 
 	self.Capacity = entity.TypeData.GetInt64("capacity", 8)
 	self.InitialActor = entity.TypeData.GetPrimitiveObjectId("initial_actor")

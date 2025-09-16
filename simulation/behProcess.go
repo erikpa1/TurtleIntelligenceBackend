@@ -2,7 +2,9 @@ package simulation
 
 import (
 	"fmt"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
 	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/stats"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 )
@@ -17,7 +19,7 @@ const (
 
 type ProcessBehaviour struct {
 	World  *SimWorld
-	Entity SimEntity
+	Entity *SimEntity
 
 	ActiveActor *SimActor
 
@@ -78,11 +80,14 @@ func (self *ProcessBehaviour) Step() {
 	} else if self.ActiveState == PROC_STAT_WORKING {
 		self.Statistics.ProcessTime += 1
 	}
+}
 
+func (self *ProcessBehaviour) GetEntity() *SimEntity {
+	return self.Entity
 }
 
 func (self *ProcessBehaviour) SetEntity(entity *SimEntity) {
-	self.Entity = *entity
+	self.Entity = entity
 	self.ProcessTime = entity.TypeData.GetString("processTime", "00:10")
 
 }
@@ -108,6 +113,11 @@ func (self *ProcessBehaviour) _StartManufacturing() {
 	finishTime := tools.Seconds(tools.AnyExpr_CompileSeconds(self.ProcessTime, 10))
 	self.ProcessFinish = finishTime + self.World.Stepper.Now
 	self.ChangeState(PROC_STAT_WORKING)
+
+	self.World.CreateUpcomingEvent(self.Entity.RuntimeId, simInternal.SimUpcomingEvent{
+		simInternal.UPC_EVENT_FINISH,
+		self.ProcessFinish,
+	})
 
 	lg.LogOk("Started manufacturing")
 
