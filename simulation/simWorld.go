@@ -27,7 +27,7 @@ type SimWorld struct {
 	StatesCreatedActors   map[int64]*SimActor
 	StatesDestroyedActors []int64
 	StatesUpdates         map[int64]bson.M
-	StatesUpcomingEvents  map[int64]simInternal.SimUpcomingEvent
+	StatesUpcomingEvents  []simInternal.SimUpcomingEvent
 
 	ActorsIds int64
 	RuntimeId int64
@@ -46,7 +46,7 @@ func NewSimWorld() *SimWorld {
 	tmp.StatesCreatedActors = make(map[int64]*SimActor, 0)
 	tmp.StatesDestroyedActors = make([]int64, 0)
 	tmp.StatesUpdates = make(map[int64]bson.M)
-	tmp.StatesUpcomingEvents = make(map[int64]simInternal.SimUpcomingEvent)
+	tmp.StatesUpcomingEvents = make([]simInternal.SimUpcomingEvent, 0)
 
 	return tmp
 }
@@ -128,6 +128,7 @@ func (self *SimWorld) ClearStates() {
 	self.StatesCreatedActors = make(map[int64]*SimActor, 0)
 	self.StatesDestroyedActors = make([]int64, 0)
 	self.StatesUpdates = make(map[int64]bson.M)
+	self.StatesUpcomingEvents = make([]simInternal.SimUpcomingEvent, 0)
 }
 
 func (self *SimWorld) Step() {
@@ -193,12 +194,8 @@ func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
 	}
 }
 
-func (self *SimWorld) CreateUpcomingEvent(key int64, value simInternal.SimUpcomingEvent) {
-	_, inSpawned := self.StatesCreatedActors[key]
-
-	if inSpawned == false {
-		self.StatesUpcomingEvents[key] = value
-	}
+func (self *SimWorld) CreateUpcomingEvent(value simInternal.SimUpcomingEvent) {
+	self.StatesUpcomingEvents = append(self.StatesUpcomingEvents, value)
 }
 
 func (self *SimWorld) ToJsonInit() bson.M {
@@ -216,6 +213,7 @@ func (self *SimWorld) ToJsonInit() bson.M {
 }
 
 func (self *SimWorld) ToJsonClient() bson.M {
+
 	return bson.M{
 		"second":    self.Stepper.Now,
 		"spawned":   self.StatesCreatedActors,

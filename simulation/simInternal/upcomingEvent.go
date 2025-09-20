@@ -12,6 +12,7 @@ const (
 )
 
 type SimUpcomingEvent struct {
+	Id     int64                `json:"id"`
 	Type   SimUpcomingEventType `json:"type"`
 	Second tools.Seconds        `json:"second"`
 }

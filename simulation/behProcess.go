@@ -114,9 +114,10 @@ func (self *ProcessBehaviour) _StartManufacturing() {
 	self.ProcessFinish = finishTime + self.World.Stepper.Now
 	self.ChangeState(PROC_STAT_WORKING)
 
-	self.World.CreateUpcomingEvent(self.Entity.RuntimeId, simInternal.SimUpcomingEvent{
-		simInternal.UPC_EVENT_FINISH,
-		self.ProcessFinish,
+	self.World.CreateUpcomingEvent(simInternal.SimUpcomingEvent{
+		Id:     self.Entity.RuntimeId,
+		Type:   simInternal.UPC_EVENT_FINISH,
+		Second: self.ProcessFinish,
 	})
 
 	lg.LogOk("Started manufacturing")

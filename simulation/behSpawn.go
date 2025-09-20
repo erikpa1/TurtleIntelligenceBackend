@@ -81,9 +81,10 @@ func (self *SpawnBehaviour) _Spawn() {
 func (self *SpawnBehaviour) _CalculateNextSpawn() {
 	self.NextSpawnTime = self.World.Stepper.Now + self.SpawnInterval
 
-	self.World.CreateUpcomingEvent(0, simInternal.SimUpcomingEvent{
-		simInternal.UPC_EVNT_SPAWN,
-		self.NextSpawnTime,
+	self.World.CreateUpcomingEvent(simInternal.SimUpcomingEvent{
+		Id:     self.Entity.RuntimeId,
+		Type:   simInternal.UPC_EVNT_SPAWN,
+		Second: self.NextSpawnTime,
 	})
 }
 
