@@ -17,12 +17,13 @@ func GetActor(uid primitive.ObjectID) *modelsApp.Actor {
 	return db.QueryEntity[modelsApp.Actor](CT_ACTORS, bson.M{"_id": uid})
 }
 
-func CreateActor(ct *modelsApp.Actor) {
-	db.InsertEntity(CT_ACTORS, ct)
-}
+func COUActor(actor *modelsApp.Actor) {
+	if actor.Uid.IsZero() {
+		db.InsertEntity(CT_ACTORS, actor)
+	} else {
+		db.UpdateOneCustom(CT_ACTORS, bson.M{"_id": actor.Uid}, bson.M{"$set": actor})
+	}
 
-func UpdateActor(ct *modelsApp.Actor) {
-	db.UpdateOneCustom(CT_ACTORS, bson.M{"_id": ct.Uid}, bson.M{"$set": ct})
 }
 
 func DeleteActor(uid primitive.ObjectID) {

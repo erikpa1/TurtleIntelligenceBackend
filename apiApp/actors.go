@@ -17,14 +17,9 @@ func _GetActor(c *gin.Context) {
 	tools.AutoReturn(c, ctrlApp.GetActor(uid))
 }
 
-func _CreateActor(c *gin.Context) {
+func _CouActor(c *gin.Context) {
 	data := tools.ObjFromJsonPtr[modelsApp.Actor](c.PostForm("data"))
-	ctrlApp.CreateActor(data)
-}
-
-func _UpdateActors(c *gin.Context) {
-	data := tools.ObjFromJsonPtr[modelsApp.Actor](c.PostForm("data"))
-	ctrlApp.UpdateActor(data)
+	ctrlApp.COUActor(data)
 }
 
 func _DeleteActor(c *gin.Context) {
@@ -36,7 +31,6 @@ func _DeleteActor(c *gin.Context) {
 func _InitApiActors(r *gin.Engine) {
 	r.GET("/api/actors/query", _QueryActors)
 	r.GET("/api/actor", _GetActor)
-	r.PUT("/api/actor", _UpdateActors)
-	r.POST("/api/actor", _CreateActor)
+	r.POST("/api/actor", _CouActor)
 	r.DELETE("/api/actor", _DeleteActor)
 }
