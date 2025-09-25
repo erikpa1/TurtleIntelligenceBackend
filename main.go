@@ -3,6 +3,12 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"mime"
+	"net/http"
+	"os/exec"
+	"strings"
+	"time"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
 	"github.com/erikpa1/TurtleIntelligenceBackend/api"
 	"github.com/erikpa1/TurtleIntelligenceBackend/apiApp"
@@ -12,17 +18,13 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/documents"
 	"github.com/erikpa1/TurtleIntelligenceBackend/flows"
 	"github.com/erikpa1/TurtleIntelligenceBackend/fn"
+	"github.com/erikpa1/TurtleIntelligenceBackend/forecasting"
 	"github.com/erikpa1/TurtleIntelligenceBackend/knowledge"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/nn"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tags"
-	"mime"
-	"net/http"
-	"os/exec"
-	"strings"
-	"time"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/models"
@@ -98,6 +100,7 @@ func dev_main() {
 	fn.InitFnApi(r)
 	knowledge.InitKnowledgeApi(r)
 	tags.InitTagsApi(r)
+	forecasting.InitForecastingApi(r)
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)
