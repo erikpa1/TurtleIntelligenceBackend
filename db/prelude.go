@@ -3,12 +3,14 @@ package db
 import (
 	"context"
 	"encoding/json"
+	"strings"
+	"time"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
 	"github.com/erikpa1/TurtleIntelligenceBackend/interfaces"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
-	"strings"
-	"time"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/tidwall/gjson"
 	"go.mongodb.org/mongo-driver/bson"
@@ -96,6 +98,24 @@ func DeleteEntity(collection string, query bson.M) {
 	}
 }
 
+func DeleteEntityWithUid(collection string, uid primitive.ObjectID) {
+	_, err := DB.Col(collection).DeleteOne(context.TODO(), bson.M{
+		"_id": uid,
+	})
+	if err != nil {
+		lg.LogE(err)
+	}
+}
+
+func DeleteEntitiesOfParent(collection string, parent primitive.ObjectID) {
+	_, err := DB.Col(collection).DeleteMany(context.TODO(), bson.M{
+		"parent": parent,
+	})
+	if err != nil {
+		lg.LogE(err)
+	}
+}
+
 func DeleteEntities(collection string, query bson.M) {
 	_, err := DB.Col(collection).DeleteMany(context.TODO(), query)
 	if err != nil {
@@ -112,6 +132,20 @@ func UpdateEntity(collection string, entity any) {
 	if err != nil {
 		lg.LogStackTraceErr(err)
 	}
+}
+
+func SetById(collection string, _id primitive.ObjectID, update interface{}, opts ...*options.UpdateOptions) error {
+	_, err := DB.Col(collection).UpdateOne(context.TODO(), bson.M{
+		"_id": _id,
+	}, bson.M{
+		"$set": update,
+	}, opts...)
+
+	if err != nil {
+		lg.LogStackTraceErr(err)
+		return err
+	}
+	return nil
 }
 
 func UpdateOneCustom(collection string, filter interface{}, update interface{}, opts ...*options.UpdateOptions) error {

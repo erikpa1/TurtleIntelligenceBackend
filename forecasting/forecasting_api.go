@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func _ListForecasts(c *gin.Context) {
+func _QueryForecasts(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryHeader[bson.M](c)
 	tools.AutoReturn(c, QueryForecasts(user, query))
@@ -19,9 +19,13 @@ func _GetForecast(c *gin.Context) {
 }
 
 func _COUForecast(c *gin.Context) {
+	obj := tools.ObjFromJsonPtr[Forecast](c.PostForm("data"))
+	COUForecast(obj)
 }
 
 func _DeleteForecast(c *gin.Context) {
+	uid := tools.MongoObjectIdFromQuery(c)
+	DeleteForecast(uid)
 }
 
 func _ListForecastingMethods(c *gin.Context) {
@@ -29,11 +33,11 @@ func _ListForecastingMethods(c *gin.Context) {
 }
 
 func InitForecastingApi(r *gin.Engine) {
-	r.GET("/api/forecasts", _ListForecasts)
-	r.GET("/api/forecast", _GetForecast)
-	r.GET("/api/forecast/methods", _ListForecastingMethods)
-	r.POST("/api/forecast", _COUForecast)
-	r.DELETE("/api/forecast", _DeleteForecast)
+	r.GET("/api/forecasts/query", auth.LoginRequired, _QueryForecasts)
+	r.GET("/api/forecast", auth.LoginRequired, _GetForecast)
+	r.GET("/api/forecast/methods", auth.LoginRequired, _ListForecastingMethods)
+	r.POST("/api/forecast", auth.LoginRequired, _COUForecast)
+	r.DELETE("/api/forecast", auth.LoginRequired, _DeleteForecast)
 
 	tableData.CreateGinRouting(r, "forecasting")
 
