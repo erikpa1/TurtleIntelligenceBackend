@@ -14,6 +14,7 @@ const (
 
 type Forecast struct {
 	Uid  primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	Org  primitive.ObjectID `json:"org"`
 	Name string             `json:"name"`
 	Type ForecastType       `json:"type"`
 }

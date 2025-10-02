@@ -19,8 +19,9 @@ func _GetForecast(c *gin.Context) {
 }
 
 func _COUForecast(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
 	obj := tools.ObjFromJsonPtr[Forecast](c.PostForm("data"))
-	COUForecast(obj)
+	COUForecast(user, obj)
 }
 
 func _DeleteForecast(c *gin.Context) {

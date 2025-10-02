@@ -15,11 +15,14 @@ func QueryForecasts(user *models.User, query bson.M) []*Forecast {
 	return db.QueryEntities[Forecast](CT_FORECASTS, user.FillOrgQuery(query))
 }
 
-func COUForecast(forecast *Forecast) {
+func COUForecast(user *models.User, forecast *Forecast) {
+
+	forecast.Org = user.Org
+
 	if forecast.Uid.IsZero() {
 		db.InsertEntity(CT_FORECASTS, forecast)
 	} else {
-		db.SetById(CT_FORECASTS, forecast.Uid, forecast)
+		db.SetByOrgAndId(CT_FORECASTS, forecast.Uid, user.Org, forecast)
 	}
 }
 

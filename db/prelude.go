@@ -134,6 +134,21 @@ func UpdateEntity(collection string, entity any) {
 	}
 }
 
+func SetByOrgAndId(collection string, _id primitive.ObjectID, orgId primitive.ObjectID, update interface{}, opts ...*options.UpdateOptions) error {
+	_, err := DB.Col(collection).UpdateOne(context.TODO(), bson.M{
+		"_id": _id,
+		"org": orgId,
+	}, bson.M{
+		"$set": update,
+	}, opts...)
+
+	if err != nil {
+		lg.LogStackTraceErr(err)
+		return err
+	}
+	return nil
+}
+
 func SetById(collection string, _id primitive.ObjectID, update interface{}, opts ...*options.UpdateOptions) error {
 	_, err := DB.Col(collection).UpdateOne(context.TODO(), bson.M{
 		"_id": _id,
