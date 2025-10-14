@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/interfaces"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -61,6 +60,12 @@ func (self *AnyDBConnection) QueryEntitiesCursor(collectionName string, query bs
 	return cursor, nil
 }
 
+func GetByIdAndOrg[T any](collection string, _id primitive.ObjectID, orgId primitive.ObjectID) *T {
+	return QueryEntity[T](collection, bson.M{
+		"_id": _id, "org": orgId,
+	})
+}
+
 func QueryEntity[T any](collection string, query bson.M) *T {
 	var elem T
 	err := DB.Col(collection).FindOne(context.TODO(), query).Decode(&elem)
@@ -77,11 +82,13 @@ func QueryEntity[T any](collection string, query bson.M) *T {
 	return &elem
 }
 
-func InsertEntity(collection string, entity any) {
-	_, err := DB.Col(collection).InsertOne(context.TODO(), entity)
+func InsertEntity(collection string, entity any) (*mongo.InsertOneResult, error) {
+	result, err := DB.Col(collection).InsertOne(context.TODO(), entity)
 	if err != nil {
 		lg.LogE(err)
 	}
+
+	return result, err
 }
 
 func InsertMany(collection string, entities []interface{}) {
@@ -89,6 +96,23 @@ func InsertMany(collection string, entities []interface{}) {
 	if err != nil {
 		lg.LogStackTraceErr(err.Error())
 	}
+}
+
+func DeleteByIdAndOrg(collection string, _id primitive.ObjectID, org primitive.ObjectID) error {
+
+	deleteQuery := bson.M{
+		"_id": _id,
+		"org": org,
+	}
+
+	lg.LogEson(deleteQuery)
+
+	_, err := DB.Col(collection).DeleteOne(context.TODO(), deleteQuery)
+	if err != nil {
+		lg.LogE(err)
+	}
+
+	return err
 }
 
 func DeleteEntity(collection string, query bson.M) {
@@ -116,11 +140,12 @@ func DeleteEntitiesOfParent(collection string, parent primitive.ObjectID) {
 	}
 }
 
-func DeleteEntities(collection string, query bson.M) {
+func DeleteEntities(collection string, query bson.M) error {
 	_, err := DB.Col(collection).DeleteMany(context.TODO(), query)
 	if err != nil {
 		lg.LogE(err)
 	}
+	return err
 }
 
 func UpdateEntity(collection string, entity any) {
@@ -184,17 +209,6 @@ func UpdateEntitiesWhere(collection string, filter bson.M, data any) {
 func HasEntityWithUid(collection string, uid string) bool {
 	value, _ := DB.Col(collection).CountDocuments(context.TODO(), bson.M{"uid": uid})
 	return value > 0
-}
-
-func COUEntity(collection string, entity interfaces.UidProvider) {
-
-	exists := HasEntityWithUid(collection, entity.GetUid())
-
-	if exists {
-		UpdateEntity(collection, entity)
-	} else {
-		InsertEntity(collection, entity)
-	}
 }
 
 func QueryEntitiesChannel[T any](ctx context.Context, collection string, query bson.M, opts ...*options.FindOptions) <-chan *T {

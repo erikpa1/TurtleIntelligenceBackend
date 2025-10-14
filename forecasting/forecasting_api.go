@@ -2,7 +2,7 @@ package forecasting
 
 import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tableData"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tables"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -40,6 +40,6 @@ func InitForecastingApi(r *gin.Engine) {
 	r.POST("/api/forecast", auth.LoginRequired, _COUForecast)
 	r.DELETE("/api/forecast", auth.LoginRequired, _DeleteForecast)
 
-	tableData.CreateGinRouting(r, "forecasting")
+	tables.CreateGinRouting(r, "forecasting")
 
 }

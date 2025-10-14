@@ -24,6 +24,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/nn"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tables"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tags"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
@@ -101,6 +102,8 @@ func dev_main() {
 	knowledge.InitKnowledgeApi(r)
 	tags.InitTagsApi(r)
 	forecasting.InitForecastingApi(r)
+
+	tables.InitTablesApi(r)
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)

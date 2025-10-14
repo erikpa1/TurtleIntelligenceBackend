@@ -1,4 +1,4 @@
-package tableData
+package tables
 
 import (
 	"fmt"
