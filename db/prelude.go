@@ -148,6 +148,18 @@ func DeleteEntities(collection string, query bson.M) error {
 	return err
 }
 
+func COU(col string, uid primitive.ObjectID, data interface{}) {
+	if uid.IsZero() {
+		InsertEntity(col, data)
+	} else {
+		UpdateEntity(col, bson.M{"$set": data})
+	}
+}
+
+func Delete(col string, uid primitive.ObjectID) {
+	DeleteEntity(col, bson.M{"_id": uid})
+}
+
 func UpdateEntity(collection string, entity any) {
 	jData, _ := json.Marshal(entity)
 	uid := gjson.Get(string(jData), "uid").String()
