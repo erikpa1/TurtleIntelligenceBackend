@@ -160,7 +160,7 @@ func Auth0Scope() map[string]string {
 	}
 }
 
-// Auth0Domain returns the Auth0 domain
+// Auth0Domain returns the Auth0 domains
 func Auth0Domain() string {
 	return os.Getenv("TURTLE_AUTH0_DOMAIN")
 }

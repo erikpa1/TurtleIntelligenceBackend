@@ -2,7 +2,11 @@ package knowledge
 
 import (
 	"context"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
+	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/cts"
+	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/erikpa1/TurtleIntelligenceBackend/models"
@@ -11,17 +15,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CT_KNOWLEDGE = "knowledge"
-const CT_KNOWLEDGE_EMBEDDING = "knowledge_embedding"
-
 func ListKnowledge(user *models.User) []*Knowledge {
+	return QueryKnowledge(user, bson.M{"org": user.Org})
+}
+
+func QueryKnowledge(user *models.User, query bson.M) []*Knowledge {
 
 	findOptions := options.FindOptions{}
 	findOptions.Projection = bson.M{"typeData": 0}
 
-	return db.QueryEntities[Knowledge](CT_KNOWLEDGE, bson.M{
-		"org": user.Org,
-	}, &findOptions)
+	query["org"] = user.Org
+
+	lg.LogI(query)
+
+	return db.QueryEntities[Knowledge](cts.CT_KNOWLEDGE, query, &findOptions)
 }
 
 func COUKnowledge(user *models.User, knowledge *Knowledge) {
@@ -30,9 +37,9 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 	if knowledge.Uid.IsZero() {
 		knowledge.Uid = primitive.NewObjectID()
 
-		db.InsertEntity(CT_KNOWLEDGE, knowledge)
+		db.InsertEntity(cts.CT_KNOWLEDGE, knowledge)
 	} else {
-		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
+		db.UpdateOneCustom(cts.CT_KNOWLEDGE, bson.M{
 			"_id": knowledge.Uid,
 			"org": knowledge.Org,
 		}, bson.M{"$set": knowledge})
@@ -46,7 +53,7 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 
 		knowledge.HasEmbedding = true
 
-		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
+		db.UpdateOneCustom(cts.CT_KNOWLEDGE, bson.M{
 			"_id": knowledge.Uid,
 			"org": knowledge.Org,
 		}, bson.M{"$set": bson.M{"hasEmbedding": true}})
@@ -54,12 +61,12 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 		COUKnowledgeEmbedding(user, knowledge.Uid, embedding)
 	} else {
 
-		db.DeleteEntity(CT_KNOWLEDGE_EMBEDDING, bson.M{
+		db.DeleteEntity(cts.CT_KNOWLEDGE_EMBEDDINGS, bson.M{
 			"_id": knowledge.Uid,
 			"org": knowledge.Org,
 		})
 
-		db.UpdateOneCustom(CT_KNOWLEDGE, bson.M{
+		db.UpdateOneCustom(cts.CT_KNOWLEDGE, bson.M{
 			"_id": knowledge.Uid,
 			"org": knowledge.Org,
 		}, bson.M{"$set": bson.M{"hasEmbedding": false}})
@@ -72,7 +79,7 @@ func COUKnowledgeStep(user *models.User, knowledge *Knowledge) {
 }
 
 func DeleteKnowledgeEmbedding(user *models.User, uid primitive.ObjectID) {
-	db.DeleteEntities(CT_KNOWLEDGE_EMBEDDING, bson.M{
+	db.DeleteEntities(cts.CT_KNOWLEDGE_EMBEDDINGS, bson.M{
 		"_id": uid,
 		"org": user.Org,
 	})
@@ -86,11 +93,11 @@ func COUKnowledgeEmbedding(user *models.User, knUid primitive.ObjectID, embeddin
 	kne.Uid = knUid
 	kne.Org = user.Org
 
-	db.InsertEntity(CT_KNOWLEDGE_EMBEDDING, kne)
+	db.InsertEntity(cts.CT_KNOWLEDGE_EMBEDDINGS, kne)
 }
 
 func GetKnowledge(user *models.User, knowledgeUid primitive.ObjectID) *Knowledge {
-	return db.QueryEntity[Knowledge](CT_KNOWLEDGE, bson.M{
+	return db.QueryEntity[Knowledge](cts.CT_KNOWLEDGE, bson.M{
 		"_id": knowledgeUid,
 		"org": user.Org,
 	})
@@ -100,8 +107,20 @@ func DeleteKnowledge(user *models.User, knowledgeUid primitive.ObjectID) {
 
 	DeleteKnowledgeEmbedding(user, knowledgeUid)
 
-	db.DeleteEntity(CT_KNOWLEDGE, bson.M{
+	db.DeleteEntity(cts.CT_KNOWLEDGE, bson.M{
 		"_id": knowledgeUid,
 		"org": user.Org,
+	})
+}
+
+func DeleteKnowledgeOfDomain(user *models.User, domainUid primitive.ObjectID) {
+	node.DeleteNodesOfDomain(user, domainUid)
+
+	db.DeleteEntities(cts.CT_KNOWLEDGE_EMBEDDINGS, bson.M{
+		"domain": domainUid,
+	})
+
+	db.DeleteEntities(cts.CT_KNOWLEDGE, bson.M{
+		"domain": domainUid,
 	})
 }

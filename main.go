@@ -19,7 +19,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/flows"
 	"github.com/erikpa1/TurtleIntelligenceBackend/fn"
 	"github.com/erikpa1/TurtleIntelligenceBackend/forecasting"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledge"
+	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
@@ -99,7 +99,7 @@ func dev_main() {
 	auth.Init_api_auth0(r)
 	nn.InitNNApi(r)
 	fn.InitFnApi(r)
-	knowledge.InitKnowledgeApi(r)
+	knowledgeHub.InitKnowledgeHubApi(r)
 	tags.InitTagsApi(r)
 	forecasting.InitForecastingApi(r)
 

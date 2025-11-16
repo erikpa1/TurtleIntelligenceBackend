@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	auth0Domain  = "dev-30fa1v4j5cfgshau.us.auth0.com"                                // Replace with your Auth0 domain
+	auth0Domain  = "dev-30fa1v4j5cfgshau.us.auth0.com"                                // Replace with your Auth0 domains
 	clientID     = "0H21KyUGDZgWC7tVVBPTBtGn95eR2FEk"                                 // Replace with your Auth0 Client ID
 	clientSecret = "YZGIseNK3VREONygBT8kAKn_1C-CAwII4KkFCNSOWd6kjLsrmOxyWM_XxJi-b5aC" // Replace with your Auth0 Client Secret
 	redirectURL  = "http://localhost:8080/api/auth0/callback"

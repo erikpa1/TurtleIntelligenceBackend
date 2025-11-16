@@ -107,7 +107,7 @@ func WriteCookie(c *gin.Context, key string, value string) {
 	c.SetCookie(key, value,
 		int((time.Hour * 24 * 365 * 100).Seconds()),
 		"/",   // path
-		"",    // domain
+		"",    // domains
 		false, // secure
 		false, // httpOnly
 	)

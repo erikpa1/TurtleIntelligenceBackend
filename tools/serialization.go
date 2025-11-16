@@ -2,9 +2,11 @@ package tools
 
 import (
 	"encoding/json"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func VecFromJStr[T any](data string) []T {
@@ -36,6 +38,12 @@ func ObjFromJsonPtr[T any](data string) *T {
 	return result
 }
 
+func QueryBsonHeader(c *gin.Context) bson.M {
+	tmp := QueryHeader[bson.M](c)
+	JsonToBson(tmp)
+	return tmp
+}
+
 func QueryHeader[T any](c *gin.Context) T {
 	var result T
 
@@ -46,27 +54,31 @@ func QueryHeader[T any](c *gin.Context) T {
 		lg.LogStackTraceErr(err, "JSON: ", headerValue)
 		return result
 	}
-
 	return result
 }
 
-func ObjFromBsonPtr[T any](data string) *T {
-
-	dataDict := ObjFromJson[bson.M](data)
-
-	// Convert map to BSON bytes
-	bsonData, err := bson.Marshal(dataDict)
-	if err != nil {
-		lg.LogStackTraceErr(err)
+func JsonToBson(data bson.M) {
+	for key, value := range data {
+		switch v := value.(type) {
+		case map[string]interface{}:
+			// Check if it's an $oid structure
+			if oidStr, ok := v["$oid"].(string); ok {
+				if objID, err := primitive.ObjectIDFromHex(oidStr); err == nil {
+					data[key] = objID
+				}
+			} else {
+				// Recurse deeper
+				JsonToBson(v)
+			}
+		case []interface{}:
+			for i, item := range v {
+				if itemMap, ok := item.(map[string]interface{}); ok {
+					JsonToBson(itemMap)
+					v[i] = itemMap
+				}
+			}
+		}
 	}
-
-	var result T
-	err = bson.Unmarshal(bsonData, &result)
-	if err != nil {
-		lg.LogStackTraceErr(err)
-	}
-
-	return &result
 }
 
 func ObjFromJson[T any](data string) T {

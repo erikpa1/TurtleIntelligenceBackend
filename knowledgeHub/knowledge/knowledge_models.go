@@ -17,6 +17,7 @@ const (
 type Knowledge struct {
 	Uid          primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
 	Org          primitive.ObjectID `json:"org"`
+	Domain       primitive.ObjectID `json:"domain"`
 	Name         string             `json:"name"`
 	Description  string             `json:"description"`
 	Type         KnowledgeType      `json:"type"`
@@ -27,6 +28,7 @@ type Knowledge struct {
 type KnowledgeEmbedding struct {
 	Uid       primitive.ObjectID  `json:"uid" bson:"_id,omitempty"`
 	Org       primitive.ObjectID  `json:"org"`
+	Domain    primitive.ObjectID  `json:"domain"`
 	Embedding llmModels.Embedding `json:"embedding"`
 }
 

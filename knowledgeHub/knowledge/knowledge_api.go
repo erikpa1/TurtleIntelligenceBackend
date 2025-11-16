@@ -6,14 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func _ListKnowledge(c *gin.Context) {
+func _QueryKnowledge(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListKnowledge(user))
+	query := tools.QueryBsonHeader(c)
+	tools.AutoReturn(c, QueryKnowledge(user, query))
 }
 
 func _GetKnowledge(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	knowUid := tools.MongoObjectIdFromQuery(c)
+
 	tools.AutoReturn(c, GetKnowledge(user, knowUid))
 
 }
@@ -44,9 +46,9 @@ func _DeleteKnowledge(c *gin.Context) {
 }
 
 func InitKnowledgeApi(r *gin.Engine) {
-	r.GET("/api/knowledge/list", auth.LoginOrApp, _ListKnowledge)
-	r.GET("/api/knowledge", auth.LoginOrApp, _GetKnowledge)
-	r.POST("/api/knowledge", auth.LoginOrApp, _COUKnowledge)
-	r.POST("/api/knowledge/step", auth.LoginOrApp, _COUKnowledgeStep)
-	r.DELETE("/api/knowledge", auth.LoginOrApp, _DeleteKnowledge)
+	r.GET("/api/kh/knowledge/query", auth.LoginOrApp, _QueryKnowledge)
+	r.GET("/api/kh/knowledge", auth.LoginOrApp, _GetKnowledge)
+	r.POST("/api/kh/knowledge", auth.LoginOrApp, _COUKnowledge)
+	r.POST("/api/kh/knowledge/step", auth.LoginOrApp, _COUKnowledgeStep)
+	r.DELETE("/api/kh/knowledge", auth.LoginOrApp, _DeleteKnowledge)
 }
