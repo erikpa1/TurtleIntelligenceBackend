@@ -1,0 +1,99 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3" pages="2">
+  <diagram name="Overall architecture" id="Nv2pY3sBK__hWsB4_j4M">
+    <mxGraphModel dx="806" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gTaVurs7lkY_koRJYdDs-1" value="Turtle intelligence" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="430" width="660" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-2" value="CRM" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-3" value="AI Agents" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-4" value="ERP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-5" value="Knowledge&lt;div&gt;Hub&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-6" value="Simulations" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="390" width="570" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-8" value="Logistics" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-9" value="MES" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-11" value="Neural&amp;nbsp;&lt;div&gt;Networks&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-12" value="Cyber&lt;div&gt;security&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="250" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-13" value="E-commerce" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-14" value="Automation" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-15" value="Virtual&amp;nbsp;&lt;div&gt;Reality&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-17" value="Augumented&lt;div&gt;Reality&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-18" value="Planning" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gTaVurs7lkY_koRJYdDs-19" value="Scheduling" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="110" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="rjUmiWTQcxb28vi4BFG9" name="CRM - architecture">
+    <mxGraphModel dx="806" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="g29npNsg40W_Wkd013MA-7" value="CRM" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="370" width="540" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-19" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="g29npNsg40W_Wkd013MA-8" target="g29npNsg40W_Wkd013MA-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-8" value="City" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="170" y="60" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-14" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;flowAnimation=0;shadow=0;" edge="1" parent="1" source="g29npNsg40W_Wkd013MA-9" target="g29npNsg40W_Wkd013MA-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-15" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="g29npNsg40W_Wkd013MA-9" target="g29npNsg40W_Wkd013MA-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-16" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="g29npNsg40W_Wkd013MA-9" target="g29npNsg40W_Wkd013MA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-9" value="Invoice" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="170" y="250" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-17" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="g29npNsg40W_Wkd013MA-11" target="g29npNsg40W_Wkd013MA-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-11" value="Contract" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="440" y="250" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-13" value="Business&lt;div&gt;subject&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="345" y="90" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="g29npNsg40W_Wkd013MA-18" value="State" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="100" y="150" width="80" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
