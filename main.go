@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
+	"github.com/erikpa1/TurtleIntelligenceBackend/security"
 	"mime"
 	"net/http"
 	"os/exec"
@@ -104,6 +105,7 @@ func dev_main() {
 	tags.InitTagsApi(r)
 	forecasting.InitForecastingApi(r)
 	crm.InitCrmApi(r)
+	security.InitSecurityApi(r)
 
 	tables.InitTablesApi(r)
 
