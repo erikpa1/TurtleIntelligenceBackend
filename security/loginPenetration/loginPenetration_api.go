@@ -8,9 +8,9 @@ import (
 )
 
 func _RunPenetrationTesting(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
 	uid := tools.MongoObjectIdFromQuery(c)
-	RunLoginPenTest(uid)
-
+	RunLoginPenTest(user, uid)
 }
 
 func InitLoginPenetration(r *gin.Engine) {
