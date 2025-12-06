@@ -3,6 +3,8 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
+	"github.com/erikpa1/TurtleIntelligenceBackend/security"
 	"mime"
 	"net/http"
 	"os/exec"
@@ -103,6 +105,8 @@ func dev_main() {
 	knowledgeHub.InitKnowledgeHubApi(r)
 	tags.InitTagsApi(r)
 	forecasting.InitForecastingApi(r)
+	crm.InitCrmApi(r)
+	security.InitSecurityApi(r)
 
 	tables.InitTablesApi(r)
 
@@ -196,6 +200,8 @@ func dev_main() {
 }
 
 func main() {
+
+	//levenstein.TestLevenstein()
 
 	models.RegisterClazzFactory()
 
