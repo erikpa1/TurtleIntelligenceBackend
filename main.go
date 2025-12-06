@@ -21,6 +21,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/forecasting"
 	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/agents"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/nn"
@@ -107,6 +108,7 @@ func dev_main() {
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)
+	agents.InitLLMAgentNodes(r)
 	flows.InitFlowsApi(r)
 
 	if tools.IsInDevelopment() {
