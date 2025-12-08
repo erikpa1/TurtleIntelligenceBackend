@@ -2,6 +2,7 @@ package agents
 
 import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
+	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"go.mongodb.org/mongo-driver/bson"
@@ -22,6 +23,15 @@ func COUNode(user *models.User, node *LLMAgentNode) {
 			lg.LogE("Failed to update node for org %s", node.Org)
 		}
 	}
+}
+
+func GetAgentNode(orgUid, uid primitive.ObjectID) *LLMAgentNode {
+	return db.GetByIdAndOrg[LLMAgentNode](CT_AGENT_NODES, uid, orgUid)
+}
+
+func GetRelationOfNode(orgUid primitive.ObjectID, query bson.M) *node.NodeRelation {
+	query["org"] = orgUid
+	return db.QueryEntity[node.NodeRelation](CT_AGENT_NODES, query)
 }
 
 func QueryNodes(user *models.User, query bson.M) []bson.M {

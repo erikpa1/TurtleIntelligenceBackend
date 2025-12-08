@@ -23,8 +23,25 @@ func _DeleteNode(c *gin.Context) {
 	DeleteAgentNode(uid)
 }
 
+func _ExecNode(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	agentUid, _ := tools.StringToObjectID(c.Param("agentUid"))
+	ExeNodeWithUid(user.Org, agentUid)
+}
+
+func _ExecOrgNode(c *gin.Context) {
+	orgUid, _ := tools.StringToObjectID(c.Param("orgUid"))
+	agentUid, _ := tools.StringToObjectID(c.Param("agentUid"))
+	ExeNodeWithUid(orgUid, agentUid)
+
+}
+
 func InitLLMAgentNodes(r *gin.Engine) {
 	r.GET("/api/llm/agent-nodes/query", auth.LoginRequired, _QueryAgentNodes)
 	r.POST("/api/llm/agent-node", auth.LoginRequired, _COUNode)
+
 	r.DELETE("/api/llm/agent-node", auth.LoginRequired, _DeleteNode)
+
+	r.POST("/api/llm/agent/exec/:agentUid", auth.LoginRequired, _ExecNode)
+	r.POST("/api/llm/agent/exec/:orgUid/:agentUid", auth.LoginRequired, _ExecOrgNode)
 }
