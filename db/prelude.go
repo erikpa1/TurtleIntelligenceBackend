@@ -210,6 +210,14 @@ func UpdateOneCustom(collection string, filter interface{}, update interface{}, 
 	return nil
 }
 
+func UpdateMany(collection string, filter bson.M, data bson.M) {
+	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, data)
+
+	if err != nil {
+		lg.LogStackTraceErr(err)
+	}
+}
+
 func UpdateEntitiesWhere(collection string, filter bson.M, data any) {
 	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, bson.M{"$set": data})
 

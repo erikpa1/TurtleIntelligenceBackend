@@ -3,13 +3,14 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
-	"github.com/erikpa1/TurtleIntelligenceBackend/security"
 	"mime"
 	"net/http"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
+	"github.com/erikpa1/TurtleIntelligenceBackend/security"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
 	"github.com/erikpa1/TurtleIntelligenceBackend/api"
