@@ -25,3 +25,14 @@ type LLMAgentNode struct {
 	TypeData    bson.M                        `json:"typeData" bson:"typeData"`
 	Connections map[string]primitive.ObjectID `json:"connections"` //Connections are deleted by editor and it has to modify nodes
 }
+
+type LLMAgentConnection struct {
+	Uid          primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
+	Parent       primitive.ObjectID `json:"parent"`
+	Source       primitive.ObjectID `json:"source"`
+	SourceHandle string             `json:"sourceHandle" bson:"sourceHandle"`
+	Target       primitive.ObjectID `json:"target"`
+	TargetHandle string             `json:"targetHandle" bson:"targetHandle"`
+	Priority     int8               `json:"priority"`
+	Org          primitive.ObjectID `json:"org"`
+}

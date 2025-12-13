@@ -15,6 +15,13 @@ func _QueryAgentNodes(c *gin.Context) {
 	tools.AutoReturn(c, QueryNodes(user, query))
 }
 
+func _QueryAgentEdges(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	query := tools.QueryBsonHeader(c)
+
+	tools.AutoReturn(c, QueryEdges(user, query))
+}
+
 func _COUNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	data := tools.ObjFromJsonPtr[LLMAgentNode](c.PostForm("data"))
@@ -26,9 +33,10 @@ func _COUNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	type _Request struct {
-		Modified []*LLMAgentNode      `json:"modified"`
-		Created  []*LLMAgentNode      `json:"created"`
-		Deleted  []primitive.ObjectID `json:"deleted"`
+		Modified       []*LLMAgentNode       `json:"modified"`
+		Created        []*LLMAgentNode       `json:"created"`
+		Deleted        []primitive.ObjectID  `json:"deleted"`
+		NewConnections []*LLMAgentConnection `json:"newConnections"`
 	}
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
@@ -44,6 +52,7 @@ func _COUNodes(c *gin.Context) {
 	}
 
 	InsertNodes(user, req.Created)
+	InsertEdges(user, req.NewConnections)
 }
 
 func _DeleteNode(c *gin.Context) {
@@ -66,6 +75,7 @@ func _ExecOrgNode(c *gin.Context) {
 
 func InitLLMAgentNodes(r *gin.Engine) {
 	r.GET("/api/llm/agent-nodes/query", auth.LoginRequired, _QueryAgentNodes)
+	r.GET("/api/llm/agent-edges/query", auth.LoginRequired, _QueryAgentEdges)
 	r.POST("/api/llm/agent-node", auth.LoginRequired, _COUNode)
 	r.POST("/api/llm/agent-nodes", auth.LoginRequired, _COUNodes)
 

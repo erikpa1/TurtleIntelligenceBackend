@@ -13,6 +13,7 @@ import (
 )
 
 const CT_AGENT_NODES = "llm_agent_nodes"
+const CT_AGENT_EDGES = "llm_agent_edges"
 
 func InsertNodes(user *models.User, nodes []*LLMAgentNode) {
 	for _, n := range nodes {
@@ -22,6 +23,17 @@ func InsertNodes(user *models.User, nodes []*LLMAgentNode) {
 	db.InsertMany(CT_AGENT_NODES, tools.ToIArray(nodes))
 
 	lg.LogI(fmt.Sprintf("Inserted %d nodes", len(nodes)))
+
+}
+
+func InsertEdges(user *models.User, edges []*LLMAgentConnection) {
+	for _, n := range edges {
+		n.Org = user.Org
+	}
+
+	db.InsertMany(CT_AGENT_EDGES, tools.ToIArray(edges))
+
+	lg.LogI(fmt.Sprintf("Inserted %d edges", len(edges)))
 
 }
 
@@ -52,14 +64,22 @@ func QueryNodes(user *models.User, query bson.M) []*LLMAgentNode {
 	return db.QueryEntities[LLMAgentNode](CT_AGENT_NODES, user.FillOrgQuery(query))
 }
 
+func QueryEdges(user *models.User, query bson.M) []*LLMAgentConnection {
+	return db.QueryEntities[LLMAgentConnection](CT_AGENT_EDGES, user.FillOrgQuery(query))
+}
+
 func DeleteNodesOfAgent(agentUid primitive.ObjectID) {
 	db.DeleteEntities(CT_AGENT_NODES, bson.M{"parent": agentUid})
+	db.DeleteEntities(CT_AGENT_EDGES, bson.M{"parent": agentUid})
 }
 
 func DeleteAgentNode(nodeUid primitive.ObjectID) {
 	//TODO musia sa zmazat secky connectiony
 
-	db.UpdateMany(CT_AGENT_NODES, bson.M{}, bson.M{"$unset": bson.M{"connections." + nodeUid.Hex(): ""}})
+	db.DeleteEntities(CT_AGENT_EDGES, bson.M{"$or": bson.A{
+		bson.M{"source": nodeUid},
+		bson.M{"target": nodeUid},
+	}})
 
 	db.Delete(CT_AGENT_NODES, nodeUid)
 }
