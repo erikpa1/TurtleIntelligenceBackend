@@ -10,6 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func DeleteEdges(user *models.User, query bson.M) {
+	user.FillOrgQuery(query)
+	db.DeleteEntities(CT_AGENT_EDGES, query)
+}
+
 func InsertEdges(user *models.User, edges []*LLMAgentConnection) {
 	for _, n := range edges {
 		n.Org = user.Org

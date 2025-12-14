@@ -5,6 +5,7 @@ import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -33,10 +34,11 @@ func _COUNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	type _Request struct {
-		Modified       []*LLMAgentNode       `json:"modified"`
-		Created        []*LLMAgentNode       `json:"created"`
-		Deleted        []primitive.ObjectID  `json:"deleted"`
-		NewConnections []*LLMAgentConnection `json:"newConnections"`
+		Modified     []*LLMAgentNode       `json:"modified"`
+		Created      []*LLMAgentNode       `json:"created"`
+		Deleted      []primitive.ObjectID  `json:"deleted"`
+		NewEdges     []*LLMAgentConnection `json:"newEdges"`
+		DeletedEdges []primitive.ObjectID  `json:"deletedEdges"`
 	}
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
@@ -55,8 +57,12 @@ func _COUNodes(c *gin.Context) {
 		InsertNodes(user, req.Created)
 	}
 
-	if len(req.NewConnections) > 0 {
-		InsertEdges(user, req.NewConnections)
+	if len(req.NewEdges) > 0 {
+		InsertEdges(user, req.NewEdges)
+	}
+
+	if len(req.DeletedEdges) > 0 {
+		DeleteEdges(user, bson.M{"_id": bson.M{"$in": req.DeletedEdges}})
 	}
 
 }
