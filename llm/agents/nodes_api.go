@@ -51,8 +51,14 @@ func _COUNodes(c *gin.Context) {
 		COUNode(user, modified)
 	}
 
-	InsertNodes(user, req.Created)
-	InsertEdges(user, req.NewConnections)
+	if len(req.Created) > 0 {
+		InsertNodes(user, req.Created)
+	}
+
+	if len(req.NewConnections) > 0 {
+		InsertEdges(user, req.NewConnections)
+	}
+
 }
 
 func _DeleteNode(c *gin.Context) {

@@ -26,17 +26,6 @@ func InsertNodes(user *models.User, nodes []*LLMAgentNode) {
 
 }
 
-func InsertEdges(user *models.User, edges []*LLMAgentConnection) {
-	for _, n := range edges {
-		n.Org = user.Org
-	}
-
-	db.InsertMany(CT_AGENT_EDGES, tools.ToIArray(edges))
-
-	lg.LogI(fmt.Sprintf("Inserted %d edges", len(edges)))
-
-}
-
 func COUNode(user *models.User, node *LLMAgentNode) {
 	node.Org = user.Org
 
@@ -62,10 +51,6 @@ func GetRelationOfNode(orgUid primitive.ObjectID, query bson.M) *node.NodeRelati
 
 func QueryNodes(user *models.User, query bson.M) []*LLMAgentNode {
 	return db.QueryEntities[LLMAgentNode](CT_AGENT_NODES, user.FillOrgQuery(query))
-}
-
-func QueryEdges(user *models.User, query bson.M) []*LLMAgentConnection {
-	return db.QueryEntities[LLMAgentConnection](CT_AGENT_EDGES, user.FillOrgQuery(query))
 }
 
 func DeleteNodesOfAgent(agentUid primitive.ObjectID) {
