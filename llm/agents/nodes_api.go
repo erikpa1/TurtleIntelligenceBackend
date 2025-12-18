@@ -34,11 +34,11 @@ func _COUNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	type _Request struct {
-		Modified     []*LLMAgentNode       `json:"modified"`
-		Created      []*LLMAgentNode       `json:"created"`
-		Deleted      []primitive.ObjectID  `json:"deleted"`
-		NewEdges     []*LLMAgentConnection `json:"newEdges"`
-		DeletedEdges []primitive.ObjectID  `json:"deletedEdges"`
+		Modified     []*LLMAgentNode      `json:"modified"`
+		Created      []*LLMAgentNode      `json:"created"`
+		Deleted      []primitive.ObjectID `json:"deleted"`
+		NewEdges     []*NodeEdge          `json:"newEdges"`
+		DeletedEdges []primitive.ObjectID `json:"deletedEdges"`
 	}
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
