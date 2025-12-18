@@ -85,14 +85,24 @@ func _ExecOrgNode(c *gin.Context) {
 
 }
 
+func _PlayAgentNode(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	nodeUid := tools.MongoObjectIdFromQuery(c)
+	PlayAgentNode(user, nodeUid)
+}
+
 func InitLLMAgentNodes(r *gin.Engine) {
 	r.GET("/api/llm/agent-nodes/query", auth.LoginRequired, _QueryAgentNodes)
 	r.GET("/api/llm/agent-edges/query", auth.LoginRequired, _QueryAgentEdges)
 	r.POST("/api/llm/agent-node", auth.LoginRequired, _COUNode)
+
 	r.POST("/api/llm/agent-nodes", auth.LoginRequired, _COUNodes)
 
 	r.DELETE("/api/llm/agent-node", auth.LoginRequired, _DeleteNode)
 
 	r.POST("/api/llm/agent/exec/:agentUid", auth.LoginRequired, _ExecNode)
 	r.POST("/api/llm/agent/exec/:agentUid/:orgUid", auth.LoginRequired, _ExecOrgNode)
+
+	//Play
+	r.POST("/api/llm/agent-play", auth.LoginRequired, _COUNode)
 }

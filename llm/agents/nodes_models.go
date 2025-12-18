@@ -10,7 +10,7 @@ type PhaseType uint8
 const (
 	AGENT_PHASE_TRIGGER PhaseType = 0
 	AGENT_PHASE_CONTROL PhaseType = 1
-	AGENT_PHASE_OUTPUT  PhaseType = 2
+	AGENT_PHASE_END     PhaseType = 2
 )
 
 type LLMAgentNode struct {
@@ -26,7 +26,7 @@ type LLMAgentNode struct {
 	Connections map[string]primitive.ObjectID `json:"connections"` //Connections are deleted by editor and it has to modify nodes
 }
 
-type LLMAgentConnection struct {
+type NodeEdge struct {
 	Uid          primitive.ObjectID `json:"uid" bson:"_id,omitempty"`
 	Parent       primitive.ObjectID `json:"parent"`
 	Source       primitive.ObjectID `json:"source"`

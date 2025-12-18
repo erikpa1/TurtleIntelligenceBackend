@@ -68,3 +68,64 @@ func DeleteAgentNode(nodeUid primitive.ObjectID) {
 
 	db.Delete(CT_AGENT_NODES, nodeUid)
 }
+
+func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName string) *LLMAgentNode {
+
+	edge := db.QueryEntity[NodeEdge](CT_AGENT_EDGES, bson.M{
+		"source":       uid,
+		"sourceHandle": connName,
+	})
+
+	if edge != nil {
+		return GetAgentNode(edge.Org, edge.Uid)
+
+	}
+	return nil
+}
+
+func PlayAgentNode(user *models.User, agentUid primitive.ObjectID) {
+
+	entryNode := GetAgentNode(user.Org, agentUid)
+
+	if entryNode != nil {
+		DispatchPlayNode(entryNode)
+
+	} else {
+		lg.LogE("No node entry")
+	}
+
+}
+
+func DispatchPlayNode(node *LLMAgentNode) {
+	if node.PhaseType == AGENT_PHASE_TRIGGER {
+		_PlayTriggerNode(node)
+	} else if node.PhaseType == AGENT_PHASE_CONTROL {
+		_PlayControlNode(node)
+	} else if node.PhaseType == AGENT_PHASE_END {
+		_PlayEndNode(node)
+	}
+
+}
+
+func _PlayTriggerNode(node *LLMAgentNode) {
+	if node.PhaseType == AGENT_PHASE_TRIGGER {
+		targetNode := GetTargetOfNode(node.Org, node.Uid, "b")
+		if targetNode != nil {
+			DispatchPlayNode(targetNode)
+		}
+	}
+}
+
+func _PlayControlNode(node *LLMAgentNode) {
+	if node.Type == "writeToFile" {
+
+	} else if node.Type == "llmAgent" {
+
+	} else if node.Type == "ollama" {
+
+	}
+}
+
+func _PlayEndNode(node *LLMAgentNode) {
+
+}
