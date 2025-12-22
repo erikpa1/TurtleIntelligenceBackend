@@ -104,5 +104,5 @@ func InitLLMAgentNodes(r *gin.Engine) {
 	r.POST("/api/llm/agent/exec/:agentUid/:orgUid", auth.LoginRequired, _ExecOrgNode)
 
 	//Play
-	r.POST("/api/llm/agent-play", auth.LoginRequired, _COUNode)
+	r.POST("/api/llm/agent-play", _PlayAgentNode)
 }
