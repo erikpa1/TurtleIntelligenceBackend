@@ -2,14 +2,17 @@ package agents
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
 	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const CT_AGENT_NODES = "llm_agent_nodes"
@@ -53,9 +56,9 @@ func QueryNodes(user *models.User, query bson.M) []*LLMAgentNode {
 	return db.QueryEntities[LLMAgentNode](CT_AGENT_NODES, user.FillOrgQuery(query))
 }
 
-func DeleteNodesOfAgent(agentUid primitive.ObjectID) {
-	db.DeleteEntities(CT_AGENT_NODES, bson.M{"parent": agentUid})
-	db.DeleteEntities(CT_AGENT_EDGES, bson.M{"parent": agentUid})
+func DeleteNodesOfAgent(user *models.User, agentUid primitive.ObjectID) {
+	db.DeleteEntities(CT_AGENT_NODES, user.FillOrgQuery(bson.M{"parent": agentUid}))
+	db.DeleteEntities(CT_AGENT_EDGES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 }
 
 func DeleteAgentNode(nodeUid primitive.ObjectID) {
@@ -83,45 +86,108 @@ func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName st
 	return nil
 }
 
-func PlayAgentNode(user *models.User, agentUid primitive.ObjectID) {
+func GetTargetsOfNode(context *NodePlayContext, uid primitive.ObjectID, connName string) []*LLMAgentNode {
 
-	entryNode := GetAgentNode(user.Org, agentUid)
+	opts := options.FindOptions{
+		Sort: bson.D{{Key: "priority", Value: 1}},
+	}
+
+	query := bson.M{
+		"source":       uid,
+		"sourceHandle": connName,
+	}
+
+	lg.LogEson(query)
+
+	edges := db.QueryEntities[NodeEdge](CT_AGENT_EDGES, query, &opts)
+
+	nodes := make([]*LLMAgentNode, len(edges))
+
+	for i, edge := range edges {
+		_, isCycle := context.AlreadyPlayedNodes[edge.Target]
+		if isCycle {
+			lg.LogE("Cycle detected")
+			break
+		}
+		nodes[i] = GetAgentNode(edge.Org, edge.Target)
+	}
+
+	return nodes
+}
+
+func PlayAgentNode(context *NodePlayContext, agentUid primitive.ObjectID) {
+
+	entryNode := GetAgentNode(context.User.Org, agentUid)
 
 	if entryNode != nil {
-		DispatchPlayNode(entryNode)
-
+		DispatchPlayNode(context, entryNode)
 	} else {
 		lg.LogE("No node entry")
 	}
 
 }
 
-func DispatchPlayNode(node *LLMAgentNode) {
-	if node.PhaseType == AGENT_PHASE_TRIGGER {
-		_PlayTriggerNode(node)
-	} else if node.PhaseType == AGENT_PHASE_CONTROL {
-		_PlayControlNode(node)
+func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
+
+	if node.PhaseType == AGENT_PHASE_CONTROL {
+		_PlayControlNode(context, node)
+	} else if node.PhaseType == AGENT_PHASE_TRIGGER {
+		_PlayTriggerNode(context, node)
 	} else if node.PhaseType == AGENT_PHASE_END {
 		_PlayEndNode(node)
 	}
-
 }
 
-func _PlayTriggerNode(node *LLMAgentNode) {
-	if node.PhaseType == AGENT_PHASE_TRIGGER {
-		targetNode := GetTargetOfNode(node.Org, node.Uid, "b")
-		if targetNode != nil {
-			DispatchPlayNode(targetNode)
-		}
+func _PlayTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
+
+	newContext := &NodePlayContext{
+		Gin:  context.Gin,
+		User: context.User,
 	}
+
+	if node.Type == HTTP_TRIGGER {
+		//TODO vybrat z body data
+
+		bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
+		if err != nil {
+			lg.LogStackTraceErr(err)
+			return
+		}
+
+		// Convert bytes to string
+		bodyString := string(bodyBytes)
+		newContext.Data.Data = bodyString
+		newContext.Data.Type = ContextDataType.String
+	} else {
+		lg.LogE("Undefined node")
+	}
+
+	nextNodes := GetTargetsOfNode(context, node.Uid, "a")
+
+	if len(nextNodes) > 0 {
+		for i, nextNode := range nextNodes {
+			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
+
+			if nextNode == nil {
+				lg.LogE("No next node")
+			} else {
+				DispatchPlayNode(newContext, nextNode)
+			}
+		}
+	} else {
+		lg.LogE("No next nodes")
+	}
+
 }
 
-func _PlayControlNode(node *LLMAgentNode) {
-	if node.Type == "writeToFile" {
+func _PlayControlNode(context *NodePlayContext, node *LLMAgentNode) {
+	lg.LogE(node.Type)
 
+	if node.Type == WRITE_TO_FILE {
+		vfs.WriteFileStringToWD("llmOutput", "test.txt", context.Data.GetString())
+		vfs.OpenWDFolder("llmOutput")
+		lg.LogE(vfs.GetWorkingDirectory())
 	} else if node.Type == "llmAgent" {
-
-	} else if node.Type == "ollama" {
 
 	}
 }

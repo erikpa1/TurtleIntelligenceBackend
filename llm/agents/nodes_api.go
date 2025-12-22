@@ -88,7 +88,10 @@ func _ExecOrgNode(c *gin.Context) {
 func _PlayAgentNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	nodeUid := tools.MongoObjectIdFromQuery(c)
-	PlayAgentNode(user, nodeUid)
+	PlayAgentNode(&NodePlayContext{
+		Gin:  c,
+		User: user,
+	}, nodeUid)
 }
 
 func InitLLMAgentNodes(r *gin.Engine) {

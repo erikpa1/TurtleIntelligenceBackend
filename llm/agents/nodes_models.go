@@ -1,6 +1,8 @@
 package agents
 
 import (
+	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -35,4 +37,36 @@ type NodeEdge struct {
 	TargetHandle string             `json:"targetHandle" bson:"targetHandle"`
 	Priority     int8               `json:"priority"`
 	Org          primitive.ObjectID `json:"org"`
+}
+
+type _ContextDataType int8
+
+type ContextDataTypeClass struct {
+	Null   _ContextDataType
+	String _ContextDataType
+	Json   _ContextDataType
+	Xml    _ContextDataType
+}
+
+var ContextDataType = ContextDataTypeClass{
+	Null:   0,
+	String: 1,
+	Json:   2,
+	Xml:    3,
+}
+
+type NodePlayContext struct {
+	Gin                *gin.Context
+	User               *models.User
+	Data               ContextData
+	AlreadyPlayedNodes map[primitive.ObjectID]bool
+}
+
+type ContextData struct {
+	Data any
+	Type _ContextDataType
+}
+
+func (self *ContextData) GetString() string {
+	return self.Data.(string)
 }

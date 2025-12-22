@@ -2,6 +2,7 @@ package llmApi
 
 import (
 	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
+	"github.com/erikpa1/TurtleIntelligenceBackend/llm/agents"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
 	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
@@ -16,7 +17,11 @@ func _ListLLMAgents(c *gin.Context) {
 
 func _DeleteLLMAgent(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	llmCtrl.DeleteLLMAgent(user, tools.MongoObjectIdFromQuery(c))
+
+	uid := tools.MongoObjectIdFromQuery(c)
+
+	agents.DeleteNodesOfAgent(user, uid)
+	llmCtrl.DeleteLLMAgent(user, uid)
 }
 
 func _COULLMAgent(c *gin.Context) {

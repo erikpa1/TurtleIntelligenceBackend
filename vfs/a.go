@@ -3,8 +3,6 @@ package vfs
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"io"
 	"io/ioutil"
 	"os"
@@ -12,6 +10,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 )
 
 type ListFileInfoStruct struct {
@@ -304,8 +305,26 @@ func MakeDirs(folder string) error {
 // OpenWDFolder - Opens a folder in the working directory (on Windows)
 func OpenWDFolder(folder string) error {
 	finalPath := filepath.Join(GetWorkingDirectory(), folder)
-	cmd := exec.Command("explorer", finalPath)
-	return cmd.Start()
+	cmd := exec.Command(GetExploreCommand(), finalPath)
+
+	result := cmd.Start()
+
+	if result != nil {
+		lg.LogStackTraceErr(result)
+	}
+
+	return result
+
+}
+
+func GetExploreCommand() string {
+	if IsLinux() {
+		return "xdg-open"
+	} else if IsDarwin() {
+		return "open"
+	} else {
+		return "explorer"
+	}
 }
 
 // WriteFileStringToWD - Writes a string to a file in the working directory
