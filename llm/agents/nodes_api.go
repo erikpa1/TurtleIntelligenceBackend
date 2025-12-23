@@ -88,10 +88,21 @@ func _ExecOrgNode(c *gin.Context) {
 func _PlayAgentNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	nodeUid := tools.MongoObjectIdFromQuery(c)
-	PlayAgentNode(&NodePlayContext{
-		Gin:  c,
-		User: user,
-	}, nodeUid)
+
+	playNodeContext := NodePlayContext{
+		Gin:         c,
+		User:        user,
+		IsLocalHost: c.RemoteIP() == "::1",
+	}
+
+	lg.LogE(nodeUid)
+
+	PlayAgentNode(&playNodeContext, nodeUid)
+
+	tools.AutoReturn(c, bson.M{
+		"pipeline": playNodeContext.Pipeline,
+	})
+
 }
 
 func InitLLMAgentNodes(r *gin.Engine) {

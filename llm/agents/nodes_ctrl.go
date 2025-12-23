@@ -2,14 +2,12 @@ package agents
 
 import (
 	"fmt"
-	"io"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
 	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
-	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -93,11 +91,12 @@ func GetTargetsOfNode(context *NodePlayContext, uid primitive.ObjectID, connName
 	}
 
 	query := bson.M{
-		"source":       uid,
-		"sourceHandle": connName,
+		"source": uid,
 	}
 
-	lg.LogEson(query)
+	if connName != "" {
+		query["sourceHandle"] = connName
+	}
 
 	edges := db.QueryEntities[NodeEdge](CT_AGENT_EDGES, query, &opts)
 
@@ -129,49 +128,36 @@ func PlayAgentNode(context *NodePlayContext, agentUid primitive.ObjectID) {
 
 func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 
-	if node.PhaseType == AGENT_PHASE_CONTROL {
-		_PlayControlNode(context, node)
-	} else if node.PhaseType == AGENT_PHASE_TRIGGER {
-		_PlayTriggerNode(context, node)
-	} else if node.PhaseType == AGENT_PHASE_END {
-		_PlayEndNode(node)
-	}
-}
-
-func _PlayTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
-
-	newContext := &NodePlayContext{
-		Gin:  context.Gin,
-		User: context.User,
-	}
-
-	if node.Type == HTTP_TRIGGER {
-		//TODO vybrat z body data
-
-		bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
-		if err != nil {
-			lg.LogStackTraceErr(err)
-			return
-		}
-
-		// Convert bytes to string
-		bodyString := string(bodyBytes)
-		newContext.Data.Data = bodyString
-		newContext.Data.Type = ContextDataType.String
+	if node.PhaseType == AGENT_PHASE_TRIGGER {
+		PlayHttpTriggerNode(context, node)
 	} else {
-		lg.LogE("Undefined node")
+		if node.Type == WRITE_TO_FILE {
+			lg.LogI("Going to: ", node.Type)
+			PlayWriteToFileNode(context, node)
+		} else if node.Type == LLM_AGENT_NODE {
+			lg.LogI("Going to: ", node.Type)
+			PlayLLMNode(context, node)
+		}
 	}
 
-	nextNodes := GetTargetsOfNode(context, node.Uid, "a")
+	nextNodes := GetTargetsOfNode(context, node.Uid, "")
 
 	if len(nextNodes) > 0 {
+
+		for i, nextNode := range nextNodes {
+			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
+		}
+
+		lg.LogOk("-----")
+
 		for i, nextNode := range nextNodes {
 			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
 
 			if nextNode == nil {
 				lg.LogE("No next node")
 			} else {
-				DispatchPlayNode(newContext, nextNode)
+				lg.LogE("Here")
+				DispatchPlayNode(context, nextNode)
 			}
 		}
 	} else {
@@ -180,18 +166,24 @@ func _PlayTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
 
 }
 
-func _PlayControlNode(context *NodePlayContext, node *LLMAgentNode) {
-	lg.LogE(node.Type)
+func GetTypeDataOfNode[T any](parentUid primitive.ObjectID, conn string) *T {
 
-	if node.Type == WRITE_TO_FILE {
-		vfs.WriteFileStringToWD("llmOutput", "test.txt", context.Data.GetString())
-		vfs.OpenWDFolder("llmOutput")
-		lg.LogE(vfs.GetWorkingDirectory())
-	} else if node.Type == "llmAgent" {
-
+	edgeQuery := bson.M{
+		"sourceHandle": conn,
+		"source":       parentUid,
 	}
-}
 
-func _PlayEndNode(node *LLMAgentNode) {
+	edge := db.QueryEntity[NodeEdge](CT_AGENT_EDGES, edgeQuery)
 
+	if edge != nil {
+		node := db.QueryEntity[LLMAgentNode](CT_AGENT_NODES, bson.M{
+			"_id": edge.Target,
+		})
+
+		if node != nil {
+			return tools.RecastBson[T](node.TypeData)
+		}
+	}
+
+	return nil
 }

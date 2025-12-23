@@ -12,7 +12,7 @@ type PhaseType uint8
 const (
 	AGENT_PHASE_TRIGGER PhaseType = 0
 	AGENT_PHASE_CONTROL PhaseType = 1
-	AGENT_PHASE_END     PhaseType = 2
+	AGENT_PHASE_OUTPUT  PhaseType = 2
 )
 
 type LLMAgentNode struct {
@@ -58,15 +58,21 @@ var ContextDataType = ContextDataTypeClass{
 type NodePlayContext struct {
 	Gin                *gin.Context
 	User               *models.User
-	Data               ContextData
-	AlreadyPlayedNodes map[primitive.ObjectID]bool
+	Data               ContextData                 `json:"data"`
+	AlreadyPlayedNodes map[primitive.ObjectID]bool `json:"alreadyPlayed"`
+	Pipeline           Pipeline                    `json:"pipeline"`
+	IsLocalHost        bool
 }
 
 type ContextData struct {
-	Data any
-	Type _ContextDataType
+	Data any              `json:"data"`
+	Type _ContextDataType `json:"type"`
 }
 
 func (self *ContextData) GetString() string {
 	return self.Data.(string)
+}
+func (self *ContextData) SetString(data string) {
+	self.Type = ContextDataType.String
+	self.Data = data
 }

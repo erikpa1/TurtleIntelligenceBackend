@@ -317,6 +317,20 @@ func OpenWDFolder(folder string) error {
 
 }
 
+// OpenWDFolder - Opens a folder in the working directory (on Windows)
+func OpenFolder(folder string) error {
+	cmd := exec.Command(GetExploreCommand(), folder)
+
+	result := cmd.Start()
+
+	if result != nil {
+		lg.LogStackTraceErr(result)
+	}
+
+	return result
+
+}
+
 func GetExploreCommand() string {
 	if IsLinux() {
 		return "xdg-open"
@@ -331,6 +345,17 @@ func GetExploreCommand() string {
 func WriteFileStringToWD(folder, filePath, content string) error {
 	wdPath := GetWorkingDirectory()
 	finalPath := filepath.Join(wdPath, folder, filePath)
+	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(finalPath, []byte(content), 0644)
+}
+
+// WriteFileStringToWD - Writes a string to a file in the working directory
+func WriteFileString(folder, filePath, content string) error {
+
+	finalPath := filepath.Join(folder, filePath)
 	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
 	if err != nil {
 		return err

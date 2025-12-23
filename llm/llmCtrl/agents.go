@@ -3,6 +3,9 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
 	"github.com/erikpa1/TurtleIntelligenceBackend/db"
 	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
@@ -14,8 +17,6 @@ import (
 	"github.com/tmc/langchaingo/llms/ollama"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"net/http"
-	"strings"
 )
 
 const CT_LLM_AGENT_TOOLS = "llm_agent_tools"
@@ -238,12 +239,16 @@ Please format your response as JSON:
 func ChatAgenticModelRaw(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	result := llmModels.AgentTestResponse{}
 
+	lg.LogI(model.ModelVersion)
+
 	ollmodel := ollama.WithModel(model.ModelVersion)
 	keepAlive := ollama.WithKeepAlive(model.Ttl)
 
 	llm, err := ollama.New(ollmodel, keepAlive)
 
 	if err == nil {
+		lg.LogE(text)
+
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 
 		lg.LogI(completion)
