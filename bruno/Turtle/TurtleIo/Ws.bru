@@ -1,0 +1,19 @@
+meta {
+  name: Ws
+  type: ws
+  seq: 1
+}
+
+ws {
+  url: http://localhost:8080/turtleio/join/1
+  body: ws
+  auth: inherit
+}
+
+body:ws {
+  name: message 1
+  type: json
+  content: '''
+    {}
+  '''
+}

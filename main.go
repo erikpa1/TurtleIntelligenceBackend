@@ -11,6 +11,7 @@ import (
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
 	"github.com/erikpa1/TurtleIntelligenceBackend/security"
+	"github.com/erikpa1/TurtleIntelligenceBackend/turtleio"
 
 	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
 	"github.com/erikpa1/TurtleIntelligenceBackend/api"
@@ -137,6 +138,8 @@ func dev_main() {
 	addr := "0.0.0.0:" + port
 
 	server.RunMyioServer(r)
+
+	turtleio.InitTurtleSocketsApi(r)
 
 	lg.LogI("Running in: ", vfs.GetExeFile())
 

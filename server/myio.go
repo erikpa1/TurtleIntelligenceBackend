@@ -2,11 +2,12 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -80,13 +81,6 @@ func (self *Myio) EmitSync(channel string, data any) {
 	}
 }
 
-// WebSocket connection upgrader
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins (for dev purposes)
-	},
-}
-
 // Message represents the structure of the messages exchanged
 type Message struct {
 	Event   string      `json:"event"`
@@ -131,8 +125,18 @@ func copyClientMap(original map[string]*Client) map[string]*Client {
 	return copied
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true // Allow all origins (for dev purposes)
+	},
+}
+
 // HandleWebSocketConnection handles a new WebSocket connection
 func HandleWebSocketConnection(c *gin.Context) {
+	// WebSocket connection upgrader
+
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {

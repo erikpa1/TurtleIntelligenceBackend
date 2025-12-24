@@ -1,0 +1,23 @@
+meta {
+  name: CreateRoom
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/turtleio/room
+  body: text
+  auth: inherit
+}
+
+body:text {
+  {
+    "id": "1",
+    "name": "My room"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
