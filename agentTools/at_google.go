@@ -1,9 +1,9 @@
 package agentTools
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 func uid(str string) primitive.ObjectID {

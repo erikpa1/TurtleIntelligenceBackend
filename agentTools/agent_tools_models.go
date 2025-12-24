@@ -2,10 +2,10 @@ package agentTools
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 type AgentToolResult struct {

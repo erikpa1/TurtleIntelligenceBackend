@@ -1,10 +1,10 @@
 package loginPenetration
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/dynamicModules"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/dynamicModules"
+	"turtle/tools"
 )
 
 func _RunPenetrationTesting(c *gin.Context) {

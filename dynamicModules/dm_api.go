@@ -2,13 +2,13 @@ package dynamicModules
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/auth"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 func InitDefaultEntitiesApi(r *gin.Engine, namespace string, bucket string) {

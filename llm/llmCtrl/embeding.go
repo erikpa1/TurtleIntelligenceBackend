@@ -2,9 +2,9 @@ package llmCtrl
 
 import (
 	"context"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"github.com/tmc/langchaingo/llms/ollama"
+	"turtle/lg"
+	"turtle/llm/llmModels"
 )
 
 const LLM_EMBEDING = "nomic-embed-text"

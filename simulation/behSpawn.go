@@ -1,10 +1,10 @@
 package simulation
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
+	"turtle/simulation/simInternal"
+	"turtle/tools"
 )
 
 type SpawnBehaviour struct {

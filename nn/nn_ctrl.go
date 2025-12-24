@@ -1,8 +1,9 @@
 package nn
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/db"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -12,11 +13,11 @@ const CT_NN_CONFIGS = "nn_config"
 const CT_NN_EXPERIMENTS = "nn_experiments"
 const CT_NN_EXPERIMENT_RESULTS = "nn_experiment_result"
 
-func ListNN(user *models.User) []*NeuralNetwork {
+func ListNN(user *users.User) []*NeuralNetwork {
 	return db.QueryEntities[NeuralNetwork](CT_NN, bson.M{"org": user.Org})
 }
 
-func COUNN(user *models.User, nn *NeuralNetwork) {
+func COUNN(user *users.User, nn *NeuralNetwork) {
 	nn.Org = user.Org
 
 	if nn.Uid.IsZero() {
@@ -26,7 +27,7 @@ func COUNN(user *models.User, nn *NeuralNetwork) {
 	}
 }
 
-func DeleteNN(user *models.User, nnUid primitive.ObjectID) {
+func DeleteNN(user *users.User, nnUid primitive.ObjectID) {
 
 	nnQuery := bson.M{
 		"_id": nnUid,

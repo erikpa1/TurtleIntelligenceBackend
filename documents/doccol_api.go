@@ -3,10 +3,10 @@ package documents
 import "C"
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 func _RefreshDocumentsCollection(c *gin.Context) {

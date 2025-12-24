@@ -3,8 +3,8 @@ package tools
 import (
 	"fmt"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/lg"
 )
 
 func RecastBson[T any](obj any) *T {

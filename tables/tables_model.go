@@ -3,8 +3,8 @@ package tables
 import (
 	"fmt"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/tools"
 )
 
 type TurtleTable struct {

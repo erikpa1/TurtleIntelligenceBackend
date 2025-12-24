@@ -2,10 +2,10 @@ package tools
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools/timeexpr"
 	"math/rand"
 	"regexp"
 	"strconv"
+	"turtle/tools/timeexpr"
 )
 
 func AnyExpr_CompileMilis(expr string, defaultValue Milliseconds) Milliseconds {

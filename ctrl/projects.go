@@ -1,9 +1,11 @@
 package ctrl
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/models"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -14,7 +16,7 @@ func ListProjects(org primitive.ObjectID) []*models.TurtleProject {
 	return db.QueryEntities[models.TurtleProject](CT_PROJECTS, bson.M{"org": org})
 }
 
-func COUProject(user *models.User, project *models.TurtleProject) {
+func COUProject(user *users.User, project *models.TurtleProject) {
 	if project.Uid.IsZero() {
 		project.Org = user.Org
 		project.CreatedBy = user.Uid

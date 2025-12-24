@@ -2,8 +2,8 @@ package agentTools
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/tools"
 )
 
 func InitMathTools() {

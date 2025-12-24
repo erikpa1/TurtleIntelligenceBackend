@@ -1,13 +1,13 @@
 package tools
 
-//Copied on https://github.com/erikpa1/TurtleIntelligenceBackendSim/blob/main/TurtleSimCpp/src/serialization/safejson.cpp
+//Copied on https://turtleSim/blob/main/TurtleSimCpp/src/serialization/safejson.cpp
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
+	"turtle/lg"
 )
 
 // SafeJson provides safe methods to parse, access, and modify JSON Data.

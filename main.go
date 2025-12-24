@@ -8,35 +8,36 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"turtle/core/usersApi"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/crm"
-	"github.com/erikpa1/TurtleIntelligenceBackend/security"
-	"github.com/erikpa1/TurtleIntelligenceBackend/turtleio"
+	"turtle/crm"
+	"turtle/security"
+	"turtle/turtleio"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
-	"github.com/erikpa1/TurtleIntelligenceBackend/api"
-	"github.com/erikpa1/TurtleIntelligenceBackend/apiApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/documents"
-	"github.com/erikpa1/TurtleIntelligenceBackend/flows"
-	"github.com/erikpa1/TurtleIntelligenceBackend/fn"
-	"github.com/erikpa1/TurtleIntelligenceBackend/forecasting"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/agents"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmApi"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/nn"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tables"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tags"
+	"turtle/agentTools"
+	"turtle/api"
+	"turtle/apiApp"
+	"turtle/auth"
+	"turtle/credentials"
+	"turtle/db"
+	"turtle/documents"
+	"turtle/flows"
+	"turtle/fn"
+	"turtle/forecasting"
+	"turtle/knowledgeHub"
+	"turtle/llm"
+	"turtle/llm/agents"
+	"turtle/llm/llmApi"
+	"turtle/llm/llmCtrl"
+	"turtle/nn"
+	"turtle/tables"
+	"turtle/tags"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/server"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
-	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
+	"turtle/lg"
+	"turtle/models"
+	"turtle/server"
+	"turtle/tools"
+	"turtle/vfs"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/static"
@@ -109,6 +110,8 @@ func dev_main() {
 	forecasting.InitForecastingApi(r)
 	crm.InitCrmApi(r)
 	security.InitSecurityApi(r)
+
+	usersApi.InitUsersApi(r)
 
 	tables.InitTablesApi(r)
 

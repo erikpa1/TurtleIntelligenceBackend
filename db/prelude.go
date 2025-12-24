@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/credentials"
+	"turtle/lg"
+	"turtle/tools"
 
 	"github.com/tidwall/gjson"
 	"go.mongodb.org/mongo-driver/bson"

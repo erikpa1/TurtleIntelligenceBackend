@@ -2,14 +2,15 @@ package llmCtrl
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/lg"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
 )
 
-func DescribeDocument(c *gin.Context, user *models.User, text string) string {
+func DescribeDocument(c *gin.Context, user *users.User, text string) string {
 
 	finalPrompt := fmt.Sprintf(`
 SYSTEM: You are document analyst, you describe document with 200 words maximum

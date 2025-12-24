@@ -2,14 +2,14 @@ package llmCtrl
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"os/exec"
 	"regexp"
 	"runtime"
 	"strings"
 	"sync"
+	"turtle/lg"
+	"turtle/llm/llmModels"
 )
 
 type RunningModel struct {

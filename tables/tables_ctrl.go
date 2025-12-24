@@ -2,12 +2,13 @@ package tables
 
 import (
 	"context"
+	"turtle/core/users"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/credentials"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -15,15 +16,15 @@ import (
 const CT_TABLE_DATA = "tables_data"
 const CT_TABLES = "tables"
 
-func QueryTables(user *models.User, query bson.M) []*TurtleTable {
+func QueryTables(user *users.User, query bson.M) []*TurtleTable {
 	return db.QueryEntities[TurtleTable](CT_TABLES, user.FillOrgQuery(query))
 }
 
-func GetTable(user *models.User, tableUid primitive.ObjectID) *TurtleTable {
+func GetTable(user *users.User, tableUid primitive.ObjectID) *TurtleTable {
 	return db.GetByIdAndOrg[TurtleTable](CT_TABLES, tableUid, user.Org)
 }
 
-func COUTable(user *models.User, table *TurtleTable) {
+func COUTable(user *users.User, table *TurtleTable) {
 
 	if table.Uid.IsZero() {
 		table.Org = user.Org
@@ -46,7 +47,7 @@ func COUTable(user *models.User, table *TurtleTable) {
 	}
 }
 
-func DeleteTable(user *models.User, uid primitive.ObjectID) {
+func DeleteTable(user *users.User, uid primitive.ObjectID) {
 
 	table := GetTable(user, uid)
 

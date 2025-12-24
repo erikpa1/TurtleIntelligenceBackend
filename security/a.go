@@ -1,9 +1,9 @@
 package security
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/security/loginPenetration"
-	"github.com/erikpa1/TurtleIntelligenceBackend/security/scamDetection"
 	"github.com/gin-gonic/gin"
+	"turtle/security/loginPenetration"
+	"turtle/security/scamDetection"
 )
 
 func InitSecurityApi(r *gin.Engine) {

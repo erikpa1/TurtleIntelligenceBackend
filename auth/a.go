@@ -2,11 +2,11 @@ package auth
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
 	"net/http"
 	"strconv"
+	"turtle/core/users"
+	"turtle/credentials"
+	"turtle/ctrl"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -14,17 +14,17 @@ import (
 
 type AuthContext struct {
 	GinC *gin.Context
-	User *models.User
+	User *users.User
 }
 
-func GetUserFromContext(c *gin.Context) *models.User {
-	tmp := models.NewSuperAdmin()
+func GetUserFromContext(c *gin.Context) *users.User {
+	tmp := users.NewSuperAdmin()
 
 	return tmp
 }
 
-func GetUserFromCookies(cookiestring string) *models.User {
-	return &models.User{}
+func GetUserFromCookies(cookiestring string) *users.User {
+	return &users.User{}
 }
 
 func LoginRequiredWithUser(fn func(ctx *AuthContext)) gin.HandlerFunc {
@@ -50,14 +50,14 @@ func LoginRequiredWithUser(fn func(ctx *AuthContext)) gin.HandlerFunc {
 
 			ctx := AuthContext{}
 			ctx.GinC = c
-			ctx.User = models.NewUser()
+			ctx.User = users.NewUser()
 			fn(&ctx)
 		}
 
 	}
 }
 
-func IsLoggedInInfinity(c *gin.Context) (*models.User, string) {
+func IsLoggedInInfinity(c *gin.Context) (*users.User, string) {
 	tokenName := credentials.AuthInfinityJwtKey()
 
 	token, err := c.Cookie(tokenName)

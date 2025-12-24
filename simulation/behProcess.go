@@ -3,10 +3,10 @@ package simulation
 import (
 	"fmt"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
-	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/stats"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/lg"
+	"turtle/simulation/simInternal"
+	"turtle/simulation/stats"
+	"turtle/tools"
 )
 
 type ProcessStates int8

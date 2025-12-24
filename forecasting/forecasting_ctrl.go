@@ -1,8 +1,9 @@
 package forecasting
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/db"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -11,11 +12,11 @@ const CT_FORECASTS = "forecasts"
 const CT_FORECASTS_RESULTS = "forecasts_results"
 const CT_FORECASTS_DATA = "forecasts_data"
 
-func QueryForecasts(user *models.User, query bson.M) []*Forecast {
+func QueryForecasts(user *users.User, query bson.M) []*Forecast {
 	return db.QueryEntities[Forecast](CT_FORECASTS, user.FillOrgQuery(query))
 }
 
-func COUForecast(user *models.User, forecast *Forecast) {
+func COUForecast(user *users.User, forecast *Forecast) {
 
 	forecast.Org = user.Org
 

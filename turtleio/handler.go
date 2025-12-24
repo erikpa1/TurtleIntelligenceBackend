@@ -3,9 +3,9 @@ package turtleio
 import (
 	"net/http"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/lg"
 )
 
 type Handler struct {

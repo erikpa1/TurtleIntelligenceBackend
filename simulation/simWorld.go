@@ -3,12 +3,12 @@ package simulation
 import (
 	"fmt"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/simulation/simInternal"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/ctrlApp"
+	"turtle/lg"
+	"turtle/modelsApp"
+	"turtle/simulation/simInternal"
 )
 
 type SimWorld struct {

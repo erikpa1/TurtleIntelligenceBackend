@@ -3,8 +3,8 @@ package simulation
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/modelsApp"
+	"turtle/tools"
 )
 
 type SimEntity struct {

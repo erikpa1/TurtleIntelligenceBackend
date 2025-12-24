@@ -1,8 +1,8 @@
 package invoices
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/dynamicModules"
 	"github.com/gin-gonic/gin"
+	"turtle/dynamicModules"
 )
 
 func InitInvoicesApi(r *gin.Engine) {

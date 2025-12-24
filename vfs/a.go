@@ -11,8 +11,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"turtle/credentials"
+	"turtle/lg"
 )
 
 type ListFileInfoStruct struct {

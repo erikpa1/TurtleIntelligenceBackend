@@ -2,8 +2,8 @@ package tools
 
 import (
 	"context"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/mongo"
+	"turtle/lg"
 )
 
 type YieldType[T any] func(func(T) bool)

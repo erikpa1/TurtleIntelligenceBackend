@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/lg"
+	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"

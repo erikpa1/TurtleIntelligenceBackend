@@ -2,11 +2,11 @@ package tools
 
 import (
 	"bytes"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
+	"turtle/lg"
 
 	"github.com/gin-gonic/gin"
 )

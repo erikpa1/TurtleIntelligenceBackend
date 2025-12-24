@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/llm/llmCtrl"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ledongthuc/pdf"
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,7 +20,7 @@ type VSearchResult struct {
 	Doc        *Document `json:"doc"`
 }
 
-func ListVSearchDocuments(c context.Context, user *models.User, searchQuery string, threshold float32) ([]*VSearchResult, error) {
+func ListVSearchDocuments(c context.Context, user *users.User, searchQuery string, threshold float32) ([]*VSearchResult, error) {
 
 	resultList := make([]*VSearchResult, 0)
 
@@ -47,14 +48,14 @@ func ListVSearchDocuments(c context.Context, user *models.User, searchQuery stri
 	return resultList, nil
 }
 
-func GetDocument(user *models.User, docUid primitive.ObjectID) *Document {
+func GetDocument(user *users.User, docUid primitive.ObjectID) *Document {
 	return db.QueryEntity[Document](CT_DOC, bson.M{
 		"_id": docUid,
 		"org": user.Org,
 	})
 }
 
-func ListDocuments(user *models.User) []*Document {
+func ListDocuments(user *users.User) []*Document {
 
 	return db.QueryEntities[Document](CT_DOC, bson.M{
 		"org": user.Org,
@@ -62,12 +63,12 @@ func ListDocuments(user *models.User) []*Document {
 
 }
 
-func ListDocumentExtracts(user *models.User) []*DocumentExtraction {
+func ListDocumentExtracts(user *users.User) []*DocumentExtraction {
 	return db.QueryEntities[DocumentExtraction](CT_DOC_EXTRACT, user.FillOrgQuery(nil))
 
 }
 
-func DeleteDocument(user *models.User, documentUid primitive.ObjectID) {
+func DeleteDocument(user *users.User, documentUid primitive.ObjectID) {
 
 	var docToDelete *Document
 
@@ -112,7 +113,7 @@ type InsertDocumentParams struct {
 	DescriptionModel primitive.ObjectID `json:"descriptionModel"`
 }
 
-func UpdateDocument(user *models.User, document *Document) {
+func UpdateDocument(user *users.User, document *Document) {
 	document.Org = user.Org
 	db.UpdateOneCustom(CT_DOC,
 		bson.M{
@@ -121,7 +122,7 @@ func UpdateDocument(user *models.User, document *Document) {
 		}, bson.M{"$set": document})
 
 }
-func CreateAndUploadDocument(c *gin.Context, user *models.User, uploadParams *InsertDocumentParams, documentData []byte) {
+func CreateAndUploadDocument(c *gin.Context, user *users.User, uploadParams *InsertDocumentParams, documentData []byte) {
 
 	document := &Document{}
 	document.Uid = primitive.NewObjectID()

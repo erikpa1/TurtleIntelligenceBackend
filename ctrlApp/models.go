@@ -1,10 +1,10 @@
 package ctrlApp
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/db"
+	"turtle/modelsApp"
 )
 
 const CT_MODELS = "models"

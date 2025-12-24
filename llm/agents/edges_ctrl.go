@@ -2,20 +2,21 @@ package agents
 
 import (
 	"fmt"
+	"turtle/core/users"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func DeleteEdges(user *models.User, query bson.M) {
+func DeleteEdges(user *users.User, query bson.M) {
 	user.FillOrgQuery(query)
 	db.DeleteEntities(CT_AGENT_EDGES, query)
 }
 
-func InsertEdges(user *models.User, edges []*NodeEdge) {
+func InsertEdges(user *users.User, edges []*NodeEdge) {
 	for _, n := range edges {
 		n.Org = user.Org
 	}
@@ -24,6 +25,6 @@ func InsertEdges(user *models.User, edges []*NodeEdge) {
 	lg.LogI(fmt.Sprintf("Inserted %d edges", len(edges)))
 }
 
-func QueryEdges(user *models.User, query bson.M) []*NodeEdge {
+func QueryEdges(user *users.User, query bson.M) []*NodeEdge {
 	return db.QueryEntities[NodeEdge](CT_AGENT_EDGES, user.FillOrgQuery(query))
 }

@@ -5,12 +5,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/server"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/ctrlApp"
+	"turtle/lg"
+	"turtle/server"
+	"turtle/tools"
 )
 
 type _RunningSim struct {

@@ -3,10 +3,11 @@ package tools
 import (
 	"bytes"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"mime/multipart"
 	"net/http"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +25,15 @@ func AutoReturn(c *gin.Context, data any) {
 		c.JSON(http.StatusNotFound, gin.H{})
 	} else {
 		c.JSON(http.StatusOK, data)
+	}
+
+}
+
+func Auto500(c *gin.Context, data error) {
+	if data == nil {
+		c.JSON(http.StatusOK, gin.H{})
+	} else {
+		c.JSON(http.StatusInternalServerError, data)
 	}
 
 }

@@ -2,10 +2,10 @@ package agentTools
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 func InitVfsTools() {

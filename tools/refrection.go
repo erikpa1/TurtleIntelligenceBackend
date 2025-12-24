@@ -2,9 +2,9 @@ package tools
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/interfaces"
 	"reflect"
 	"strings"
+	"turtle/interfaces"
 )
 
 func GetUidOrIdBson(entity interface{}) string {

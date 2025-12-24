@@ -2,24 +2,25 @@ package knowledge
 
 import (
 	"context"
+	"turtle/core/users"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/cts"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/db"
+	"turtle/knowledgeHub/cts"
+	"turtle/knowledgeHub/node"
+	"turtle/lg"
+	"turtle/llm/llmCtrl"
+	"turtle/llm/llmModels"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ListKnowledge(user *models.User) []*Knowledge {
+func ListKnowledge(user *users.User) []*Knowledge {
 	return QueryKnowledge(user, bson.M{"org": user.Org})
 }
 
-func QueryKnowledge(user *models.User, query bson.M) []*Knowledge {
+func QueryKnowledge(user *users.User, query bson.M) []*Knowledge {
 
 	findOptions := options.FindOptions{}
 	findOptions.Projection = bson.M{"typeData": 0}
@@ -31,7 +32,7 @@ func QueryKnowledge(user *models.User, query bson.M) []*Knowledge {
 	return db.QueryEntities[Knowledge](cts.CT_KNOWLEDGE, query, &findOptions)
 }
 
-func COUKnowledge(user *models.User, knowledge *Knowledge) {
+func COUKnowledge(user *users.User, knowledge *Knowledge) {
 	knowledge.Org = user.Org
 
 	if knowledge.Uid.IsZero() {
@@ -74,18 +75,18 @@ func COUKnowledge(user *models.User, knowledge *Knowledge) {
 	}
 }
 
-func COUKnowledgeStep(user *models.User, knowledge *Knowledge) {
+func COUKnowledgeStep(user *users.User, knowledge *Knowledge) {
 
 }
 
-func DeleteKnowledgeEmbedding(user *models.User, uid primitive.ObjectID) {
+func DeleteKnowledgeEmbedding(user *users.User, uid primitive.ObjectID) {
 	db.DeleteEntities(cts.CT_KNOWLEDGE_EMBEDDINGS, bson.M{
 		"_id": uid,
 		"org": user.Org,
 	})
 }
 
-func COUKnowledgeEmbedding(user *models.User, knUid primitive.ObjectID, embedding llmModels.Embedding) {
+func COUKnowledgeEmbedding(user *users.User, knUid primitive.ObjectID, embedding llmModels.Embedding) {
 	DeleteKnowledgeEmbedding(user, knUid)
 
 	kne := KnowledgeEmbedding{}
@@ -96,14 +97,14 @@ func COUKnowledgeEmbedding(user *models.User, knUid primitive.ObjectID, embeddin
 	db.InsertEntity(cts.CT_KNOWLEDGE_EMBEDDINGS, kne)
 }
 
-func GetKnowledge(user *models.User, knowledgeUid primitive.ObjectID) *Knowledge {
+func GetKnowledge(user *users.User, knowledgeUid primitive.ObjectID) *Knowledge {
 	return db.QueryEntity[Knowledge](cts.CT_KNOWLEDGE, bson.M{
 		"_id": knowledgeUid,
 		"org": user.Org,
 	})
 }
 
-func DeleteKnowledge(user *models.User, knowledgeUid primitive.ObjectID) {
+func DeleteKnowledge(user *users.User, knowledgeUid primitive.ObjectID) {
 
 	DeleteKnowledgeEmbedding(user, knowledgeUid)
 
@@ -113,7 +114,7 @@ func DeleteKnowledge(user *models.User, knowledgeUid primitive.ObjectID) {
 	})
 }
 
-func DeleteKnowledgeOfDomain(user *models.User, domainUid primitive.ObjectID) {
+func DeleteKnowledgeOfDomain(user *users.User, domainUid primitive.ObjectID) {
 	node.DeleteNodesOfDomain(user, domainUid)
 
 	db.DeleteEntities(cts.CT_KNOWLEDGE_EMBEDDINGS, bson.M{

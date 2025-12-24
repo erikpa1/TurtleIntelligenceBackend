@@ -1,13 +1,13 @@
 package llmApi
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/auth"
+	"turtle/lg"
+	"turtle/llm/llmCtrl"
+	"turtle/tools"
 )
 
 func _GetChat(c *gin.Context) {

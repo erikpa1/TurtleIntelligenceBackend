@@ -1,7 +1,8 @@
-package models
+package users
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"turtle/lg"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

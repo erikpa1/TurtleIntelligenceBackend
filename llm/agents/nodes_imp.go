@@ -3,11 +3,11 @@ package agents
 import (
 	"io"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
-	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
+	"turtle/lg"
+	"turtle/llm/llmCtrl"
+	"turtle/llm/llmModels"
+	"turtle/tools"
+	"turtle/vfs"
 )
 
 func PlayHttpTriggerNode(context *NodePlayContext, node *LLMAgentNode) {

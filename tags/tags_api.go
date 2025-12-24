@@ -1,10 +1,10 @@
 package tags
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/auth"
+	"turtle/tools"
 )
 
 func _ListTags(c *gin.Context) {

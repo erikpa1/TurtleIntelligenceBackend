@@ -1,9 +1,10 @@
 package flows
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,7 +13,7 @@ import (
 const CT_FLOWS = "flows"
 const CT_FLOWS_EXECUTIONS = "flow_execution"
 
-func DeleteFlow(user *models.User, flowUid primitive.ObjectID) {
+func DeleteFlow(user *users.User, flowUid primitive.ObjectID) {
 	db.DeleteEntities(CT_FLOWS_EXECUTIONS, bson.M{"flow": flowUid})
 
 	db.DeleteEntity(CT_FLOWS,
@@ -24,7 +25,7 @@ func DeleteFlow(user *models.User, flowUid primitive.ObjectID) {
 
 }
 
-func GetFlow(user *models.User, flowUid primitive.ObjectID) *Flow {
+func GetFlow(user *users.User, flowUid primitive.ObjectID) *Flow {
 	return db.QueryEntity[Flow](CT_FLOWS,
 		bson.M{
 			"_id": flowUid,
@@ -32,14 +33,14 @@ func GetFlow(user *models.User, flowUid primitive.ObjectID) *Flow {
 		})
 }
 
-func ListFlows(user *models.User) []*Flow {
+func ListFlows(user *users.User) []*Flow {
 	opts := options.FindOptions{}
 	opts.Projection = bson.M{"_id": 1, "name": 1}
 
 	return db.QueryEntities[Flow](CT_FLOWS, bson.M{"org": user.Org}, &opts)
 }
 
-func COUFlow(user *models.User, flow *Flow) {
+func COUFlow(user *users.User, flow *Flow) {
 	flow.Org = user.Org
 
 	if flow.Uid.IsZero() {
@@ -55,7 +56,7 @@ func COUFlow(user *models.User, flow *Flow) {
 
 }
 
-func CallFlow(user *models.User, flowUid primitive.ObjectID) (int, string) {
+func CallFlow(user *users.User, flowUid primitive.ObjectID) (int, string) {
 	flowExe := FlowExecution{}
 	flowExe.Uid = primitive.NewObjectID()
 	flowExe.Flow = flowUid

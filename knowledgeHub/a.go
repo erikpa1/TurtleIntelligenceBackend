@@ -1,11 +1,11 @@
 package knowledgeHub
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/artifact"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/domains"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/knowledge"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
 	"github.com/gin-gonic/gin"
+	"turtle/knowledgeHub/artifact"
+	"turtle/knowledgeHub/domains"
+	"turtle/knowledgeHub/knowledge"
+	"turtle/knowledgeHub/node"
 )
 
 func InitKnowledgeHubApi(r *gin.Engine) {

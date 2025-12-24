@@ -1,9 +1,9 @@
 package knowledge
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/llm/llmModels"
 )
 
 type KnowledgeType int8

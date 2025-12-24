@@ -1,11 +1,11 @@
 package apiApp
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/ctrlApp"
+	"turtle/modelsApp"
+	"turtle/tools"
 )
 
 func _QueryActors(c *gin.Context) {

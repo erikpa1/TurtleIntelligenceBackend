@@ -1,9 +1,9 @@
 package ctrlApp
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/db"
+	"turtle/modelsApp"
 )
 
 const CT_CONTAINERS = "containers"

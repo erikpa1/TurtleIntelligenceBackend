@@ -1,9 +1,9 @@
 package domains
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/tools"
 )
 
 func _ListDomains(c *gin.Context) {

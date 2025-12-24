@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"turtle/core/users"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/agentTools"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/agentTools"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/llm/llmModels"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
@@ -43,7 +44,7 @@ func ExampleAgent() {
 	lg.LogI(agent_hierarchy)
 }
 
-func GetOverallAgentsPrompt(user *models.User, userQuery string) string {
+func GetOverallAgentsPrompt(user *users.User, userQuery string) string {
 
 	//Mistral DOC https://ollama.com/library/mistral
 
@@ -104,7 +105,7 @@ INSTRUCTIONS:
 	return finalPrompt
 }
 
-func GetAgentToolingPrompt(user *models.User, agent *llmModels.LLMAgent, userQuery string) string {
+func GetAgentToolingPrompt(user *users.User, agent *llmModels.LLMAgent, userQuery string) string {
 
 	//Mistral DOC https://ollama.com/library/mistral
 
@@ -148,13 +149,13 @@ INSTRUCTIONS:
 	return finalPrompt
 }
 
-func ListLLMAgents(user *models.User) []*llmModels.LLMAgent {
+func ListLLMAgents(user *users.User) []*llmModels.LLMAgent {
 	return db.QueryEntities[llmModels.LLMAgent](CT_LLM_AGENTS, bson.M{
 		"org": user.Org,
 	})
 }
 
-func COULLMAgent(user *models.User, agent *llmModels.LLMAgent) {
+func COULLMAgent(user *users.User, agent *llmModels.LLMAgent) {
 	if user.IsAdminWithError() {
 		agent.Org = user.Org
 		agent.UpdatedAt = tools.GetTimeNowMillis()
@@ -198,7 +199,7 @@ func GetAgent(org primitive.ObjectID, uid primitive.ObjectID) *llmModels.LLMAgen
 		})
 }
 
-func FindAgent(c *gin.Context, user *models.User, text string) llmModels.AgentTestResponse {
+func FindAgent(c *gin.Context, user *users.User, text string) llmModels.AgentTestResponse {
 
 	models := ListAgenticOrNormalModels()
 
@@ -216,7 +217,7 @@ func FindAgent(c *gin.Context, user *models.User, text string) llmModels.AgentTe
 
 }
 
-func AskTrueFalse(c *gin.Context, user *models.User, text string, trueProbability float32) bool {
+func AskTrueFalse(c *gin.Context, user *users.User, text string, trueProbability float32) bool {
 	tmpModel := &llmModels.LLM{}
 	tmpModel.SetMistral7B()
 
@@ -236,7 +237,7 @@ Please format your response as JSON:
 	return tmp.Result.Confidence >= trueProbability
 }
 
-func ChatAgenticModelRaw(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
+func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	result := llmModels.AgentTestResponse{}
 
 	lg.LogI(model.ModelVersion)
@@ -297,12 +298,12 @@ func ChatAgenticModelRaw(c *gin.Context, user *models.User, model *llmModels.LLM
 	return &result
 }
 
-func ChatModel(c *gin.Context, user *models.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
+func ChatModel(c *gin.Context, user *users.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	prompt := GetOverallAgentsPrompt(user, text)
 	return ChatAgenticModelRaw(c, user, model, prompt)
 }
 
-func AddToolToAgent(user *models.User, agentUid primitive.ObjectID, toolUid primitive.ObjectID) {
+func AddToolToAgent(user *users.User, agentUid primitive.ObjectID, toolUid primitive.ObjectID) {
 
 	db.InsertEntity(CT_LLM_AGENT_TOOLS, llmModels.LLMAgentTool{
 		Agent: agentUid,
@@ -311,27 +312,27 @@ func AddToolToAgent(user *models.User, agentUid primitive.ObjectID, toolUid prim
 	})
 }
 
-func DeleteTool(user *models.User, relationUid primitive.ObjectID) {
+func DeleteTool(user *users.User, relationUid primitive.ObjectID) {
 	db.DeleteEntity(CT_LLM_AGENT_TOOLS, bson.M{
 		"_id": relationUid,
 		"org": user.Org,
 	})
 }
 
-func DeleteToolsOfAgent(user *models.User, agentUid primitive.ObjectID) {
+func DeleteToolsOfAgent(user *users.User, agentUid primitive.ObjectID) {
 	db.DeleteEntity(CT_LLM_AGENT_TOOLS, bson.M{
 		"agent": agentUid,
 		"org":   user.Org,
 	})
 }
 
-func AskAgents(c *gin.Context, user *models.User, text string) llmModels.AgentTestResponse {
+func AskAgents(c *gin.Context, user *users.User, text string) llmModels.AgentTestResponse {
 
 	return llmModels.AgentTestResponse{}
 
 }
 
-func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
+func ChatAgent(c *gin.Context, user *users.User, agentUid primitive.ObjectID, text string) llmModels.AgentTestResponse {
 
 	result := llmModels.NewAgentTestResponse()
 
@@ -402,7 +403,7 @@ func ChatAgent(c *gin.Context, user *models.User, agentUid primitive.ObjectID, t
 	return *result
 }
 
-func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.AgentTestResponse, agentUid primitive.ObjectID, query string) {
+func ExecuteAgent(c *gin.Context, user *users.User, resultPipe *llmModels.AgentTestResponse, agentUid primitive.ObjectID, query string) {
 
 	agent := GetAgent(user.Org, agentUid)
 
@@ -474,7 +475,7 @@ func ExecuteAgent(c *gin.Context, user *models.User, resultPipe *llmModels.Agent
 
 }
 
-func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {
+func DeleteLLMAgent(user *users.User, uid primitive.ObjectID) {
 	if user.IsAdminWithError() {
 
 		DeleteAgentTestHistory(user, uid)
@@ -487,7 +488,7 @@ func DeleteLLMAgent(user *models.User, uid primitive.ObjectID) {
 	}
 }
 
-func DeleteAgentTestHistory(user *models.User, uid primitive.ObjectID) {
+func DeleteAgentTestHistory(user *users.User, uid primitive.ObjectID) {
 	if user.IsAdminWithError() {
 		db.DeleteEntity(CT_LLM_AGENT_TESTS, bson.M{
 			"agentUid": uid,

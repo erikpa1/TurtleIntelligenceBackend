@@ -2,7 +2,7 @@ package tools
 
 import (
 	"github.com/RyanCarrier/dijkstra/v2"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"turtle/lg"
 )
 
 func TestDjikstra() {

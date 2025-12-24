@@ -1,9 +1,9 @@
 package llmModels
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/tools"
 )
 
 type ChatHistoryLight struct {

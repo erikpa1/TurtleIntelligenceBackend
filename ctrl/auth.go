@@ -3,31 +3,31 @@ package ctrl
 import (
 	"errors"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/core/users"
+	"turtle/credentials"
+	"turtle/db"
+	"turtle/lg"
 
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/scrypt"
 )
 
 var CT_USERS = "users"
 
-func GetUsers() []*models.User {
+func GetUsers() []*users.User {
 	opts := options.FindOptions{}
 	opts.Projection = bson.M{"password": 0}
-	return db.QueryEntities[models.User](CT_USERS, bson.M{}, &opts)
+	return db.QueryEntities[users.User](CT_USERS, bson.M{}, &opts)
 }
 
-func GetUser(uid primitive.ObjectID) *models.User {
-	return db.QueryEntity[models.User](CT_USERS, bson.M{"uid": uid})
+func GetUser(uid primitive.ObjectID) *users.User {
+	return db.QueryEntity[users.User](CT_USERS, bson.M{"uid": uid})
 }
 
-func CheckInfinityAuth(token string) (*models.User, error) {
+func CheckInfinityAuth(token string) (*users.User, error) {
 	if token == "" {
 		return nil, nil // No token provided
 	}
@@ -80,8 +80,8 @@ func CheckInfinityAuth(token string) (*models.User, error) {
 	return user, nil
 }
 
-func GetUserByEmail(email string) *models.User {
-	return db.QueryEntity[models.User](CT_USERS, bson.M{"email": email})
+func GetUserByEmail(email string) *users.User {
+	return db.QueryEntity[users.User](CT_USERS, bson.M{"email": email})
 }
 
 func EncryptPassword(password string) string {
@@ -106,11 +106,11 @@ func EncryptPassword(password string) string {
 
 func UserExists(email string, password string) bool {
 	hash := EncryptPassword(password)
-	entity := db.QueryEntity[models.User](CT_USERS, bson.M{"email": email, "password": hash})
+	entity := db.QueryEntity[users.User](CT_USERS, bson.M{"email": email, "password": hash})
 	return entity != nil
 }
 
-func COUUser(user *models.User) {
+func COUUser(user *users.User) {
 
 	//TODO toto je nejake divne
 	from_dbuser := GetUser(user.Uid)

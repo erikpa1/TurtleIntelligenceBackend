@@ -1,6 +1,6 @@
 package simInternal
 
-import "github.com/erikpa1/TurtleIntelligenceBackend/tools"
+import "turtle/tools"
 
 type SimUpcomingEventType int8
 

@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
+	"turtle/lg"
 
 	"github.com/RyanCarrier/dijkstra/v2"
 )

@@ -1,11 +1,11 @@
 package forecasting
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tables"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/auth"
+	"turtle/tables"
+	"turtle/tools"
 )
 
 func _QueryForecasts(c *gin.Context) {

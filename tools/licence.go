@@ -3,12 +3,12 @@ package tools
 import (
 	"errors"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
 	"github.com/golang-jwt/jwt/v5"
 	"os/exec"
 	"strings"
+	"turtle/credentials"
+	"turtle/lg"
+	"turtle/vfs"
 )
 
 type LicType string

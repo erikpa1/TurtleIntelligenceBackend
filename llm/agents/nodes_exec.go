@@ -1,9 +1,9 @@
 package agents
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
 )
 
 func ExeNodeWithUid(orgUid primitive.ObjectID, uid primitive.ObjectID) {

@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/ctrl"
+	"turtle/models"
+	"turtle/tools"
 )
 
 func _ListScenes(c *gin.Context) {

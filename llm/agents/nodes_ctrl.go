@@ -2,12 +2,13 @@ package agents
 
 import (
 	"fmt"
+	"turtle/core/users"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/knowledgeHub/node"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/db"
+	"turtle/knowledgeHub/node"
+	"turtle/lg"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -16,7 +17,7 @@ import (
 const CT_AGENT_NODES = "llm_agent_nodes"
 const CT_AGENT_EDGES = "llm_agent_edges"
 
-func InsertNodes(user *models.User, nodes []*LLMAgentNode) {
+func InsertNodes(user *users.User, nodes []*LLMAgentNode) {
 	for _, n := range nodes {
 		n.Org = user.Org
 	}
@@ -27,7 +28,7 @@ func InsertNodes(user *models.User, nodes []*LLMAgentNode) {
 
 }
 
-func COUNode(user *models.User, node *LLMAgentNode) {
+func COUNode(user *users.User, node *LLMAgentNode) {
 	node.Org = user.Org
 
 	if node.Uid.IsZero() {
@@ -50,11 +51,11 @@ func GetRelationOfNode(orgUid primitive.ObjectID, query bson.M) *node.NodeRelati
 	return db.QueryEntity[node.NodeRelation](CT_AGENT_NODES, query)
 }
 
-func QueryNodes(user *models.User, query bson.M) []*LLMAgentNode {
+func QueryNodes(user *users.User, query bson.M) []*LLMAgentNode {
 	return db.QueryEntities[LLMAgentNode](CT_AGENT_NODES, user.FillOrgQuery(query))
 }
 
-func DeleteNodesOfAgent(user *models.User, agentUid primitive.ObjectID) {
+func DeleteNodesOfAgent(user *users.User, agentUid primitive.ObjectID) {
 	db.DeleteEntities(CT_AGENT_NODES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 	db.DeleteEntities(CT_AGENT_EDGES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 }

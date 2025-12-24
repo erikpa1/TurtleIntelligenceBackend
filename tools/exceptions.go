@@ -1,9 +1,9 @@
 package tools
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"runtime/debug"
 	"sync"
+	"turtle/lg"
 )
 
 func Recover(message string, onErrr ...func(any)) {

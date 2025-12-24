@@ -4,8 +4,10 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/google/uuid"
 )
@@ -103,4 +105,19 @@ func StringToObjectIDSimple(s string) primitive.ObjectID {
 	// If string was shorter than 12 bytes, remaining bytes are already zero
 
 	return objectID
+}
+
+// HashPassword generates a bcrypt hash of the password
+func HashPassword(password string) (string, error) {
+	// Generate hash with default cost (10)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hashedPassword), nil
+}
+
+// VerifyPassword checks if the provided password matches the hashed password
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

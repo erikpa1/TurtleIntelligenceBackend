@@ -1,10 +1,10 @@
 package crm
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/crm/cities"
-	"github.com/erikpa1/TurtleIntelligenceBackend/crm/contracts"
-	"github.com/erikpa1/TurtleIntelligenceBackend/crm/invoices"
 	"github.com/gin-gonic/gin"
+	"turtle/crm/cities"
+	"turtle/crm/contracts"
+	"turtle/crm/invoices"
 )
 
 func InitCrmApi(r *gin.Engine) {

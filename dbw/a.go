@@ -1,12 +1,13 @@
 package dbw
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/lg"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func QueryOrgEntities(user *models.User) {
+func QueryOrgEntities(user *users.User) {
 	query := bson.M{
 		"org": user.Org,
 	}
@@ -14,7 +15,7 @@ func QueryOrgEntities(user *models.User) {
 	lg.LogE(query)
 }
 
-func QueryUserData(user *models.User) {
+func QueryUserData(user *users.User) {
 	query := bson.M{
 		"org":  user.Org,
 		"user": user.Uid,

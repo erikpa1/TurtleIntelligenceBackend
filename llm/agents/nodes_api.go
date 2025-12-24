@@ -1,12 +1,12 @@
 package agents
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/auth"
+	"turtle/lg"
+	"turtle/tools"
 )
 
 func _QueryAgentNodes(c *gin.Context) {

@@ -1,11 +1,11 @@
 package llmApi
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
+	"turtle/auth"
+	"turtle/llm/llmCtrl"
+	"turtle/llm/llmModels"
+	"turtle/tools"
 )
 
 func _ListLLMClusters(c *gin.Context) {

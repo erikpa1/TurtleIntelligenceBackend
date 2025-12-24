@@ -1,15 +1,15 @@
 package apiApp
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrlApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/modelsApp"
-	"github.com/erikpa1/TurtleIntelligenceBackend/simulation"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/auth"
+	"turtle/ctrlApp"
+	"turtle/lg"
+	"turtle/modelsApp"
+	"turtle/simulation"
+	"turtle/tools"
 )
 
 func _SaveWorld(c *gin.Context) {

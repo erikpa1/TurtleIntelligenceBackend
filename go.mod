@@ -1,4 +1,4 @@
-module github.com/erikpa1/TurtleIntelligenceBackend
+module turtle
 
 go 1.24.1
 

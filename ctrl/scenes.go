@@ -1,9 +1,11 @@
 package ctrl
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/models"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -17,7 +19,7 @@ func ListScenes(org primitive.ObjectID, parent primitive.ObjectID) []*models.Tur
 	})
 }
 
-func COUScene(user *models.User, scene *models.TurtleScene) {
+func COUScene(user *users.User, scene *models.TurtleScene) {
 
 	if scene.Uid.IsZero() {
 		scene.Org = user.Org

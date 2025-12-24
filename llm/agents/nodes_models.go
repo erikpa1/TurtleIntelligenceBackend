@@ -1,7 +1,8 @@
 package agents
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -57,7 +58,7 @@ var ContextDataType = ContextDataTypeClass{
 
 type NodePlayContext struct {
 	Gin                *gin.Context
-	User               *models.User
+	User               *users.User
 	Data               ContextData                 `json:"data"`
 	AlreadyPlayedNodes map[primitive.ObjectID]bool `json:"alreadyPlayed"`
 	Pipeline           Pipeline                    `json:"pipeline"`

@@ -1,10 +1,11 @@
 package api
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/ctrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"turtle/core/users"
+	"turtle/ctrl"
+	"turtle/lg"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +18,7 @@ func _TryLogin(c *gin.Context) {
 	}
 
 	//TODO toto naimpelmentovat
-	tmp := models.NewUser()
+	tmp := users.NewUser()
 	tmp.Email = "poseidon@turtle.sk"
 	tmp.Firstname = "Poseidon"
 	tmp.Surname = "The God"

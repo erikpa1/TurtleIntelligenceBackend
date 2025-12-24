@@ -2,10 +2,11 @@ package llmCtrl
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/credentials"
+	"turtle/db"
+	"turtle/llm/llmModels"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -18,7 +19,7 @@ func ListLLMClusters(org primitive.ObjectID) []*llmModels.LLMCluster {
 	})
 }
 
-func DeleteLLMCluster(user *models.User, uid primitive.ObjectID) {
+func DeleteLLMCluster(user *users.User, uid primitive.ObjectID) {
 
 	if user.IsAdmin() {
 		DeleteModelsOfCluster(user, uid)
@@ -32,7 +33,7 @@ func DeleteLLMCluster(user *models.User, uid primitive.ObjectID) {
 	}
 }
 
-func COULLMCluster(user *models.User, cluster *llmModels.LLMCluster) {
+func COULLMCluster(user *users.User, cluster *llmModels.LLMCluster) {
 
 	if user.IsAdminWithError() {
 
@@ -51,7 +52,7 @@ func COULLMCluster(user *models.User, cluster *llmModels.LLMCluster) {
 	}
 }
 
-func GetLLMCluster(user *models.User, uid primitive.ObjectID) *llmModels.LLMCluster {
+func GetLLMCluster(user *users.User, uid primitive.ObjectID) *llmModels.LLMCluster {
 
 	if uid.IsZero() {
 		return &llmModels.LLMCluster{Url: fmt.Sprintf("localhost:%s", credentials.GetPort())}

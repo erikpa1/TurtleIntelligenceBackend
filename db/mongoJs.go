@@ -5,9 +5,9 @@ package db
 import (
 	"context"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/credentials"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"turtle/credentials"
 )
 
 // VectorSearchResult represents a single search result

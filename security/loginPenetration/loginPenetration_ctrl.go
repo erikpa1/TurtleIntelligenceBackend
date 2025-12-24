@@ -4,18 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+	"turtle/core/users"
+	"turtle/db"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const CT_PENTESTING = "security_loginpentesting"
 
-func RunLoginPenTest(user *models.User, testUid primitive.ObjectID) {
+func RunLoginPenTest(user *users.User, testUid primitive.ObjectID) {
 	test := db.GetByIdAndOrg[LoginPenetration](CT_PENTESTING, testUid, user.Org)
 	ExecuteLoginBruteForce(test)
 }

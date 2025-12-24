@@ -1,8 +1,8 @@
 package tools
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"math"
+	"turtle/lg"
 )
 
 type Rectangle struct {

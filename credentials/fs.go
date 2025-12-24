@@ -2,9 +2,9 @@ package credentials
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"os/user"
 	"path/filepath"
+	"turtle/lg"
 )
 
 func GetDarwinWorkspace() string {

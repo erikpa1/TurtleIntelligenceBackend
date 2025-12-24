@@ -3,10 +3,10 @@ package turtleio
 import (
 	"net/http"
 
-	"github.com/erikpa1/TurtleIntelligenceBackend/auth"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"turtle/auth"
+	"turtle/lg"
 )
 
 var upgrader = websocket.Upgrader{

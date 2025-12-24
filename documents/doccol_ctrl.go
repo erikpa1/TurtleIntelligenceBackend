@@ -2,19 +2,20 @@ package documents
 
 import (
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmCtrl"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/llm/llmCtrl"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func ListDocumentCollections(user *models.User) []*DocumentsCollection {
+func ListDocumentCollections(user *users.User) []*DocumentsCollection {
 	return db.QueryEntities[DocumentsCollection](CT_DOC_COLLECTION, user.FillOrgQuery(nil))
 }
 
-func ListDocumentsOfCollection(user *models.User, colUid primitive.ObjectID) []*Document {
+func ListDocumentsOfCollection(user *users.User, colUid primitive.ObjectID) []*Document {
 
 	col := GetDocsCol(user, colUid)
 
@@ -34,7 +35,7 @@ func ListDocumentsOfCollection(user *models.User, colUid primitive.ObjectID) []*
 
 }
 
-func GetDocsCol(user *models.User, colUid primitive.ObjectID) *DocumentsCollection {
+func GetDocsCol(user *users.User, colUid primitive.ObjectID) *DocumentsCollection {
 	query := user.FillOrgQuery(bson.M{
 		"_id": colUid,
 	})
@@ -42,13 +43,13 @@ func GetDocsCol(user *models.User, colUid primitive.ObjectID) *DocumentsCollecti
 	return tmp
 }
 
-func DeleteDocumentsCollection(user *models.User, uid primitive.ObjectID) {
+func DeleteDocumentsCollection(user *users.User, uid primitive.ObjectID) {
 	db.DeleteEntity(CT_DOC_COLLECTION, user.FillOrgQuery(bson.M{
 		"_id": uid,
 	}))
 }
 
-func UnassignDocumentsCollection(user *models.User, uid primitive.ObjectID) {
+func UnassignDocumentsCollection(user *users.User, uid primitive.ObjectID) {
 	db.UpdateOneCustom(CT_DOC_COLLECTION, user.FillOrgQuery(bson.M{
 		"_id": uid,
 	}),
@@ -59,7 +60,7 @@ func UnassignDocumentsCollection(user *models.User, uid primitive.ObjectID) {
 	)
 }
 
-func ClearDocumentsCollection(user *models.User, uid primitive.ObjectID) {
+func ClearDocumentsCollection(user *users.User, uid primitive.ObjectID) {
 	db.UpdateOneCustom(CT_DOC_COLLECTION, user.FillOrgQuery(bson.M{
 		"_id": uid,
 	}),
@@ -70,14 +71,14 @@ func ClearDocumentsCollection(user *models.User, uid primitive.ObjectID) {
 	)
 }
 
-func GetDocumentCollection(user *models.User, id primitive.ObjectID) *DocumentsCollection {
+func GetDocumentCollection(user *users.User, id primitive.ObjectID) *DocumentsCollection {
 
 	return db.QueryEntity[DocumentsCollection](CT_DOC_COLLECTION, user.FillOrgQuery(bson.M{
 		"_id": id,
 	}))
 
 }
-func CreateDocumentsCollection(c *gin.Context, user *models.User, docColl *DocumentsCollection) {
+func CreateDocumentsCollection(c *gin.Context, user *users.User, docColl *DocumentsCollection) {
 	docColl.Org = user.Org
 	docColl.Uid = primitive.NewObjectID()
 	db.InsertEntity(CT_DOC_COLLECTION, docColl)
@@ -85,7 +86,7 @@ func CreateDocumentsCollection(c *gin.Context, user *models.User, docColl *Docum
 
 }
 
-func RefreshDocumentsCollection(c *gin.Context, user *models.User, docColl *DocumentsCollection) {
+func RefreshDocumentsCollection(c *gin.Context, user *users.User, docColl *DocumentsCollection) {
 
 	ClearDocumentsCollection(user, docColl.Uid)
 

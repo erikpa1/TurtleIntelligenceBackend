@@ -1,8 +1,8 @@
 package turtleio
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
 	"github.com/gorilla/websocket"
+	"turtle/lg"
 )
 
 type Client struct {

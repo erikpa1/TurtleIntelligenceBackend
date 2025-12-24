@@ -1,12 +1,13 @@
 package llmCtrl
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
+	"sync"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/llm/llmModels"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"sync"
 )
 
 const CT_LLM_MODELS = "llm_models"
@@ -44,7 +45,7 @@ func ListLocalModels(org primitive.ObjectID) []*llmModels.LLM {
 
 }
 
-func GetLLMOrDefault(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
+func GetLLMOrDefault(user *users.User, uid primitive.ObjectID) *llmModels.LLM {
 	if uid.IsZero() {
 		return GetDefaultModel(user)
 	} else {
@@ -52,7 +53,7 @@ func GetLLMOrDefault(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
 	}
 }
 
-func GetDefaultModel(user *models.User) *llmModels.LLM {
+func GetDefaultModel(user *users.User) *llmModels.LLM {
 	return db.QueryEntity[llmModels.LLM](CT_LLM_MODELS,
 		bson.M{
 			"org":       user.Org,
@@ -60,7 +61,7 @@ func GetDefaultModel(user *models.User) *llmModels.LLM {
 		})
 }
 
-func GetLLMModel(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
+func GetLLMModel(user *users.User, uid primitive.ObjectID) *llmModels.LLM {
 
 	return db.QueryEntity[llmModels.LLM](CT_LLM_MODELS,
 		bson.M{
@@ -69,7 +70,7 @@ func GetLLMModel(user *models.User, uid primitive.ObjectID) *llmModels.LLM {
 		})
 }
 
-func DeleteModelsOfCluster(user *models.User, uid primitive.ObjectID) {
+func DeleteModelsOfCluster(user *users.User, uid primitive.ObjectID) {
 	if user.IsAdmin() {
 		db.DeleteEntities(CT_LLM_MODELS, bson.M{
 			"org": user.Org,
@@ -78,7 +79,7 @@ func DeleteModelsOfCluster(user *models.User, uid primitive.ObjectID) {
 	}
 }
 
-func DeleteLLMModel(user *models.User, uid primitive.ObjectID) {
+func DeleteLLMModel(user *users.User, uid primitive.ObjectID) {
 	if user.IsAdminWithError() {
 		db.DeleteEntities(CT_LLM_MODELS, bson.M{
 			"org": user.Org,
@@ -87,7 +88,7 @@ func DeleteLLMModel(user *models.User, uid primitive.ObjectID) {
 	}
 }
 
-func COULLMModel(user *models.User, model *llmModels.LLM) {
+func COULLMModel(user *users.User, model *llmModels.LLM) {
 	if user.IsAdmin() {
 		if model.Uid.IsZero() {
 			model.Org = user.Org

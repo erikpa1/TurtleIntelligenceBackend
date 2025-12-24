@@ -1,11 +1,11 @@
 package db
 
 import (
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/vfs"
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
+	"turtle/lg"
+	"turtle/vfs"
 )
 
 // _DesktopClient defines methods for working with local storage

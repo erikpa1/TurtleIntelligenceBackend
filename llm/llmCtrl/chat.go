@@ -3,17 +3,18 @@ package llmCtrl
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/erikpa1/TurtleIntelligenceBackend/db"
-	"github.com/erikpa1/TurtleIntelligenceBackend/lg"
-	"github.com/erikpa1/TurtleIntelligenceBackend/llm/llmModels"
-	"github.com/erikpa1/TurtleIntelligenceBackend/models"
-	"github.com/erikpa1/TurtleIntelligenceBackend/tools"
+	"net/http"
+	"strings"
+	"turtle/core/users"
+	"turtle/db"
+	"turtle/lg"
+	"turtle/llm/llmModels"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"net/http"
-	"strings"
 )
 
 const CT_LLM_CHAT_HISTORY = "llm_chat_history"
@@ -31,7 +32,7 @@ func QueryChatsHistory(query bson.M) []*llmModels.ChatHistoryLight {
 	return db.QueryEntities[llmModels.ChatHistoryLight](CT_LLM_CHAT_HISTORY, query, findOptions)
 }
 
-func StartLLMChat(user *models.User, suggestedName string) primitive.ObjectID {
+func StartLLMChat(user *users.User, suggestedName string) primitive.ObjectID {
 	tmp := llmModels.ChatHistory{}
 	tmp.Uid = primitive.NewObjectID()
 	tmp.At = tools.GetTimeNowMillis()
@@ -46,7 +47,7 @@ func StartLLMChat(user *models.User, suggestedName string) primitive.ObjectID {
 	return tmp.Uid
 }
 
-func AddUserQuestion(user *models.User, chatId primitive.ObjectID, text string) {
+func AddUserQuestion(user *users.User, chatId primitive.ObjectID, text string) {
 	segment := llmModels.ConversationSegment{}
 	segment.At = tools.GetTimeNowMillis()
 	segment.IsUser = true
@@ -64,7 +65,7 @@ func AddUserQuestion(user *models.User, chatId primitive.ObjectID, text string) 
 	)
 }
 
-func AddChatAnswer(user *models.User, chatId primitive.ObjectID, text string) {
+func AddChatAnswer(user *users.User, chatId primitive.ObjectID, text string) {
 	segment := llmModels.ConversationSegment{}
 	segment.At = tools.GetTimeNowMillis()
 	segment.IsUser = false
@@ -88,7 +89,7 @@ func DeleteChat(user primitive.ObjectID, chatUid primitive.ObjectID) {
 	db.DeleteEntity(CT_LLM_CHAT_HISTORY, bson.M{"_id": chatUid, "userUid": user})
 }
 
-func AskModelStream(c *gin.Context, user *models.User, modelUid primitive.ObjectID, prompt string) {
+func AskModelStream(c *gin.Context, user *users.User, modelUid primitive.ObjectID, prompt string) {
 	model := GetLLMModel(user, modelUid)
 
 	if model != nil {
@@ -133,7 +134,7 @@ func AskModelStream(c *gin.Context, user *models.User, modelUid primitive.Object
 }
 
 func AskModelForDescription(c *gin.Context,
-	user *models.User,
+	user *users.User,
 	modelUid primitive.ObjectID,
 	userQuery string,
 	maxWords int,
@@ -178,7 +179,7 @@ USER QUERY: {%s}
 
 }
 
-func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, prompt string) string {
+func AskModel(c *gin.Context, user *users.User, modelUid primitive.ObjectID, prompt string) string {
 
 	model := GetLLMOrDefault(user, modelUid)
 
@@ -197,7 +198,7 @@ func AskModel(c *gin.Context, user *models.User, modelUid primitive.ObjectID, pr
 	return "--unanswered--"
 }
 
-func AskModelRemote(c *gin.Context, user *models.User, model *llmModels.LLM, prompt string) string {
+func AskModelRemote(c *gin.Context, user *users.User, model *llmModels.LLM, prompt string) string {
 	clusterUid := GetRoundRobinCluster(model.Clusters, model.Uid)
 
 	cluster := GetLLMCluster(user, clusterUid)
