@@ -133,10 +133,10 @@ func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 		PlayHttpTriggerNode(context, node)
 	} else {
 		if node.Type == WRITE_TO_FILE {
-			lg.LogI("Going to: ", node.Type)
+			//lg.LogI("Going to: ", node.Type)
 			PlayWriteToFileNode(context, node)
 		} else if node.Type == LLM_AGENT_NODE {
-			lg.LogI("Going to: ", node.Type)
+			//lg.LogI("Going to: ", node.Type)
 			PlayLLMNode(context, node)
 		}
 	}
@@ -151,18 +151,16 @@ func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 
 		lg.LogOk("-----")
 
-		for i, nextNode := range nextNodes {
-			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
+		for _, nextNode := range nextNodes {
 
 			if nextNode == nil {
-				lg.LogE("No next node")
+				//lg.LogE("No next node")
 			} else {
-				lg.LogE("Here")
 				DispatchPlayNode(context, nextNode)
 			}
 		}
 	} else {
-		lg.LogE("No next nodes")
+		//lg.LogE("No next nodes")
 	}
 
 }

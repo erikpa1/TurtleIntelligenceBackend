@@ -1,9 +1,11 @@
 package llmModels
 
 import (
+	"fmt"
+	"turtle/tools"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/tools"
 )
 
 type ChatHistoryLight struct {
@@ -41,4 +43,21 @@ type ChatHistory struct {
 type ContentBlock struct {
 	Type string `json:"type"`
 	Text string `json:"text"`
+}
+
+type ChatRequestParams struct {
+	SystemPrompt string
+	UserPrompt   string
+}
+
+func (self *ChatRequestParams) GetFinalCommand() string {
+
+	tmp := fmt.Sprintf(`
+[INST]
+[SYSTEM] %s
+[/INST]
+User query: %s
+`, self.SystemPrompt, self.UserPrompt)
+
+	return tmp
 }

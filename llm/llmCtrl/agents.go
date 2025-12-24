@@ -237,10 +237,14 @@ Please format your response as JSON:
 	return tmp.Result.Confidence >= trueProbability
 }
 
+func ChatModelWithSystem(c *gin.Context, user *users.User, model *llmModels.LLM, prompt *llmModels.ChatRequestParams) *llmModels.AgentTestResponse {
+	return ChatAgenticModelRaw(c, user, model, prompt.GetFinalCommand())
+}
+
 func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	result := llmModels.AgentTestResponse{}
 
-	lg.LogI(model.ModelVersion)
+	//lg.LogI(model.ModelVersion)
 
 	ollmodel := ollama.WithModel(model.ModelVersion)
 	keepAlive := ollama.WithKeepAlive(model.Ttl)
@@ -248,7 +252,7 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 	llm, err := ollama.New(ollmodel, keepAlive)
 
 	if err == nil {
-		lg.LogE(text)
+		//lg.LogE(text)
 
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 

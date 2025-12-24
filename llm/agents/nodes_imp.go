@@ -19,24 +19,17 @@ func PlayHttpTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
 
 	step.Start()
 
-	if node.Type == HTTP_TRIGGER {
-		//TODO vybrat z body data
-
-		bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
-		if err != nil {
-			lg.LogStackTraceErr(err)
-			return
-		}
-
-		// Convert bytes to string
-		bodyString := string(bodyBytes)
-		context.Data.SetString(bodyString)
-
-		lg.LogE(bodyString)
-	} else {
-		lg.LogE("Undefined node")
+	bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
+	if err != nil {
+		lg.LogStackTraceErr(err)
+		return
 	}
 
+	// Convert bytes to string
+	bodyString := string(bodyBytes)
+	context.Data.SetString(bodyString)
+
+	step.DataStr = bodyString
 	step.End()
 
 }
@@ -50,14 +43,16 @@ func PlayWriteToFileNode(context *NodePlayContext, node *LLMAgentNode) {
 
 	if data != nil {
 
+		dataToWrite := context.Data.GetString()
+
+		step.DataStr = dataToWrite
+
 		if data.UseWd {
-
-			lg.LogE("Going to write", data.ParentFolder, data.GetFileName())
-			lg.LogOk(context.Data.GetString())
-
-			vfs.WriteFileStringToWD(data.ParentFolder, data.GetFileName(), context.Data.GetString())
+			//lg.LogE("Going to write", data.ParentFolder, data.GetFileName())
+			//lg.LogOk(context.Data.GetString())
+			vfs.WriteFileStringToWD(data.ParentFolder, data.GetFileName(), dataToWrite)
 		} else {
-			vfs.WriteFileString(data.ParentFolder, data.GetFileName(), context.Data.GetString())
+			vfs.WriteFileString(data.ParentFolder, data.GetFileName(), dataToWrite)
 		}
 
 		if data.OpenFolder {
@@ -88,20 +83,24 @@ func PlayLLMNode(context *NodePlayContext, node *LLMAgentNode) {
 
 	step.Start()
 
-	data := GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
+	llmData := GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
+	myData := tools.RecastBson[LLMAgentData](node.TypeData)
+	lg.LogEson(llmData)
 
-	lg.LogEson(data)
+	if llmData != nil && myData != nil {
 
-	if data != nil {
 		model := llmModels.LLM{}
-		model.ModelVersion = data.ModelName
+		model.ModelVersion = llmData.ModelName
 
-		lg.LogI("Going to chat with model:", data.ModelName)
+		lg.LogI("Going to chat with model:", llmData.ModelName)
 		lg.LogI(context.Data.GetString())
-		modelResponse := llmCtrl.ChatAgenticModelRaw(context.Gin, context.User, &model, context.Data.GetString())
+		modelResponse := llmCtrl.ChatModelWithSystem(context.Gin, context.User, &model, &llmModels.ChatRequestParams{
+			SystemPrompt: myData.SystemPrompt,
+			UserPrompt:   context.Data.GetString(),
+		})
 
+		step.DataStr = modelResponse.ResultRaw
 		context.Data.SetString(modelResponse.ResultRaw)
-
 	}
 
 	step.End()

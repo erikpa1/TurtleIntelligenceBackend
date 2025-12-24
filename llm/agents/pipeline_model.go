@@ -1,8 +1,10 @@
 package agents
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/lg"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Pipeline struct {
@@ -17,7 +19,7 @@ type PipelineStep struct {
 	StartedAt tools.Milliseconds `json:"startedAt"`
 	EndedAt   tools.Milliseconds `json:"endedAt"`
 	Duration  tools.Milliseconds `json:"duration"`
-	HelpData  string             `json:"helpData"`
+	DataStr   string             `json:"dataStr"`
 }
 
 func (self *Pipeline) AddStep(step *PipelineStep) int {
@@ -25,6 +27,9 @@ func (self *Pipeline) AddStep(step *PipelineStep) int {
 	step.Index = currentIndex
 
 	self.Steps = append(self.Steps, step)
+
+	lg.LogOk(len(self.Steps))
+
 	return currentIndex
 }
 
