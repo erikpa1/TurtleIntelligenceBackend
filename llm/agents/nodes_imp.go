@@ -85,7 +85,8 @@ func PlayLLMNode(context *NodePlayContext, node *LLMAgentNode) {
 
 	llmData := GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
 	myData := tools.RecastBson[LLMAgentData](node.TypeData)
-	lg.LogEson(llmData)
+
+	memory := GetTargetOfNode(node.Org, node.Uid, "memory")
 
 	if llmData != nil && myData != nil {
 
@@ -94,10 +95,26 @@ func PlayLLMNode(context *NodePlayContext, node *LLMAgentNode) {
 
 		lg.LogI("Going to chat with model:", llmData.ModelName)
 		lg.LogI(context.Data.GetString())
-		modelResponse := llmCtrl.ChatModelWithSystem(context.Gin, context.User, &model, &llmModels.ChatRequestParams{
-			SystemPrompt: myData.SystemPrompt,
-			UserPrompt:   context.Data.GetString(),
-		})
+
+		chatRequest := llmModels.ChatRequestParams{}
+
+		lg.LogEson(memory)
+
+		if memory != nil {
+			if memory.Type == "staticMemory" {
+				staticMemData := tools.RecastBson[StaticMemory](memory.TypeData)
+				if staticMemData != nil {
+					chatRequest.Memory = staticMemData.MemoryText
+				}
+			}
+		}
+
+		chatRequest.UserPrompt = context.Data.GetString()
+		chatRequest.SystemPrompt = myData.SystemPrompt
+
+		lg.LogE(chatRequest.GetFinalCommand())
+
+		modelResponse := llmCtrl.ChatModelWithSystem(context.Gin, context.User, &model, &chatRequest)
 
 		step.DataStr = modelResponse.ResultRaw
 		context.Data.SetString(modelResponse.ResultRaw)

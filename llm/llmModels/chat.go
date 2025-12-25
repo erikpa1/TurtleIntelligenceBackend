@@ -48,16 +48,24 @@ type ContentBlock struct {
 type ChatRequestParams struct {
 	SystemPrompt string
 	UserPrompt   string
+	Memory       string
 }
 
 func (self *ChatRequestParams) GetFinalCommand() string {
 
-	tmp := fmt.Sprintf(`
-[INST]
-[SYSTEM] %s
-[/INST]
-User query: %s
-`, self.SystemPrompt, self.UserPrompt)
+	resultBuffer := ""
 
-	return tmp
+	if self.Memory != "" {
+		resultBuffer += fmt.Sprintf(`[PREVIOUS_MESSAGE]%s[/PREVIOUS_MESSAGE]`, self.Memory)
+	}
+
+	if self.SystemPrompt != "" {
+		resultBuffer += fmt.Sprintf("[INST][SYSTEM] %s[/INST]", self.SystemPrompt)
+	}
+
+	if self.UserPrompt != "" {
+		resultBuffer += fmt.Sprintf(`User query: %s`, self.UserPrompt)
+	}
+
+	return resultBuffer
 }

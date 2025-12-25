@@ -22,3 +22,7 @@ func (self *WriteToFileNode) GetFileName() string {
 	}
 	return self.FileName
 }
+
+type StaticMemory struct {
+	MemoryText string `json:"memoryText" bson:"memoryText"`
+}

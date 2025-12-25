@@ -79,7 +79,7 @@ func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName st
 	})
 
 	if edge != nil {
-		return GetAgentNode(edge.Org, edge.Uid)
+		return GetAgentNode(edge.Org, edge.Target)
 
 	}
 	return nil
@@ -129,18 +129,15 @@ func PlayAgentNode(context *NodePlayContext, agentUid primitive.ObjectID) {
 
 func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 
-	if node.PhaseType == AGENT_PHASE_TRIGGER {
+	if node.Type == HTTP_TRIGGER {
 		PlayHttpTriggerNode(context, node)
-	} else {
-		if node.Type == WRITE_TO_FILE {
-			//lg.LogI("Going to: ", node.Type)
-			PlayWriteToFileNode(context, node)
-		} else if node.Type == LLM_AGENT_NODE {
-			//lg.LogI("Going to: ", node.Type)
-			PlayLLMNode(context, node)
-		}
+	} else if node.Type == WRITE_TO_FILE {
+		//lg.LogI("Going to: ", node.Type)
+		PlayWriteToFileNode(context, node)
+	} else if node.Type == LLM_AGENT_NODE {
+		//lg.LogI("Going to: ", node.Type)
+		PlayLLMNode(context, node)
 	}
-
 	nextNodes := GetTargetsOfNode(context, node.Uid, "")
 
 	if len(nextNodes) > 0 {
