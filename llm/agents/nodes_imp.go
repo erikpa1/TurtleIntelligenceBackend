@@ -2,6 +2,8 @@ package agents
 
 import (
 	"io"
+	"turtle/databases/tsqlite"
+	"turtle/formats/office"
 
 	"turtle/lg"
 	"turtle/llm/llmCtrl"
@@ -11,13 +13,8 @@ import (
 )
 
 func PlayHttpTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
-	step := PipelineStep{
-		Name: node.Name,
-	}
 
-	context.Pipeline.AddStep(&step)
-
-	step.Start()
+	step := context.Pipeline.StartFromNode(node)
 
 	bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
 	if err != nil {
@@ -36,8 +33,7 @@ func PlayHttpTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
 
 func PlayWriteToFileNode(context *NodePlayContext, node *LLMAgentNode) {
 
-	step := context.Pipeline.NewStep()
-	step.Start()
+	step := context.Pipeline.StartFromNode(node)
 
 	data := tools.RecastBson[WriteToFileNode](node.TypeData)
 
@@ -75,13 +71,7 @@ func PlayWriteToFileNode(context *NodePlayContext, node *LLMAgentNode) {
 
 func PlayLLMNode(context *NodePlayContext, node *LLMAgentNode) {
 
-	step := PipelineStep{
-		Name: node.Name,
-	}
-
-	context.Pipeline.AddStep(&step)
-
-	step.Start()
+	step := context.Pipeline.StartFromNode(node)
 
 	llmData := GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
 	myData := tools.RecastBson[LLMAgentData](node.TypeData)
@@ -120,5 +110,18 @@ func PlayLLMNode(context *NodePlayContext, node *LLMAgentNode) {
 		context.Data.SetString(modelResponse.ResultRaw)
 	}
 
+	step.End()
+}
+
+func PlayWriteExcel(context *NodePlayContext, node *LLMAgentNode) {
+	step := context.Pipeline.StartFromNode(node)
+	lg.LogE("Here")
+	office.WriteExcel(vfs.GetWorkingDirectory() + "/Book1.xlsx")
+	step.End()
+}
+
+func PlayWriteSqlite(context *NodePlayContext, node *LLMAgentNode) {
+	step := context.Pipeline.StartFromNode(node)
+	tsqlite.WriteJsonToSqlite(vfs.GetWorkingDirectory()+"/books.db", "books", "")
 	step.End()
 }

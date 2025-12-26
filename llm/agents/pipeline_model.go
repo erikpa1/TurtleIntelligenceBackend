@@ -47,6 +47,12 @@ func (self *Pipeline) NewStepFromNode(node *LLMAgentNode) *PipelineStep {
 	return step
 }
 
+func (self *Pipeline) StartFromNode(node *LLMAgentNode) *PipelineStep {
+	step := self.NewStepFromNode(node)
+	step.Start()
+	return step
+}
+
 func (self *PipelineStep) Start() {
 	self.Status = "started"
 	self.StartedAt = tools.GetTimeNowMillis()

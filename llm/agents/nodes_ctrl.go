@@ -129,11 +129,16 @@ func PlayAgentNode(context *NodePlayContext, agentUid primitive.ObjectID) {
 
 func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 
+	lg.LogW(node.Type)
 	if node.Type == HTTP_TRIGGER {
 		PlayHttpTriggerNode(context, node)
 	} else if node.Type == WRITE_TO_FILE {
 		//lg.LogI("Going to: ", node.Type)
 		PlayWriteToFileNode(context, node)
+	} else if node.Type == WRITE_TO_EXCEL {
+		PlayWriteExcel(context, node)
+	} else if node.Type == WRITE_TO_SQLITE {
+		PlayWriteSqlite(context, node)
 	} else if node.Type == LLM_AGENT_NODE {
 		//lg.LogI("Going to: ", node.Type)
 		PlayLLMNode(context, node)
