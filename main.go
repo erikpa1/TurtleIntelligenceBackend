@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 	"turtle/core/usersApi"
+	"turtle/toolsApi"
 
 	"turtle/crm"
 	"turtle/security"
@@ -119,6 +120,8 @@ func dev_main() {
 	llmApi.InitLLMApi(r)
 	agents.InitLLMAgentNodes(r)
 	flows.InitFlowsApi(r)
+
+	toolsApi.InitToolsApi(r)
 
 	if tools.IsInDevelopment() {
 		lg.LogI("Going to take files from: ", "../static")
