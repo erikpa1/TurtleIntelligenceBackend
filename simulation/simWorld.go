@@ -3,12 +3,13 @@ package simulation
 import (
 	"fmt"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/ctrlApp"
 	"turtle/lg"
 	"turtle/modelsApp"
 	"turtle/simulation/simInternal"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type SimWorld struct {
@@ -57,6 +58,19 @@ func (self *SimWorld) GetRuntimeId() int64 {
 	return tmp
 
 }
+func (self *SimWorld) ListBehaviours() []ISimBehaviour {
+
+	behavioursList := make([]ISimBehaviour, len(self.SimBehaviours))
+
+	index := 0
+	for _, behaviour := range self.SimBehaviours {
+		behavioursList[index] = behaviour
+		index += 1
+	}
+
+	return behavioursList
+}
+
 func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
 	for _, entity := range entities {
 		simEntity := SimEntity{}
@@ -144,6 +158,15 @@ func (self *SimWorld) UnspawnActor(actor *SimActor) {
 	actor.World = nil //Make GC life easier
 	self.StatesDestroyedActors = append(self.StatesDestroyedActors, actor.Id)
 	delete(self.SimActors, actor.Id)
+}
+
+func (self *SimWorld) SpwanCustomActor(actor *SimActor) {
+	actor.Id = self.ActorsIds
+	actor.World = self
+
+	self.ActorsIds += 1
+	self.StatesCreatedActors[actor.Id] = actor
+
 }
 
 func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {

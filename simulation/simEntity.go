@@ -1,6 +1,8 @@
 package simulation
 
 import (
+	"turtle/simulation/simMath"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"turtle/modelsApp"
@@ -12,7 +14,7 @@ type SimEntity struct {
 	Uid       primitive.ObjectID
 	Name      string
 	Type      string
-	Position  [3]float32
+	Position  simMath.Position
 	TypeData  *tools.SafeJson
 	Wold      *SimWorld
 }

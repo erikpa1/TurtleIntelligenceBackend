@@ -18,6 +18,7 @@ func NewBehavioursFactory() *BehavioursFactory {
 	tmp.Behaviours["buffer"] = NewBufferBehaviour
 	tmp.Behaviours["switch"] = NewSwitchBehaviour
 	tmp.Behaviours["queue"] = NewQueueBehaviour
+	tmp.Behaviours["human"] = NewHumanBehaviour
 
 	return tmp
 }
