@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 	"turtle/core/usersApi"
+	"turtle/themes"
 	"turtle/toolsApi"
 
 	"turtle/crm"
@@ -120,6 +121,8 @@ func dev_main() {
 	llmApi.InitLLMApi(r)
 	agents.InitLLMAgentNodes(r)
 	flows.InitFlowsApi(r)
+
+	themes.InitThemesApi(r)
 
 	toolsApi.InitToolsApi(r)
 

@@ -69,3 +69,7 @@ func (self *ChatRequestParams) GetFinalCommand() string {
 
 	return resultBuffer
 }
+
+func MCPSystemPrefix(text string) string {
+	return fmt.Sprintf("You are MCP agent in the field of %s", text)
+}
