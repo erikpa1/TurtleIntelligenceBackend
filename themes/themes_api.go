@@ -30,5 +30,7 @@ func InitThemesApi(r *gin.Engine) {
 	r.POST("/api/theme", auth.AdminRequired, _COUTheme)
 	r.DELETE("/api/theme", auth.AdminRequired, _DeleteTheme)
 
+	//Copilo part
 	r.POST("/api/themes/copilot", auth.AdminRequired, _ChatCopilot)
+	r.POST("/api/themes/copilot/examples", auth.AdminRequired, _ListCopilotExamples)
 }

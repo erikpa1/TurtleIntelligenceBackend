@@ -256,13 +256,17 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 
-		lg.LogI(completion)
-
 		result.ResultRaw = completion
 
 		if complErr == nil {
 
 			resultBson := bson.M{}
+
+			contenxtBlocks := FindJSON(completion)
+
+			if len(contenxtBlocks) > 0 {
+				lg.LogEson(contenxtBlocks)
+			}
 
 			serializationErr := json.Unmarshal([]byte(completion), &resultBson)
 

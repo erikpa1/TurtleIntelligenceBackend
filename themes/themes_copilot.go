@@ -37,6 +37,7 @@ new_theme - creates new theme definned by user
 
 
 Please format your response as JSON:
+
 {
 "confidence": 0.2,
 "command": "commandType",
@@ -60,6 +61,13 @@ Example:
 
 	response := llmCtrl.ChatModelWithSystem(c, user, &model, &request)
 
-	lg.LogE("Resposne", response)
+	lg.LogOkson(response.Result.Parameters)
 
+}
+
+func _ListCopilotExamples(c *gin.Context) {
+	c.String(200, `
+	<h1>Examples</h1>
+	<p>Create sunset theme</p>
+`)
 }
