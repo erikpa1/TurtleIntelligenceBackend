@@ -12,20 +12,33 @@ func _ListThemes(c *gin.Context) {
 }
 
 func _GetTheme(c *gin.Context) {
+	uid := tools.MongoObjectIdFromQuery(c)
+	user := auth.GetUserFromContext(c)
+	tools.AutoReturn(c, GetTheme(user, uid))
+}
 
+func _GetDefaultTheme(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	tools.AutoReturn(c, GetDefaultTheme(user))
 }
 
 func _COUTheme(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	theme := tools.ObjFromJsonPtr[Theme](c.PostForm("data"))
+	COUTheme(user, theme)
 }
 
 func _DeleteTheme(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	uid := tools.MongoObjectIdFromQuery(c)
+	DeleteTheme(user, uid)
 
 }
 
 func InitThemesApi(r *gin.Engine) {
-	r.GET("/api/themes", auth.AdminRequired, _ListThemes)
-	r.GET("/api/theme", auth.AdminRequired, _ListThemes)
-	r.GET("/api/theme/default", auth.AdminRequired, _ListThemes)
+	r.GET("/api/themes", auth.LoginRequired, _ListThemes)
+	r.GET("/api/theme", auth.LoginRequired, _GetTheme)
+	r.GET("/api/theme/default", auth.LoginRequired, _GetDefaultTheme)
 
 	r.POST("/api/theme", auth.AdminRequired, _COUTheme)
 	r.DELETE("/api/theme", auth.AdminRequired, _DeleteTheme)
