@@ -104,7 +104,7 @@ func COULLMModel(user *users.User, model *llmModels.LLM) {
 		}
 
 		if model.IsDefault {
-			db.UpdateEntitiesWhere(CT_LLM_MODELS,
+			db.SetEntitiesWhere(CT_LLM_MODELS,
 				bson.M{"_id": bson.M{
 					"$nin": bson.A{model.Uid},
 				}},

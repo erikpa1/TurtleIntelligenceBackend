@@ -6,10 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/credentials"
 	"turtle/lg"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/tidwall/gjson"
 	"go.mongodb.org/mongo-driver/bson"
@@ -218,7 +219,7 @@ func UpdateMany(collection string, filter bson.M, data bson.M) {
 	}
 }
 
-func UpdateEntitiesWhere(collection string, filter bson.M, data any) {
+func SetEntitiesWhere(collection string, filter bson.M, data any) {
 	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, bson.M{"$set": data})
 
 	if err != nil {

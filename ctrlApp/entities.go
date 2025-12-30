@@ -17,7 +17,7 @@ func CreateEntities(entities []*modelsApp.Entity) {
 
 func UpdateEntities(entities []*modelsApp.Entity) {
 	for _, entity := range entities {
-		db.UpdateEntitiesWhere(CT_MODEL_ENTITIES, bson.M{"_id": entity.Uid}, entity)
+		db.SetEntitiesWhere(CT_MODEL_ENTITIES, bson.M{"_id": entity.Uid}, entity)
 
 	}
 }

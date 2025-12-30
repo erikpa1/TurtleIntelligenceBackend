@@ -1,6 +1,7 @@
 package themes
 
 import (
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -25,4 +26,12 @@ type ThemeData struct {
 	IconSecondaryColor string `json:"iconSecondaryColor,omitempty" bson:"iconSecondaryColor,omitempty"`
 	BorderColor        string `json:"borderColor,omitempty" bson:"borderColor,omitempty"`
 	BorderHoverColor   string `json:"borderHoverColor,omitempty" bson:"borderHoverColor,omitempty"`
+	PrimaryColor       string `json:"primaryColor,omitempty" bson:"primaryColor,omitempty"`
+}
+
+var ThemeLightProjection = bson.M{
+	"_id":     1,
+	"name":    1,
+	"default": 1,
+	"color":   1,
 }
