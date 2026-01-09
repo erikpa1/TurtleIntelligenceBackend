@@ -44,8 +44,6 @@ func _COUNodes(c *gin.Context) {
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
 
-	lg.LogEson(req)
-
 	for _, deleted := range req.Deleted {
 		DeleteAgentNode(deleted)
 	}

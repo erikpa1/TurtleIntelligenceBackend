@@ -16,6 +16,11 @@ type WriteToFileNode struct {
 	UseWd        bool   `json:"useWd" bson:"useWd"`
 }
 
+type LoadFileStringNode struct {
+	FilePath string `json:"filePath" bson:"filePath"`
+	UseWd    bool   `json:"useWd" bson:"useWd"`
+}
+
 func (self *WriteToFileNode) GetFileName() string {
 	if self.FileName == "" {
 		return "output.txt"

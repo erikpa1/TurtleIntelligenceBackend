@@ -31,6 +31,31 @@ func PlayHttpTriggerNode(context *NodePlayContext, node *LLMAgentNode) {
 
 }
 
+func PlayLoadFileStringNode(context *NodePlayContext, node *LLMAgentNode) {
+	step := context.Pipeline.StartFromNode(node)
+
+	data := tools.RecastBson[LoadFileStringNode](node.TypeData)
+
+	if data != nil {
+		if data.UseWd {
+			strData, err := vfs.GetFileStringFromWDNew(data.FilePath)
+			context.Data.SetString(strData)
+			step.SetError(err)
+		} else {
+			//lg.LogE("Going to write", data.ParentFolder, data.GetFileName())
+			//lg.LogOk(context.Data.GetString())
+			strData, err := vfs.GetFileString(data.FilePath)
+
+			context.Data.SetString(strData)
+			step.SetError(err)
+		}
+
+	} else {
+		lg.LogStackTraceErr("Failed to cast node data to LoadFileStringNode")
+	}
+
+	step.End()
+}
 func PlayWriteToFileNode(context *NodePlayContext, node *LLMAgentNode) {
 
 	step := context.Pipeline.StartFromNode(node)

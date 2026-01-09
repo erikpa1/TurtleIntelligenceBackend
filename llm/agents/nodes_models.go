@@ -2,6 +2,7 @@ package agents
 
 import (
 	"turtle/core/users"
+	"turtle/lg"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -67,4 +68,7 @@ func (self *ContextData) GetString() string {
 func (self *ContextData) SetString(data string) {
 	self.Type = ContextDataType.String
 	self.Data = data
+
+	lg.LogI("Setting stirng: ", data)
+
 }

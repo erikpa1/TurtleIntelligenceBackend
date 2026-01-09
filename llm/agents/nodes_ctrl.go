@@ -129,7 +129,6 @@ func PlayAgentNode(context *NodePlayContext, agentUid primitive.ObjectID) {
 
 func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 
-	lg.LogW(node.Type)
 	if node.Type == HTTP_TRIGGER {
 		PlayHttpTriggerNode(context, node)
 	} else if node.Type == WRITE_TO_FILE {
@@ -142,6 +141,10 @@ func DispatchPlayNode(context *NodePlayContext, node *LLMAgentNode) {
 	} else if node.Type == LLM_AGENT_NODE {
 		//lg.LogI("Going to: ", node.Type)
 		PlayLLMNode(context, node)
+	} else if node.Type == LOAD_FILE_STRING {
+		PlayLoadFileStringNode(context, node)
+	} else {
+		lg.LogE("Unable to find node", node.Type)
 	}
 	nextNodes := GetTargetsOfNode(context, node.Uid, "")
 

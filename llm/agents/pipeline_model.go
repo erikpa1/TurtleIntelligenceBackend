@@ -20,6 +20,7 @@ type PipelineStep struct {
 	EndedAt   tools.Milliseconds `json:"endedAt"`
 	Duration  tools.Milliseconds `json:"duration"`
 	DataStr   string             `json:"dataStr"`
+	WasError  error              `json:"wasError"`
 }
 
 func (self *Pipeline) AddStep(step *PipelineStep) int {
@@ -62,4 +63,13 @@ func (self *PipelineStep) End() {
 	self.Status = "end"
 	self.EndedAt = tools.GetTimeNowMillis()
 	self.Duration = self.EndedAt - self.StartedAt
+}
+
+func (self *PipelineStep) SetError(err error) {
+	self.WasError = err
+
+	if err != nil {
+		lg.LogStackTraceErr(err.Error())
+	}
+
 }
