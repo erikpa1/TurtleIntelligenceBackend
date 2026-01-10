@@ -1,4 +1,4 @@
-package agents
+package models
 
 import (
 	"turtle/core/users"
@@ -63,10 +63,11 @@ type ContextData struct {
 }
 
 func (self *ContextData) GetString() string {
-	if self.Data == nil {
-		return ""
-	} else {
+	if self.Data != nil {
 		return self.Data.(string)
+	} else {
+		return ""
+
 	}
 }
 func (self *ContextData) SetString(data string) {

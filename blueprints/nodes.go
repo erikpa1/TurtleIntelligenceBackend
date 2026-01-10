@@ -1,4 +1,4 @@
-package agents
+package blueprints
 
 const LLM_AGENT_NODE = "llmAgent"
 const WRITE_TO_FILE = "writeToFile"

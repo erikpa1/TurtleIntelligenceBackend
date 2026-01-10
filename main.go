@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+	"turtle/blueprints"
 	"turtle/core/usersApi"
 	"turtle/themes"
 	"turtle/toolsApi"
@@ -28,7 +29,6 @@ import (
 	"turtle/forecasting"
 	"turtle/knowledgeHub"
 	"turtle/llm"
-	"turtle/llm/agents"
 	"turtle/llm/llmApi"
 	"turtle/llm/llmCtrl"
 	"turtle/nn"
@@ -119,7 +119,7 @@ func dev_main() {
 
 	llm.InitIncidentsApi(r)
 	llmApi.InitLLMApi(r)
-	agents.InitLLMAgentNodes(r)
+	blueprints.InitBlueprintsApi(r)
 	flows.InitFlowsApi(r)
 
 	themes.InitThemesApi(r)

@@ -29,7 +29,7 @@ func ExampleAgent() {
 		"coordinator": bson.M{
 			"name":          "main_coordinator",
 			"role":          "Task Coordinator",
-			"system_prompt": "You coordinate tasks between specialized agents and ensure workflow completion.",
+			"system_prompt": "You coordinate tasks between specialized blueprints and ensure workflow completion.",
 			"subordinates":  bson.A{"research_agent", "analysis_agent", "writer_agent"},
 		},
 		"specialists": bson.A{
@@ -49,7 +49,7 @@ func GetOverallAgentsPrompt(user *users.User, userQuery string) string {
 	//Mistral DOC https://ollama.com/library/mistral
 
 	finalPrompt := `
-SYSTEM: You are an AI assistant that can route user queries to specialized agents. Based on the user's question, select the most appropriate agent and provide the necessary parameters.
+SYSTEM: You are an AI assistant that can route user queries to specialized blueprints. Based on the user's question, select the most appropriate agent and provide the necessary parameters.
 AVAILABLE AGENTS:
 `
 	agents := ListLLMAgents(user)

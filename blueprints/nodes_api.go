@@ -1,7 +1,8 @@
-package agents
+package blueprints
 
 import (
 	"turtle/auth"
+	"turtle/blueprints/models"
 	"turtle/lg"
 	"turtle/tools"
 
@@ -26,7 +27,7 @@ func _QueryAgentEdges(c *gin.Context) {
 
 func _COUNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	data := tools.ObjFromJsonPtr[LLMAgentNode](c.PostForm("data"))
+	data := tools.ObjFromJsonPtr[models.LLMAgentNode](c.PostForm("data"))
 	COUNode(user, data)
 }
 
@@ -35,11 +36,11 @@ func _COUNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	type _Request struct {
-		Modified     []*LLMAgentNode      `json:"modified"`
-		Created      []*LLMAgentNode      `json:"created"`
-		Deleted      []primitive.ObjectID `json:"deleted"`
-		NewEdges     []*NodeEdge          `json:"newEdges"`
-		DeletedEdges []primitive.ObjectID `json:"deletedEdges"`
+		Modified     []*models.LLMAgentNode `json:"modified"`
+		Created      []*models.LLMAgentNode `json:"created"`
+		Deleted      []primitive.ObjectID   `json:"deleted"`
+		NewEdges     []*models.NodeEdge     `json:"newEdges"`
+		DeletedEdges []primitive.ObjectID   `json:"deletedEdges"`
 	}
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
@@ -71,24 +72,11 @@ func _DeleteNode(c *gin.Context) {
 	DeleteAgentNode(uid)
 }
 
-func _ExecNode(c *gin.Context) {
-	user := auth.GetUserFromContext(c)
-	agentUid, _ := tools.StringToObjectID(c.Param("agentUid"))
-	ExeNodeWithUid(user.Org, agentUid)
-}
-
-func _ExecOrgNode(c *gin.Context) {
-	orgUid, _ := tools.StringToObjectID(c.Param("orgUid"))
-	agentUid, _ := tools.StringToObjectID(c.Param("agentUid"))
-	ExeNodeWithUid(orgUid, agentUid)
-
-}
-
 func _PlayAgentNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	nodeUid := tools.MongoObjectIdFromQuery(c)
 
-	playNodeContext := NodePlayContext{
+	playNodeContext := models.NodePlayContext{
 		Gin:         c,
 		User:        user,
 		IsLocalHost: c.RemoteIP() == "::1",
@@ -101,21 +89,28 @@ func _PlayAgentNode(c *gin.Context) {
 	tools.AutoReturn(c, bson.M{
 		"pipeline": playNodeContext.Pipeline,
 	})
-
 }
 
-func InitLLMAgentNodes(r *gin.Engine) {
-	r.GET("/api/llm/agent-nodes/query", auth.LoginRequired, _QueryAgentNodes)
-	r.GET("/api/llm/agent-edges/query", auth.LoginRequired, _QueryAgentEdges)
-	r.POST("/api/llm/agent-node", auth.LoginRequired, _COUNode)
+func InitBlueprintsApi(r *gin.Engine) {
+	InitNodesLibrary()
 
-	r.POST("/api/llm/agent-nodes", auth.LoginRequired, _COUNodes)
+	r.GET("/api/blueprint/all/prompt", auth.LoginRequired, _GetAllAgentsPrompt)
+	r.GET("/api/blueprints", auth.LoginRequired, _ListLLMAgents)
+	r.GET("/api/blueprint", auth.LoginRequired, _TestLLMAgent)
+	r.POST("/api/blueprint", auth.LoginRequired, _COULLMAgent)
+	r.POST("/api/blueprint/test", auth.LoginRequired, _TestLLMAgent)
+	r.DELETE("/api/blueprint", auth.LoginRequired, _DeleteLLMAgent)
 
-	r.DELETE("/api/llm/agent-node", auth.LoginRequired, _DeleteNode)
+	//Nodes
+	r.GET("/api/blueprints/nodes/query", auth.LoginRequired, _QueryAgentNodes)
+	r.GET("/api/blueprints/edges/query", auth.LoginRequired, _QueryAgentEdges)
+	r.POST("/api/blueprints/node", auth.LoginRequired, _COUNode)
 
-	r.POST("/api/llm/agent/exec/:agentUid", auth.LoginRequired, _ExecNode)
-	r.POST("/api/llm/agent/exec/:agentUid/:orgUid", auth.LoginRequired, _ExecOrgNode)
+	r.POST("/api/blueprints/nodes", auth.LoginRequired, _COUNodes)
+
+	r.DELETE("/api/blueprints/node", auth.LoginRequired, _DeleteNode)
 
 	//Play
-	r.POST("/api/llm/agent-play", _PlayAgentNode)
+	r.POST("/api/blueprints/play", _PlayAgentNode)
+
 }
