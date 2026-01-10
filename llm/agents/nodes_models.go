@@ -63,7 +63,11 @@ type ContextData struct {
 }
 
 func (self *ContextData) GetString() string {
-	return self.Data.(string)
+	if self.Data == nil {
+		return ""
+	} else {
+		return self.Data.(string)
+	}
 }
 func (self *ContextData) SetString(data string) {
 	self.Type = ContextDataType.String
