@@ -10,17 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func _ListLLMAgents(c *gin.Context) {
+func _ListBlueprints(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	tools.AutoReturn(c, llmCtrl.ListLLMAgents(user))
 }
 
-func _DeleteLLMAgent(c *gin.Context) {
+func _DeleteBlueprint(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	uid := tools.MongoObjectIdFromQuery(c)
 
-	DeleteNodesOfAgent(user, uid)
+	DeleteNodesOfBlueprint(user, uid)
 	llmCtrl.DeleteLLMAgent(user, uid)
 }
 

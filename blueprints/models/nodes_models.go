@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type LLMAgentNode struct {
+type Node struct {
 	Uid         primitive.ObjectID            `json:"uid" bson:"_id,omitempty"`
 	Name        string                        `json:"name"`
 	Parent      primitive.ObjectID            `json:"parent"`

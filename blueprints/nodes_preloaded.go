@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-var PRELOADED_NODES = make(map[string]models.LLMAgentNode)
+var PRELOADED_NODES = make(map[string]models.Node)
 
 func LoadPreloadedNodes() {
 

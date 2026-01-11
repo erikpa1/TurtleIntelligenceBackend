@@ -43,14 +43,14 @@ func (self *Pipeline) NewStep() *PipelineStep {
 	self.ActiveStep = step
 	return step
 }
-func (self *Pipeline) NewStepFromNode(node *LLMAgentNode) *PipelineStep {
+func (self *Pipeline) NewStepFromNode(node *Node) *PipelineStep {
 	step := self.NewStep()
 	step.Name = node.Name
 	step.NodeUid = node.Uid
 	return step
 }
 
-func (self *Pipeline) StartFromNode(node *LLMAgentNode) *PipelineStep {
+func (self *Pipeline) StartFromNode(node *Node) *PipelineStep {
 	step := self.NewStepFromNode(node)
 	step.Start()
 	return step

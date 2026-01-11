@@ -13,7 +13,7 @@ type LLMAgentData struct {
 	SystemPrompt string `json:"systemPrompt" bson:"systemPrompt"`
 }
 
-func PlayLLMNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayLLMNode(context *models.NodePlayContext, node *models.Node) {
 
 	llmData := ctrl.GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
 	myData := tools.RecastBson[LLMAgentData](node.TypeData)

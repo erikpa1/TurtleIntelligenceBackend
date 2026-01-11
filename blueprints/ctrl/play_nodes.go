@@ -8,7 +8,7 @@ import (
 	"turtle/lg"
 )
 
-func DispatchPlayNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {
 
 	nodePlayFunc, nodePlayFuncExists := library.NODES_LIBRARY[node.Type]
 

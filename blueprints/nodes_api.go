@@ -27,7 +27,7 @@ func _QueryAgentEdges(c *gin.Context) {
 
 func _COUNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	data := tools.ObjFromJsonPtr[models.LLMAgentNode](c.PostForm("data"))
+	data := tools.ObjFromJsonPtr[models.Node](c.PostForm("data"))
 	COUNode(user, data)
 }
 
@@ -36,17 +36,17 @@ func _COUNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	type _Request struct {
-		Modified     []*models.LLMAgentNode `json:"modified"`
-		Created      []*models.LLMAgentNode `json:"created"`
-		Deleted      []primitive.ObjectID   `json:"deleted"`
-		NewEdges     []*models.NodeEdge     `json:"newEdges"`
-		DeletedEdges []primitive.ObjectID   `json:"deletedEdges"`
+		Modified     []*models.Node       `json:"modified"`
+		Created      []*models.Node       `json:"created"`
+		Deleted      []primitive.ObjectID `json:"deleted"`
+		NewEdges     []*models.NodeEdge   `json:"newEdges"`
+		DeletedEdges []primitive.ObjectID `json:"deletedEdges"`
 	}
 
 	req := tools.ObjFromJsonPtr[_Request](c.PostForm("data"))
 
 	for _, deleted := range req.Deleted {
-		DeleteAgentNode(deleted)
+		DeleteNode(deleted)
 	}
 
 	for _, modified := range req.Modified {
@@ -69,7 +69,7 @@ func _COUNodes(c *gin.Context) {
 
 func _DeleteNode(c *gin.Context) {
 	uid := tools.MongoObjectIdFromQuery(c)
-	DeleteAgentNode(uid)
+	DeleteNode(uid)
 }
 
 func _PlayAgentNode(c *gin.Context) {
@@ -84,7 +84,7 @@ func _PlayAgentNode(c *gin.Context) {
 
 	lg.LogE(nodeUid)
 
-	PlayAgentNode(&playNodeContext, nodeUid)
+	PlayNode(&playNodeContext, nodeUid)
 
 	tools.AutoReturn(c, bson.M{
 		"pipeline": playNodeContext.Pipeline,
@@ -95,11 +95,11 @@ func InitBlueprintsApi(r *gin.Engine) {
 	InitNodesLibrary()
 
 	r.GET("/api/blueprint/all/prompt", auth.LoginRequired, _GetAllAgentsPrompt)
-	r.GET("/api/blueprints", auth.LoginRequired, _ListLLMAgents)
+	r.GET("/api/blueprints", auth.LoginRequired, _ListBlueprints)
 	r.GET("/api/blueprint", auth.LoginRequired, _TestLLMAgent)
 	r.POST("/api/blueprint", auth.LoginRequired, _COULLMAgent)
 	r.POST("/api/blueprint/test", auth.LoginRequired, _TestLLMAgent)
-	r.DELETE("/api/blueprint", auth.LoginRequired, _DeleteLLMAgent)
+	r.DELETE("/api/blueprint", auth.LoginRequired, _DeleteBlueprint)
 
 	//Nodes
 	r.GET("/api/blueprints/nodes/query", auth.LoginRequired, _QueryAgentNodes)

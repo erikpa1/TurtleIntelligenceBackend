@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func InsertNodes(user *users.User, nodes []*models.LLMAgentNode) {
+func InsertNodes(user *users.User, nodes []*models.Node) {
 	for _, n := range nodes {
 		n.Org = user.Org
 	}
@@ -25,7 +25,7 @@ func InsertNodes(user *users.User, nodes []*models.LLMAgentNode) {
 
 }
 
-func COUNode(user *users.User, node *models.LLMAgentNode) {
+func COUNode(user *users.User, node *models.Node) {
 	node.Org = user.Org
 
 	if node.Uid.IsZero() {
@@ -39,16 +39,16 @@ func COUNode(user *users.User, node *models.LLMAgentNode) {
 	}
 }
 
-func QueryNodes(user *users.User, query bson.M) []*models.LLMAgentNode {
-	return db.QueryEntities[models.LLMAgentNode](cts.CT_AGENT_NODES, user.FillOrgQuery(query))
+func QueryNodes(user *users.User, query bson.M) []*models.Node {
+	return db.QueryEntities[models.Node](cts.CT_AGENT_NODES, user.FillOrgQuery(query))
 }
 
-func DeleteNodesOfAgent(user *users.User, agentUid primitive.ObjectID) {
+func DeleteNodesOfBlueprint(user *users.User, agentUid primitive.ObjectID) {
 	db.DeleteEntities(cts.CT_AGENT_NODES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 	db.DeleteEntities(cts.CT_AGENT_EDGES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 }
 
-func DeleteAgentNode(nodeUid primitive.ObjectID) {
+func DeleteNode(nodeUid primitive.ObjectID) {
 	//TODO musia sa zmazat secky connectiony
 
 	db.DeleteEntities(cts.CT_AGENT_EDGES, bson.M{"$or": bson.A{
@@ -59,7 +59,7 @@ func DeleteAgentNode(nodeUid primitive.ObjectID) {
 	db.Delete(cts.CT_AGENT_NODES, nodeUid)
 }
 
-func PlayAgentNode(context *models.NodePlayContext, agentUid primitive.ObjectID) {
+func PlayNode(context *models.NodePlayContext, agentUid primitive.ObjectID) {
 
 	entryNode := ctrl.GetAgentNode(context.User.Org, agentUid)
 

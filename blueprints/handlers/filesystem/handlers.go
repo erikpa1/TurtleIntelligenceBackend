@@ -7,7 +7,7 @@ import (
 	"turtle/vfs"
 )
 
-func PlayLoadFileStringNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayLoadFileStringNode(context *models.NodePlayContext, node *models.Node) {
 
 	data := tools.RecastBson[LoadFileStringNode](node.TypeData)
 

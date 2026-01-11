@@ -23,7 +23,7 @@ func GetTypeDataOfNode[T any](parentUid primitive.ObjectID, conn string) *T {
 	edge := db.QueryEntity[models.NodeEdge](cts.CT_AGENT_EDGES, edgeQuery)
 
 	if edge != nil {
-		node := db.QueryEntity[models.LLMAgentNode](cts.CT_AGENT_NODES, bson.M{
+		node := db.QueryEntity[models.Node](cts.CT_AGENT_NODES, bson.M{
 			"_id": edge.Target,
 		})
 
@@ -40,11 +40,11 @@ func GetRelationOfNode(orgUid primitive.ObjectID, query bson.M) *node.NodeRelati
 	return db.QueryEntity[node.NodeRelation](cts.CT_AGENT_NODES, query)
 }
 
-func GetAgentNode(orgUid, uid primitive.ObjectID) *models.LLMAgentNode {
-	return db.GetByIdAndOrg[models.LLMAgentNode](cts.CT_AGENT_NODES, uid, orgUid)
+func GetAgentNode(orgUid, uid primitive.ObjectID) *models.Node {
+	return db.GetByIdAndOrg[models.Node](cts.CT_AGENT_NODES, uid, orgUid)
 }
 
-func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName string) *models.LLMAgentNode {
+func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName string) *models.Node {
 
 	edge := db.QueryEntity[models.NodeEdge](cts.CT_AGENT_EDGES, bson.M{
 		"source":       uid,
@@ -58,7 +58,7 @@ func GetTargetOfNode(org primitive.ObjectID, uid primitive.ObjectID, connName st
 	return nil
 }
 
-func GetTargetsOfNode(context *models.NodePlayContext, uid primitive.ObjectID, connName string) []*models.LLMAgentNode {
+func GetTargetsOfNode(context *models.NodePlayContext, uid primitive.ObjectID, connName string) []*models.Node {
 
 	opts := options.FindOptions{
 		Sort: bson.D{{Key: "priority", Value: 1}},
@@ -74,7 +74,7 @@ func GetTargetsOfNode(context *models.NodePlayContext, uid primitive.ObjectID, c
 
 	edges := db.QueryEntities[models.NodeEdge](cts.CT_AGENT_EDGES, query, &opts)
 
-	nodes := make([]*models.LLMAgentNode, len(edges))
+	nodes := make([]*models.Node, len(edges))
 
 	for i, edge := range edges {
 		_, isCycle := context.AlreadyPlayedNodes[edge.Target]

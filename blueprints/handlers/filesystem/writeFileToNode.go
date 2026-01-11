@@ -21,7 +21,7 @@ func (self *WriteToFileNode) GetFileName() string {
 	return self.FileName
 }
 
-func PlayWriteToFileNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayWriteToFileNode(context *models.NodePlayContext, node *models.Node) {
 
 	data := tools.RecastBson[WriteToFileNode](node.TypeData)
 

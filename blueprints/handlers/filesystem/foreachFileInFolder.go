@@ -19,13 +19,15 @@ func (self *ForeachFileInFolder) GetFileName() string {
 	return self.FolderPath
 }
 
-func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.Node) {
 
 	data := tools.RecastBson[ForeachFileInFolder](node.TypeData)
 
 	if data != nil {
 
 		files, err := vfs.ListFiles(data.FolderPath)
+
+		lg.LogE(files)
 
 		if err != nil {
 			for _, fileName := range files {
@@ -39,6 +41,8 @@ func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.LLMAg
 				}
 
 			}
+		} else {
+			lg.LogE(files)
 		}
 
 		nextNode := ctrl.GetTargetOfNode(context.User.Org, node.Uid, "end")

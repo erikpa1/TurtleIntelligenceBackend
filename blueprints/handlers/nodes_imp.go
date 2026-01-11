@@ -10,7 +10,7 @@ import (
 	"turtle/vfs"
 )
 
-func PlayHttpTriggerNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayHttpTriggerNode(context *models.NodePlayContext, node *models.Node) {
 
 	bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
 	if err != nil {
@@ -25,10 +25,10 @@ func PlayHttpTriggerNode(context *models.NodePlayContext, node *models.LLMAgentN
 
 }
 
-func PlayWriteExcel(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayWriteExcel(context *models.NodePlayContext, node *models.Node) {
 	office.WriteExcel(vfs.GetWorkingDirectory() + "/Book1.xlsx")
 }
 
-func PlayWriteSqlite(context *models.NodePlayContext, node *models.LLMAgentNode) {
+func PlayWriteSqlite(context *models.NodePlayContext, node *models.Node) {
 	tsqlite.WriteJsonToSqlite(vfs.GetWorkingDirectory()+"/books.db", "books", "")
 }
