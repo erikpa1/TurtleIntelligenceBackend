@@ -8,8 +8,9 @@ import (
 )
 
 func InitFilesystemNodes() {
-	RegisterNodeHandler(WRITE_TO_FILE, filesystem.PlayWriteToFileNode)
-	RegisterNodeHandler(LOAD_FILE_STRING, filesystem.PlayLoadFileStringNode)
+	RegisterNodeHandler("writeToFile", filesystem.PlayWriteToFileNode)
+	RegisterNodeHandler("loadFileString", filesystem.PlayLoadFileStringNode)
+	RegisterNodeHandler("foreachFileInFolder", filesystem.PlayForeachFileInFolder)
 }
 
 func InitExcelNodes() {

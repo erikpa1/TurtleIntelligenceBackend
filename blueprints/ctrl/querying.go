@@ -1,4 +1,4 @@
-package utils
+package ctrl
 
 import (
 	"turtle/blueprints/cts"

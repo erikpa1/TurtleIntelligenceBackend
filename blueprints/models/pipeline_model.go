@@ -8,7 +8,8 @@ import (
 )
 
 type Pipeline struct {
-	Steps []*PipelineStep `json:"steps"`
+	Steps      []*PipelineStep `json:"steps"`
+	ActiveStep *PipelineStep   `json:"activeStep"`
 }
 
 type PipelineStep struct {
@@ -39,6 +40,7 @@ func (self *Pipeline) NewStep() *PipelineStep {
 	step.Index = len(self.Steps)
 
 	self.Steps = append(self.Steps, step)
+	self.ActiveStep = step
 	return step
 }
 func (self *Pipeline) NewStepFromNode(node *LLMAgentNode) *PipelineStep {

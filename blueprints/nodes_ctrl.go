@@ -2,10 +2,9 @@ package blueprints
 
 import (
 	"fmt"
+	"turtle/blueprints/ctrl"
 	"turtle/blueprints/cts"
-	"turtle/blueprints/library"
 	"turtle/blueprints/models"
-	"turtle/blueprints/utils"
 	"turtle/core/users"
 	"turtle/db"
 	"turtle/lg"
@@ -62,46 +61,12 @@ func DeleteAgentNode(nodeUid primitive.ObjectID) {
 
 func PlayAgentNode(context *models.NodePlayContext, agentUid primitive.ObjectID) {
 
-	entryNode := utils.GetAgentNode(context.User.Org, agentUid)
+	entryNode := ctrl.GetAgentNode(context.User.Org, agentUid)
 
 	if entryNode != nil {
-		DispatchPlayNode(context, entryNode)
+		ctrl.DispatchPlayNode(context, entryNode)
 	} else {
 		lg.LogE("No node entry")
-	}
-
-}
-
-func DispatchPlayNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
-
-	nodePlayFunc, nodePlayFuncExists := library.NODES_LIBRARY[node.Type]
-
-	if nodePlayFuncExists {
-		nodePlayFunc(context, node)
-	} else {
-		lg.LogW("Unable to find node", node.Type)
-	}
-
-	nextNodes := utils.GetTargetsOfNode(context, node.Uid, "")
-
-	if len(nextNodes) > 0 {
-
-		for i, nextNode := range nextNodes {
-			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
-		}
-
-		lg.LogOk("-----")
-
-		for _, nextNode := range nextNodes {
-
-			if nextNode == nil {
-				//lg.LogE("No next node")
-			} else {
-				DispatchPlayNode(context, nextNode)
-			}
-		}
-	} else {
-		//lg.LogE("No next nodes")
 	}
 
 }

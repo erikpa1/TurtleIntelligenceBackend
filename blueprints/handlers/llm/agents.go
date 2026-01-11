@@ -1,8 +1,8 @@
 package llm
 
 import (
+	"turtle/blueprints/ctrl"
 	"turtle/blueprints/models"
-	"turtle/blueprints/utils"
 	"turtle/lg"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
@@ -15,12 +15,10 @@ type LLMAgentData struct {
 
 func PlayLLMNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
 
-	step := context.Pipeline.StartFromNode(node)
-
-	llmData := utils.GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
+	llmData := ctrl.GetTypeDataOfNode[OllamaNode](node.Uid, "llm")
 	myData := tools.RecastBson[LLMAgentData](node.TypeData)
 
-	memory := utils.GetTargetOfNode(node.Org, node.Uid, "memory")
+	memory := ctrl.GetTargetOfNode(node.Org, node.Uid, "memory")
 
 	if llmData != nil && myData != nil {
 
@@ -50,9 +48,8 @@ func PlayLLMNode(context *models.NodePlayContext, node *models.LLMAgentNode) {
 
 		modelResponse := llmCtrl.ChatModelWithSystem(context.Gin, context.User, &model, &chatRequest)
 
-		step.DataStr = modelResponse.ResultRaw
+		context.Pipeline.ActiveStep.DataStr = modelResponse.ResultRaw
 		context.Data.SetString(modelResponse.ResultRaw)
 	}
 
-	step.End()
 }
