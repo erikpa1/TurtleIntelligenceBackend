@@ -1,26 +1,26 @@
-package llmApi
+package blueprints
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/auth"
-	"turtle/llm/agents"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func _ListLLMAgents(c *gin.Context) {
+func _ListBlueprints(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	tools.AutoReturn(c, llmCtrl.ListLLMAgents(user))
 }
 
-func _DeleteLLMAgent(c *gin.Context) {
+func _DeleteBlueprint(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	uid := tools.MongoObjectIdFromQuery(c)
 
-	agents.DeleteNodesOfAgent(user, uid)
+	DeleteNodesOfBlueprint(user, uid)
 	llmCtrl.DeleteLLMAgent(user, uid)
 }
 
@@ -43,19 +43,4 @@ func _GetAllAgentsPrompt(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
 	tools.AutoReturn(c, llmCtrl.GetOverallAgentsPrompt(user, "[your query here]"))
-}
-
-func InitLLMAgents(r *gin.Engine) {
-
-	r.GET("/api/llm/agent/all/prompt", auth.LoginRequired, _GetAllAgentsPrompt)
-
-	r.GET("/api/llm/agents", auth.LoginRequired, _ListLLMAgents)
-
-	r.GET("/api/llm/agent", auth.LoginRequired, _TestLLMAgent)
-
-	r.POST("/api/llm/agent", auth.LoginRequired, _COULLMAgent)
-	r.POST("/api/llm/agent/test", auth.LoginRequired, _TestLLMAgent)
-
-	r.DELETE("/api/llm/agent", auth.LoginRequired, _DeleteLLMAgent)
-
 }

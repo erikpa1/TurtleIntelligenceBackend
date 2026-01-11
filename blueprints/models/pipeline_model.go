@@ -1,4 +1,4 @@
-package agents
+package models
 
 import (
 	"turtle/lg"
@@ -8,7 +8,8 @@ import (
 )
 
 type Pipeline struct {
-	Steps []*PipelineStep `json:"steps"`
+	Steps      []*PipelineStep `json:"steps"`
+	ActiveStep *PipelineStep   `json:"activeStep"`
 }
 
 type PipelineStep struct {
@@ -20,6 +21,7 @@ type PipelineStep struct {
 	EndedAt   tools.Milliseconds `json:"endedAt"`
 	Duration  tools.Milliseconds `json:"duration"`
 	DataStr   string             `json:"dataStr"`
+	WasError  error              `json:"wasError"`
 }
 
 func (self *Pipeline) AddStep(step *PipelineStep) int {
@@ -38,16 +40,17 @@ func (self *Pipeline) NewStep() *PipelineStep {
 	step.Index = len(self.Steps)
 
 	self.Steps = append(self.Steps, step)
+	self.ActiveStep = step
 	return step
 }
-func (self *Pipeline) NewStepFromNode(node *LLMAgentNode) *PipelineStep {
+func (self *Pipeline) NewStepFromNode(node *Node) *PipelineStep {
 	step := self.NewStep()
 	step.Name = node.Name
 	step.NodeUid = node.Uid
 	return step
 }
 
-func (self *Pipeline) StartFromNode(node *LLMAgentNode) *PipelineStep {
+func (self *Pipeline) StartFromNode(node *Node) *PipelineStep {
 	step := self.NewStepFromNode(node)
 	step.Start()
 	return step
@@ -62,4 +65,13 @@ func (self *PipelineStep) End() {
 	self.Status = "end"
 	self.EndedAt = tools.GetTimeNowMillis()
 	self.Duration = self.EndedAt - self.StartedAt
+}
+
+func (self *PipelineStep) SetError(err error) {
+	self.WasError = err
+
+	if err != nil {
+		lg.LogStackTraceErr(err.Error())
+	}
+
 }

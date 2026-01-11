@@ -489,6 +489,14 @@ func GetFileStringFromWDNew(filePath string) (string, error) {
 	return string(data), nil
 }
 
+func GetFileString(filePath string) (string, error) {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
 func GetFileStringFromWD(folder string, filePath string) (string, error) {
 	finalPath := filepath.Join(GetWorkingDirectory(), folder, filePath)
 	data, err := os.ReadFile(finalPath)

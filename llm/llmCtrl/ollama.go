@@ -65,7 +65,7 @@ func InitOllama() {
 
 		organization := primitive.ObjectID{}
 
-		lg.LogOk("Slave, going to init agents")
+		lg.LogOk("Slave, going to init blueprints")
 
 		modelPort := 11434
 

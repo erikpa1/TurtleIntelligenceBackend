@@ -1,14 +1,15 @@
-package agents
+package models
 
 import (
 	"turtle/core/users"
+	"turtle/lg"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type LLMAgentNode struct {
+type Node struct {
 	Uid         primitive.ObjectID            `json:"uid" bson:"_id,omitempty"`
 	Name        string                        `json:"name"`
 	Parent      primitive.ObjectID            `json:"parent"`
@@ -62,9 +63,17 @@ type ContextData struct {
 }
 
 func (self *ContextData) GetString() string {
-	return self.Data.(string)
+	if self.Data != nil {
+		return self.Data.(string)
+	} else {
+		return ""
+
+	}
 }
 func (self *ContextData) SetString(data string) {
 	self.Type = ContextDataType.String
 	self.Data = data
+
+	lg.LogI("Setting stirng: ", data)
+
 }
