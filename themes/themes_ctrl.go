@@ -13,11 +13,7 @@ const CT_THEMES = "themes"
 
 func ListThemes() []ThemeLight {
 	opts := options.FindOptions{}
-	opts.Projection = bson.M{
-		"_id":     1,
-		"name":    1,
-		"default": 1,
-	}
+	opts.Projection = ThemeLightProjection
 
 	return db.QueryEntitiesAsCopy[ThemeLight](CT_THEMES, bson.M{}, &opts)
 }
@@ -30,9 +26,9 @@ func COUTheme(user *users.User, theme *Theme) {
 	theme.Org = user.Org
 
 	if theme.Default {
-		db.UpdateEntitiesWhere(CT_THEMES,
+		db.SetEntitiesWhere(CT_THEMES,
 			bson.M{"org": user.Org},
-			bson.M{"$set": bson.M{"default": false}})
+			bson.M{"default": false})
 	}
 
 	if theme.Uid.IsZero() {
