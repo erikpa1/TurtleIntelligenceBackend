@@ -398,8 +398,35 @@ func WriteFileStringToWDNewBase64(filePath, content string) error {
 	return nil
 }
 
-// ListFiles - Returns a list of all files in a folder
-func ListFiles(folderPath string) ([]string, error) {
+// ListWdFiles - Returns a list of all files in a folder
+func ListFile(folderPath string) ([]string, error) {
+	var fileList []string
+
+	// Walk through the directory
+	err := filepath.Walk(folderPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err // Return the error if accessing a file fails
+		}
+
+		// Check if the current item is a file (not a directory)
+		if !info.IsDir() {
+			replaced := strings.Replace(path, folderPath+"\\", "", -1)
+			replaced = strings.Replace(replaced, "\\", "/", -1)
+			fileList = append(fileList, replaced) // Add the file to the list
+		}
+		return nil
+	})
+
+	if err != nil {
+		lg.LogE(err)
+		return nil, err // Return error if Walk fails
+	}
+
+	return fileList, nil
+}
+
+// ListWdFiles - Returns a list of all files in a folder
+func ListWdFiles(folderPath string) ([]string, error) {
 	var fileList []string
 
 	prefix := filepath.Join(GetWorkingDirectory(), folderPath)
@@ -428,7 +455,7 @@ func ListFiles(folderPath string) ([]string, error) {
 	return fileList, nil
 }
 
-// ListFiles - Returns a list of all files in a folder
+// ListWdFiles - Returns a list of all files in a folder
 func ListFilesWithInfo(folderPath string) ([]ListFileInfoStruct, error) {
 	var fileList []ListFileInfoStruct
 
