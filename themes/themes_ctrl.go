@@ -3,6 +3,7 @@ package themes
 import (
 	"turtle/core/users"
 	"turtle/db"
+	"turtle/lg"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,6 +20,8 @@ func ListThemes() []ThemeLight {
 }
 
 func GetTheme(user *users.User, uid primitive.ObjectID) *Theme {
+	lg.LogE(user.Org)
+	lg.LogE(uid)
 	return db.GetByIdAndOrg[Theme](CT_THEMES, uid, user.Org)
 }
 
