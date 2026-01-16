@@ -25,11 +25,11 @@ func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.Node)
 
 	if data != nil {
 
-		files, err := vfs.ListFiles(data.FolderPath)
+		files, err := vfs.ListFile(data.FolderPath)
 
 		lg.LogE(files)
 
-		if err != nil {
+		if err == nil {
 			for _, fileName := range files {
 				context.Data.SetString(fileName)
 				context.Pipeline.ActiveStep.DataStr = fileName
