@@ -28,6 +28,12 @@ func _COUTheme(c *gin.Context) {
 	COUTheme(user, theme)
 }
 
+func _ImportTheme(c *gin.Context) {
+	user := auth.GetUserFromContext(c)
+	theme := tools.ObjFromJsonPtr[Theme](c.PostForm("data"))
+	ImportTheme(user, theme)
+}
+
 func _DeleteTheme(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	uid := tools.MongoObjectIdFromQuery(c)
@@ -41,6 +47,7 @@ func InitThemesApi(r *gin.Engine) {
 	r.GET("/api/theme/default", auth.LoginRequired, _GetDefaultTheme)
 
 	r.POST("/api/theme", auth.AdminRequired, _COUTheme)
+	r.POST("/api/theme/import", auth.AdminRequired, _ImportTheme)
 	r.DELETE("/api/theme", auth.AdminRequired, _DeleteTheme)
 
 	//Copilo part

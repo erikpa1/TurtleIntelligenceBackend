@@ -20,9 +20,20 @@ func ListThemes() []ThemeLight {
 }
 
 func GetTheme(user *users.User, uid primitive.ObjectID) *Theme {
-	lg.LogE(user.Org)
-	lg.LogE(uid)
 	return db.GetByIdAndOrg[Theme](CT_THEMES, uid, user.Org)
+}
+
+func ImportTheme(user *users.User, theme *Theme) {
+	theme.Org = user.Org
+	theme.Default = false
+
+	if db.EntityExists(CT_THEMES, bson.M{"_id": theme.Uid}) {
+		db.SetById(CT_THEMES, theme.Uid, theme)
+		lg.LogE("Here")
+	} else {
+		lg.LogOk("Tu som")
+		db.InsertEntity(CT_THEMES, theme)
+	}
 }
 
 func COUTheme(user *users.User, theme *Theme) {
