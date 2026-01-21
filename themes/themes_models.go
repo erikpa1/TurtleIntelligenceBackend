@@ -22,6 +22,8 @@ type ThemeData struct {
 	Title              string `json:"title,omitempty" bson:"title,omitempty"`
 	Favicon            string `json:"favicon,omitempty" bson:"favicon,omitempty"`
 	PrimaryLogo        string `json:"primaryLogo,omitempty" bson:"primaryLogo,omitempty"`
+	PrimaryLogoSizeX   string `json:"primaryLogoSizeX,omitempty" bson:"primaryLogoSizeX,omitempty"`
+	PrimaryLogoSizeY   string `json:"primaryLogoSizeY,omitempty" bson:"primaryLogoSizeY,omitempty"`
 	TopBarHeightBig    string `json:"topBarHeightBig,omitempty" bson:"topBarHeightBig,omitempty"`
 	BigPadding         string `json:"bigPadding,omitempty" bson:"bigPadding,omitempty"`
 	HeadingFontColor   string `json:"headingFontColor,omitempty" bson:"headingFontColor,omitempty"`
