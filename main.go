@@ -10,6 +10,7 @@ import (
 	"time"
 	"turtle/blueprints"
 	"turtle/core/usersApi"
+	"turtle/docmining"
 	"turtle/themes"
 	"turtle/toolsApi"
 
@@ -123,6 +124,8 @@ func dev_main() {
 	flows.InitFlowsApi(r)
 
 	themes.InitThemesApi(r)
+
+	docmining.InitDocMiningApi(r)
 
 	toolsApi.InitToolsApi(r)
 
