@@ -39,7 +39,6 @@ import (
 	"turtle/lg"
 	"turtle/models"
 	"turtle/server"
-	"turtle/tools"
 	"turtle/vfs"
 
 	"github.com/gin-contrib/cors"
@@ -129,15 +128,7 @@ func dev_main() {
 
 	toolsApi.InitToolsApi(r)
 
-	if tools.IsInDevelopment() {
-		lg.LogI("Going to take files from: ", "../static")
-		r.Use(static.Serve("/", static.LocalFile("../static", true)))
-
-	} else {
-		lg.LogI("Going to take files from: ", "./static")
-		r.Use(static.Serve("/", static.LocalFile("./static", true)))
-	}
-
+	r.Use(static.Serve("/", static.LocalFile("./static", true)))
 	//r.NoRoute(tools.ProxyMiddleware2())
 
 	prefix := "http://"
