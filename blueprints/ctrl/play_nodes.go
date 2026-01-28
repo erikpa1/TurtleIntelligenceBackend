@@ -10,7 +10,7 @@ import (
 
 func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {
 
-	nodePlayFunc, nodePlayFuncExists := library.NODES_LIBRARY[node.Type]
+	nodePlayFunc, nodePlayFuncExists := library.NODES_LIBRARY_HANDLERS[node.Type]
 
 	if nodePlayFuncExists {
 		step := context.Pipeline.StartFromNode(node)

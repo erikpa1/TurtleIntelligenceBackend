@@ -11,6 +11,7 @@ import (
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func DeleteEdges(user *users.User, query bson.M) {
@@ -29,4 +30,8 @@ func InsertEdges(user *users.User, edges []*models.NodeEdge) {
 
 func QueryEdges(user *users.User, query bson.M) []*models.NodeEdge {
 	return db.QueryEntities[models.NodeEdge](cts.CT_AGENT_EDGES, user.FillOrgQuery(query))
+}
+
+func ListEdgesOfBlueprint(user *users.User, agentUid primitive.ObjectID) []*models.NodeEdge {
+	return QueryEdges(user, user.FillOrgQuery(bson.M{"parent": agentUid}))
 }

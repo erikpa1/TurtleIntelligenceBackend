@@ -7,3 +7,5 @@ const WRITE_TO_SQLITE = "writeSqllite"
 
 const HTTP_TRIGGER = "httpTrigger"
 const HTTP_REQUEST = "httpRequest"
+
+const CHAT_TRIGGER = "chatTrigger"

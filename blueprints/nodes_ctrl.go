@@ -1,7 +1,9 @@
 package blueprints
 
 import (
+	"errors"
 	"fmt"
+	"turtle/auth"
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/cts"
 	"turtle/blueprints/models"
@@ -10,6 +12,7 @@ import (
 	"turtle/lgr"
 	"turtle/tools"
 
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -43,6 +46,33 @@ func QueryNodes(user *users.User, query bson.M) []*models.Node {
 	return db.QueryEntities[models.Node](cts.CT_AGENT_NODES, user.FillOrgQuery(query))
 }
 
+func GetNode(orgUid primitive.ObjectID, uid primitive.ObjectID) *models.Node {
+	return db.GetByIdAndOrg[models.Node](cts.CT_AGENT_NODES, uid, orgUid)
+}
+
+func GetBlueprintOfNode(user *users.User, userUid primitive.ObjectID) primitive.ObjectID {
+
+	tmp := GetNode(user.Org, userUid)
+
+	if tmp != nil {
+		return tmp.Parent
+	} else {
+		return primitive.ObjectID{}
+	}
+}
+
+func ListNodesOfBlueprintAsMap(user *users.User, parent primitive.ObjectID) map[primitive.ObjectID]*models.Node {
+	nodes := map[primitive.ObjectID]*models.Node{}
+	for _, node := range QueryNodes(user, bson.M{"parent": parent}) {
+		nodes[node.Uid] = node
+	}
+	return nodes
+}
+
+func ListNodesOfBlueprint(user *users.User, parent primitive.ObjectID) []*models.Node {
+	return QueryNodes(user, bson.M{"parent": parent})
+}
+
 func DeleteNodesOfBlueprint(user *users.User, agentUid primitive.ObjectID) {
 	db.DeleteEntities(cts.CT_AGENT_NODES, user.FillOrgQuery(bson.M{"parent": agentUid}))
 	db.DeleteEntities(cts.CT_AGENT_EDGES, user.FillOrgQuery(bson.M{"parent": agentUid}))
@@ -68,5 +98,38 @@ func PlayNode(context *models.NodePlayContext, agentUid primitive.ObjectID) {
 	} else {
 		lgr.Error("No node entry")
 	}
+
+}
+
+func PlayBlueprint(c *gin.Context, entryNode primitive.ObjectID) {
+	user := auth.GetUserFromContext(c)
+
+	parentBlueprint := GetBlueprintOfNode(user, entryNode)
+
+	if parentBlueprint.IsZero() {
+		tools.AutoErrorReturn(c, errors.New("not found blueprint"))
+		return
+	}
+
+	nodes := ListNodesOfBlueprint(user, entryNode)
+
+	if len(nodes) == 0 {
+		tools.AutoErrorReturn(c, errors.New("not found nodes"))
+		return
+	}
+
+	edges := ListEdgesOfBlueprint(user, parentBlueprint)
+
+	if len(edges) == 0 {
+		tools.AutoErrorReturn(c, errors.New("not found edges"))
+		return
+	}
+
+	//playNodeContext := models.NodePlayContext{
+	//	Gin:         c,
+	//	User:        user,
+	//	IsLocalHost: c.RemoteIP() == "::1",
+	//	Nodes:       nodesMap,
+	//}
 
 }

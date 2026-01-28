@@ -1,33 +1,40 @@
 package blueprints
 
 import (
-	"turtle/blueprints/handlers"
-	"turtle/blueprints/handlers/filesystem"
-	"turtle/blueprints/handlers/llm"
 	. "turtle/blueprints/library"
+	"turtle/blueprints/nodeHandlers"
+	"turtle/blueprints/nodeHandlers/chat"
+	"turtle/blueprints/nodeHandlers/filesystem"
+	"turtle/blueprints/nodeHandlers/llm"
 )
 
 func InitFilesystemNodes() {
-	RegisterNodeHandler("writeToFile", filesystem.PlayWriteToFileNode)
-	RegisterNodeHandler("loadFileString", filesystem.PlayLoadFileStringNode)
-	RegisterNodeHandler("foreachFileInFolder", filesystem.PlayForeachFileInFolder)
+	RegisterNodeFunctionHandler("writeToFile", filesystem.PlayWriteToFileNode)
+	RegisterNodeFunctionHandler("loadFileString", filesystem.PlayLoadFileStringNode)
+	RegisterNodeFunctionHandler("foreachFileInFolder", filesystem.PlayForeachFileInFolder)
 }
 
 func InitExcelNodes() {
-	RegisterNodeHandler(WRITE_TO_EXCEL, handlers.PlayWriteExcel)
+	RegisterNodeFunctionHandler(WRITE_TO_EXCEL, nodeHandlers.PlayWriteExcel)
 }
 
 func InitTriggers() {
 	//Todo toto prepisat do jednotlivych packagov
-	RegisterNodeHandler(HTTP_TRIGGER, handlers.PlayHttpTriggerNode)
+	RegisterNodeFunctionHandler(HTTP_TRIGGER, nodeHandlers.PlayHttpTriggerNode)
+	RegisterNodeFunctionHandler(CHAT_TRIGGER, chat.PlayChatTrigger)
+
+}
+
+func InitTests() {
+	RegisterNodeFunctionHandler("testNode", chat.PlayChatTrigger)
 }
 
 func InitAINodes() {
-	RegisterNodeHandler(LLM_AGENT_NODE, llm.PlayLLMNode)
+	RegisterNodeFunctionHandler(LLM_AGENT_NODE, llm.PlayLLMNode)
 }
 
 func InitSqliteNodes() {
-	RegisterNodeHandler(WRITE_TO_SQLITE, handlers.PlayWriteSqlite)
+	RegisterNodeFunctionHandler(WRITE_TO_SQLITE, nodeHandlers.PlayWriteSqlite)
 }
 
 func InitNodesLibrary() {

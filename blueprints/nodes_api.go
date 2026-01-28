@@ -91,6 +91,11 @@ func _PlayAgentNode(c *gin.Context) {
 	})
 }
 
+func _PlayDiagram(c *gin.Context) {
+	nodeUid := tools.MongoObjectIdFromQuery(c)
+	PlayBlueprint(c, nodeUid)
+}
+
 func InitBlueprintsApi(r *gin.Engine) {
 	InitNodesLibrary()
 
@@ -111,6 +116,6 @@ func InitBlueprintsApi(r *gin.Engine) {
 	r.DELETE("/api/blueprints/node", auth.LoginRequired, _DeleteNode)
 
 	//Play
-	r.POST("/api/blueprints/play", _PlayAgentNode)
+	r.POST("/api/blueprints/play", _PlayAgentNode) //_PlayDiagram) //_PlayAgentNode
 
 }

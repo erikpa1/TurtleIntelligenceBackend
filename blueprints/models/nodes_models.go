@@ -19,6 +19,13 @@ type Node struct {
 	Type        string                        `json:"type"`
 	TypeData    bson.M                        `json:"typeData" bson:"typeData"`
 	Connections map[string]primitive.ObjectID `json:"connections"` //Connections are deleted by editor and it has to modify nodes
+
+	NodeData any `json:"-"`
+}
+
+type INodeData interface {
+	Init(context *NodePlayContext)
+	Call(inputName string)
 }
 
 type NodeEdge struct {
@@ -55,6 +62,9 @@ type NodePlayContext struct {
 	AlreadyPlayedNodes map[primitive.ObjectID]bool `json:"alreadyPlayed"`
 	Pipeline           Pipeline                    `json:"pipeline"`
 	IsLocalHost        bool
+	Nodes              map[primitive.ObjectID]*Node
+	OutputEdges        map[primitive.ObjectID]*NodeEdge
+	InputEdges         map[primitive.ObjectID]*NodeEdge
 }
 
 type ContextData struct {

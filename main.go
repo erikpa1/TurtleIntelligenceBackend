@@ -161,11 +161,11 @@ func dev_main() {
 	}
 
 	lgr.Ok("------------------------------------")
-	lgr.Ok("Mode: ", gin.Mode())
+	lgr.Ok("Mode: %s", gin.Mode())
 
-	lgr.Ok("Running server at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+addr, prefix+addr))
-	lgr.Ok("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"127.0.0.1:"+port, prefix+"127.0.0.1:"+port))
-	lgr.Ok("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"localhost:"+port, prefix+"localhost:"+port))
+	lgr.Ok("Running server at: %s", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+addr, prefix+addr))
+	lgr.Ok("Access at: %s", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"127.0.0.1:"+port, prefix+"127.0.0.1:"+port))
+	lgr.Ok("Access at: %s", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"localhost:"+port, prefix+"localhost:"+port))
 
 	if vfs.IsLinux() {
 		cmd := exec.Command("hostname", "-I")

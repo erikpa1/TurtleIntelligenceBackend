@@ -110,7 +110,7 @@ func NewClient(conn *websocket.Conn) *Client {
 	return &tmp
 }
 
-// Event handlers map
+// Event nodeHandlers map
 var eventHandlers = map[string]func(*Client, Message){}
 
 func copyClientMap(original map[string]*Client) map[string]*Client {
