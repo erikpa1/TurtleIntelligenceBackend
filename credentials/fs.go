@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/user"
 	"path/filepath"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func GetDarwinWorkspace() string {
@@ -17,7 +17,7 @@ func GetDarwinWorkspace() string {
 		if err == nil {
 			return appSupportPath + "/" + GetAppName()
 		} else {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 		}
 
 	} else {

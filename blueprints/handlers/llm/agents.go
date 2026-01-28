@@ -3,7 +3,7 @@ package llm
 import (
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 	"turtle/tools"
@@ -25,12 +25,12 @@ func PlayLLMNode(context *models.NodePlayContext, node *models.Node) {
 		model := llmModels.LLM{}
 		model.ModelVersion = llmData.ModelName
 
-		lg.LogI("Going to chat with model:", llmData.ModelName)
-		lg.LogI(context.Data.GetString())
+		lgr.Info("Going to chat with model:", llmData.ModelName)
+		lgr.Info(context.Data.GetString())
 
 		chatRequest := llmModels.ChatRequestParams{}
 
-		lg.LogEson(memory)
+		lgr.ErrorJson(memory)
 
 		if memory != nil {
 			if memory.Type == "staticMemory" {
@@ -44,7 +44,7 @@ func PlayLLMNode(context *models.NodePlayContext, node *models.Node) {
 		chatRequest.UserPrompt = context.Data.GetString()
 		chatRequest.SystemPrompt = myData.SystemPrompt
 
-		lg.LogE(chatRequest.GetFinalCommand())
+		lgr.Error(chatRequest.GetFinalCommand())
 
 		modelResponse := llmCtrl.ChatModelWithSystem(context.Gin, context.User, &model, &chatRequest)
 

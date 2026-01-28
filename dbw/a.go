@@ -2,7 +2,7 @@ package dbw
 
 import (
 	"turtle/core/users"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -12,7 +12,7 @@ func QueryOrgEntities(user *users.User) {
 		"org": user.Org,
 	}
 
-	lg.LogE(query)
+	lgr.Error(query)
 }
 
 func QueryUserData(user *users.User) {
@@ -21,6 +21,6 @@ func QueryUserData(user *users.User) {
 		"user": user.Uid,
 	}
 
-	lg.LogE(query)
+	lgr.Error(query)
 
 }

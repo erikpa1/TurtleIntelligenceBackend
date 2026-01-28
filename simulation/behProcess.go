@@ -3,7 +3,7 @@ package simulation
 import (
 	"fmt"
 
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/simulation/simInternal"
 	"turtle/simulation/stats"
 	"turtle/tools"
@@ -120,14 +120,14 @@ func (self *ProcessBehaviour) _StartManufacturing() {
 		Second: self.ProcessFinish,
 	})
 
-	lg.LogOk("Started manufacturing")
+	lgr.Ok("Started manufacturing")
 
 }
 
 func (self *ProcessBehaviour) _FinishManufacturing() {
 	self.ProcessFinish = tools.Seconds(tools.MaxInt64())
 
-	lg.LogOk("Finished manufacturing")
+	lgr.Ok("Finished manufacturing")
 
 	self._TryToPassEntityNext()
 

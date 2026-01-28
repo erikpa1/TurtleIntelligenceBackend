@@ -2,7 +2,7 @@ package simulation
 
 import (
 	"math/rand"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/simulation/simMath"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -35,7 +35,7 @@ func (self *HumanBehaviour) Init1() {
 
 	for i := 0; i < self.SpawnLimit; i++ {
 
-		lg.LogE("Spawning actor")
+		lgr.Error("Spawning actor")
 
 		human := CreateHumanActor()
 		human.Uid = primitive.NewObjectID()
@@ -114,7 +114,7 @@ func (self *HumanBehaviour) Step() {
 		if distanceToPoint <= 0.05 {
 			randomIndex := rand.Intn(len(behaviours))
 			self.tmpTargets[i] = behaviours[randomIndex]
-			lg.LogI("Going on the another point")
+			lgr.Info("Going on the another point")
 		}
 	}
 

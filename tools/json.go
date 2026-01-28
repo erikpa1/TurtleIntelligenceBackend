@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 // SafeJson provides safe methods to parse, access, and modify JSON Data.
@@ -23,7 +23,7 @@ func UnmarshalToSafeJson(str string) *SafeJson {
 	err := json.Unmarshal([]byte(str), &data)
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 
 	return &SafeJson{

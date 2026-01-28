@@ -1,15 +1,16 @@
 package apiApp
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/auth"
 	"turtle/ctrlApp"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/modelsApp"
 	"turtle/simulation"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func _SaveWorld(c *gin.Context) {
@@ -25,22 +26,22 @@ func _SaveWorld(c *gin.Context) {
 
 	request := tools.ObjFromJson[SaveWorldResponse](c.PostForm("data"))
 
-	lg.LogOk(request.Created)
+	lgr.OkJson(request.Created)
 	if len(request.Created) > 0 {
 		ctrlApp.CreateEntities(request.Created)
 	}
 
-	lg.LogOk(request.CreatedConnections)
+	lgr.OkJson(request.CreatedConnections)
 	if len(request.CreatedConnections) > 0 {
 		ctrlApp.CreateConnections(request.Uid, request.CreatedConnections)
 	}
 
-	lg.LogOk(request.Modified)
+	lgr.OkJson(request.Modified)
 	if len(request.Modified) > 0 {
 		ctrlApp.UpdateEntities(request.Modified)
 	}
 
-	lg.LogOk(request.DeletedConnections)
+	lgr.OkJson(request.DeletedConnections)
 	if len(request.DeletedConnections) > 0 {
 
 		for _, conn := range request.DeletedConnections {
@@ -48,7 +49,7 @@ func _SaveWorld(c *gin.Context) {
 		}
 	}
 
-	lg.LogOk(request.Deleted)
+	lgr.OkJson(request.Deleted)
 	if len(request.Deleted) > 0 {
 		ctrlApp.DeleteEntities(request.Deleted)
 	}

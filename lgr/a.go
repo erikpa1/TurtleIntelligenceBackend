@@ -209,6 +209,15 @@ func ErrorJson(data interface{}) {
 	log("ERROR", ColorRed, "\n%s", string(jsonBytes))
 }
 
+func OkJson(data interface{}) {
+	jsonBytes, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		Error("Error marshaling JSON: %v", err)
+		return
+	}
+	log("ERROR", ColorGreen, "\n%s", string(jsonBytes))
+}
+
 // ErrorStack logs an error message with stack trace
 // It will log up to maxDepth stack frames (default 5)
 // If the actual stack is shorter, it logs only what's available

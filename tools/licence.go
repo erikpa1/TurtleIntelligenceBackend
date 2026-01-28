@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 	"turtle/credentials"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/vfs"
 )
 
@@ -66,14 +66,14 @@ func CheckLicence(licenseKey string) bool {
 	}
 
 	if err != nil {
-		lg.LogI("Failed to get machine ID:", err)
+		lgr.Info("Failed to get machine ID:", err)
 		return false
 	}
-	lg.LogI("Machine ID:", machineID)
+	lgr.Info("Machine ID:", machineID)
 
 	dataStr, err := GetLicenseString()
 	if err != nil {
-		lg.LogI("Failed to read licence file:", err)
+		lgr.Info("Failed to read licence file:", err)
 		return false
 	}
 
@@ -82,7 +82,7 @@ func CheckLicence(licenseKey string) bool {
 		return []byte(licenseKey), nil
 	})
 	if err != nil {
-		lg.LogI("Failed to parse JWT:", err)
+		lgr.Info("Failed to parse JWT:", err)
 		return false
 	}
 
@@ -90,6 +90,6 @@ func CheckLicence(licenseKey string) bool {
 		return true
 	}
 
-	lg.LogI("Machine ID and licence ID mismatch")
+	lgr.Info("Machine ID and licence ID mismatch")
 	return false
 }

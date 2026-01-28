@@ -9,7 +9,7 @@ import (
 
 	"turtle/agentTools"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmModels"
 	"turtle/tools"
 
@@ -41,7 +41,7 @@ func ExampleAgent() {
 		},
 	}
 
-	lg.LogI(agent_hierarchy)
+	lgr.InfoJson(agent_hierarchy)
 }
 
 func GetOverallAgentsPrompt(user *users.User, userQuery string) string {
@@ -244,7 +244,7 @@ func ChatModelWithSystem(c *gin.Context, user *users.User, model *llmModels.LLM,
 func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM, text string) *llmModels.AgentTestResponse {
 	result := llmModels.AgentTestResponse{}
 
-	//lg.LogI(model.ModelVersion)
+	//lgr.Info(model.ModelVersion)
 
 	ollmodel := ollama.WithModel(model.ModelVersion)
 	keepAlive := ollama.WithKeepAlive(model.Ttl)
@@ -252,7 +252,7 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 	llm, err := ollama.New(ollmodel, keepAlive)
 
 	if err == nil {
-		//lg.LogE(text)
+		//lgr.Error(text)
 
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, text)
 
@@ -265,7 +265,7 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 			contenxtBlocks := FindJSON(completion)
 
 			if len(contenxtBlocks) > 0 {
-				lg.LogEson(contenxtBlocks)
+				lgr.ErrorJson(contenxtBlocks)
 			}
 
 			serializationErr := json.Unmarshal([]byte(completion), &resultBson)
@@ -294,13 +294,13 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 		} else {
 			result.Error = complErr.Error()
 			result.State = 0
-			lg.LogE(completion)
+			lgr.Error(completion)
 
 		}
 	} else {
 		result.Error = err.Error()
 		result.State = 0
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	return &result
@@ -353,9 +353,9 @@ func ChatAgent(c *gin.Context, user *users.User, agentUid primitive.ObjectID, te
 
 		prompt := GetOverallAgentsPrompt(user, text)
 
-		lg.LogI("1. Going to ask llm")
+		lgr.Info("1. Going to ask llm")
 		completion, complErr := llms.GenerateFromSinglePrompt(c, llm, prompt)
-		lg.LogI("2. LLM responded")
+		lgr.Info("2. LLM responded")
 		result.ResultRaw = completion
 
 		if complErr == nil {
@@ -393,13 +393,13 @@ func ChatAgent(c *gin.Context, user *users.User, agentUid primitive.ObjectID, te
 		} else {
 			result.Error = complErr.Error()
 			result.State = 0
-			lg.LogE(complErr.Error())
+			lgr.Error(complErr.Error())
 
 		}
 	} else {
 		result.Error = err.Error()
 		result.State = 0
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	db.InsertEntity(CT_LLM_AGENT_TESTS, &result)
@@ -426,7 +426,7 @@ func ExecuteAgent(c *gin.Context, user *users.User, resultPipe *llmModels.AgentT
 
 	toolPrompt := GetAgentToolingPrompt(user, agent, query)
 
-	//lg.LogI(toolPrompt)
+	//lgr.Info(toolPrompt)
 
 	ollmodel := ollama.WithModel("mistral:7b")
 	keepAlive := ollama.WithKeepAlive("10h")
@@ -438,16 +438,16 @@ func ExecuteAgent(c *gin.Context, user *users.User, resultPipe *llmModels.AgentT
 		return
 	}
 
-	lg.LogI("3. Going to ask for tooling")
+	lgr.Info("3. Going to ask for tooling")
 	completion, complErr := llms.GenerateFromSinglePrompt(c, llm, toolPrompt)
 
 	if complErr != nil {
-		lg.LogE("Failed to call agent: ", complErr.Error())
+		lgr.Error("Failed to call agent: ", complErr.Error())
 		c.AbortWithStatusJSON(http.StatusInternalServerError, complErr.Error())
 		return
 	}
 
-	lg.LogOk(completion)
+	lgr.Ok(completion)
 
 	agentResponse := tools.ObjFromJson[[]agentTools.AgentToolCall](completion)
 
@@ -460,7 +460,7 @@ func ExecuteAgent(c *gin.Context, user *users.User, resultPipe *llmModels.AgentT
 
 		for i, suggestedTool := range agentResponse {
 			tool := agentTools.GetAgentTool(suggestedTool.SelectedTool)
-			lg.LogI(fmt.Sprintf("4.%d Going to call tool [%s] ", i+1, tool.Name))
+			lgr.Info(fmt.Sprintf("4.%d Going to call tool [%s] ", i+1, tool.Name))
 
 			agentUsage := &agentTools.AgentToolUsage{
 				Uid:        tool.Uid,

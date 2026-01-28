@@ -6,7 +6,7 @@ import (
 	"turtle/databases/tsqlite"
 	"turtle/formats/office"
 
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/vfs"
 )
 
@@ -14,7 +14,7 @@ func PlayHttpTriggerNode(context *models.NodePlayContext, node *models.Node) {
 
 	bodyBytes, err := io.ReadAll(context.Gin.Request.Body)
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 		return
 	}
 

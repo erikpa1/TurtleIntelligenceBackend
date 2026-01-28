@@ -36,7 +36,7 @@ import (
 	"turtle/tables"
 	"turtle/tags"
 
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/models"
 	"turtle/server"
 	"turtle/vfs"
@@ -76,7 +76,7 @@ func dev_main() {
 
 	db.DB.InstallJavaScriptFunctions()
 
-	lg.LogOk("Working directory: ", vfs.GetWorkingDirectory())
+	lgr.Ok("Working directory: ", vfs.GetWorkingDirectory())
 
 	r := setupRouter()
 	use_cors(r)
@@ -144,7 +144,7 @@ func dev_main() {
 
 	turtleio.InitTurtleSocketsApi(r)
 
-	lg.LogI("Running in: ", vfs.GetExeFile())
+	lgr.Info("Running in: ", vfs.GetExeFile())
 
 	srv := &http.Server{
 		Addr:         addr, // Change to your desired port
@@ -160,12 +160,12 @@ func dev_main() {
 		}
 	}
 
-	lg.LogOk("------------------------------------")
-	lg.LogOk("Mode: ", gin.Mode())
+	lgr.Ok("------------------------------------")
+	lgr.Ok("Mode: ", gin.Mode())
 
-	lg.LogOk("Running server at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+addr, prefix+addr))
-	lg.LogOk("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"127.0.0.1:"+port, prefix+"127.0.0.1:"+port))
-	lg.LogOk("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"localhost:"+port, prefix+"localhost:"+port))
+	lgr.Ok("Running server at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+addr, prefix+addr))
+	lgr.Ok("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"127.0.0.1:"+port, prefix+"127.0.0.1:"+port))
+	lgr.Ok("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+"localhost:"+port, prefix+"localhost:"+port))
 
 	if vfs.IsLinux() {
 		cmd := exec.Command("hostname", "-I")
@@ -173,13 +173,13 @@ func dev_main() {
 		// Capture the output
 		output, err := cmd.Output()
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 
 		} else {
 			ips := strings.Fields(string(output))
 
 			for _, ip := range ips {
-				lg.LogOk("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+ip+":"+port, prefix+ip+":"+port))
+				lgr.Ok("Access at: ", fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", prefix+ip+":"+port, prefix+ip+":"+port))
 
 			}
 		}
@@ -187,23 +187,23 @@ func dev_main() {
 	}
 
 	if credentials.RunHttps() {
-		lg.LogOk("Started HTTP(S) branch")
+		lgr.Ok("Started HTTP(S) branch")
 		error := srv.ListenAndServeTLS("cert.pem", "key.pem")
 
 		if error != nil {
-			lg.LogE(error)
+			lgr.ErrorJson(error)
 		}
 
 	} else {
-		lg.LogOk("Started HTTP branch")
+		lgr.Ok("Started HTTP branch")
 		error := srv.ListenAndServe()
 
 		if error != nil {
-			lg.LogE(error)
+			lgr.ErrorJson(error)
 		}
 	}
 
-	lg.LogE("Execution ended")
+	lgr.Error("Execution ended")
 }
 
 func main() {
@@ -214,8 +214,8 @@ func main() {
 
 	//db.InitGorm()
 
-	lg.LogI("Starting infinity twin application")
-	lg.LogI("DbName: ", credentials.GetDBName())
+	lgr.Info("Starting infinity twin application")
+	lgr.Info("DbName: ", credentials.GetDBName())
 
 	dev_main()
 	//TestMain()

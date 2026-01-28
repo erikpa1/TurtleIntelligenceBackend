@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"turtle/ctrlApp"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/modelsApp"
 	"turtle/simulation/simInternal"
 
@@ -110,7 +110,7 @@ func (self *SimWorld) LoadConnections(connections []*modelsApp.EntityConnection)
 		if found {
 			self.SimConnections[connection.A] = append(array, simBehaviour)
 		} else {
-			lg.LogE("Unable to find entity [%s] in world", connection.B.Hex())
+			lgr.Error("Unable to find entity [%s] in world", connection.B.Hex())
 		}
 	}
 }
@@ -146,7 +146,7 @@ func (self *SimWorld) ClearStates() {
 }
 
 func (self *SimWorld) Step() {
-	lg.LogI(fmt.Sprintf("Step (%d/%d)", self.Stepper.Now, self.Stepper.End))
+	lgr.Info(fmt.Sprintf("Step (%d/%d)", self.Stepper.Now, self.Stepper.End))
 
 	for _, behaviour := range self.SimBehaviours {
 		behaviour.Step()
@@ -180,7 +180,7 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 			definition = tmp
 			self.ActorsDefinitions[uid] = definition
 		} else {
-			lg.LogE("SimActor definition [%s] not found", uid.Hex())
+			lgr.Error("SimActor definition [%s] not found", uid.Hex())
 			return nil
 		}
 	}

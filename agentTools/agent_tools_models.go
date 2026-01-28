@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 )
 
@@ -33,7 +33,7 @@ func (self *AgentTool) CallFn(result *AgentToolResult, data bson.M) {
 	if self.Fn != nil {
 		defer self.Fn(result, data)
 	} else {
-		lg.LogE("Unable to call", self.Name, "FN is not defined")
+		lgr.Error("Unable to call", self.Name, "FN is not defined")
 	}
 
 }

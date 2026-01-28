@@ -3,7 +3,7 @@ package llmCtrl
 import (
 	"fmt"
 	"turtle/core/users"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"
@@ -38,12 +38,12 @@ USER QUERY: {%s}
 			completion, complErr := llms.GenerateFromSinglePrompt(c, llm, finalPrompt)
 
 			if complErr == nil {
-				lg.LogOk(completion)
+				lgr.Ok(completion)
 			} else {
-				lg.LogE(complErr)
+				lgr.ErrorJson(complErr)
 			}
 		} else {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 		}
 	}
 

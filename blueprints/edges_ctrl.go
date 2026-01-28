@@ -7,7 +7,7 @@ import (
 	"turtle/core/users"
 
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -24,7 +24,7 @@ func InsertEdges(user *users.User, edges []*models.NodeEdge) {
 	}
 
 	db.InsertMany(cts.CT_AGENT_EDGES, tools.ToIArray(edges))
-	lg.LogI(fmt.Sprintf("Inserted %d edges", len(edges)))
+	lgr.Info(fmt.Sprintf("Inserted %d edges", len(edges)))
 }
 
 func QueryEdges(user *users.User, query bson.M) []*models.NodeEdge {

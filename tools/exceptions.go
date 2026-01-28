@@ -3,13 +3,12 @@ package tools
 import (
 	"runtime/debug"
 	"sync"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func Recover(message string, onErrr ...func(any)) {
 	if r := recover(); r != nil {
-		lg.LogStackTraceErr(message, r)
-		lg.LogW(r)
+		lgr.ErrorStack(message, r)
 		debug.PrintStack()
 
 		for _, receiver := range onErrr {
@@ -23,7 +22,7 @@ func RecoverWithMutUnlock(mutex sync.Mutex, message string) {
 	defer mutex.Unlock()
 	r := recover()
 	if r != nil {
-		lg.LogStackTraceErr(message, r)
+		lgr.ErrorStack(message, r)
 		debug.PrintStack()
 	}
 

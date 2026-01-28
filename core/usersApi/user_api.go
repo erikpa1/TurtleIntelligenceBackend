@@ -1,7 +1,7 @@
 package usersApi
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,7 +20,7 @@ func _COUUser(c *gin.Context) {
 	if ginPipeline.ShouldBindJSON(&user) {
 		users.COUUser(ginPipeline, &user)
 	} else {
-		lg.LogE("Here")
+		lgr.Error("Here")
 	}
 
 }

@@ -3,7 +3,7 @@ package themes
 import (
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -29,9 +29,9 @@ func ImportTheme(user *users.User, theme *Theme) {
 
 	if db.EntityExists(CT_THEMES, bson.M{"_id": theme.Uid}) {
 		db.SetById(CT_THEMES, theme.Uid, theme)
-		lg.LogE("Here")
+		lgr.Error("Here")
 	} else {
-		lg.LogOk("Tu som")
+		lgr.Ok("Tu som")
 		db.InsertEntity(CT_THEMES, theme)
 	}
 }

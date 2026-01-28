@@ -3,10 +3,11 @@ package tools
 import (
 	"encoding/json"
 
+	"turtle/lgr"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/lg"
 )
 
 func VecFromJStr[T any](data string) []T {
@@ -18,7 +19,7 @@ func VecFromJStr[T any](data string) []T {
 		err := json.Unmarshal([]byte(data), &result)
 
 		if err != nil {
-			lg.LogStackTraceErr(err, "JSON: ", data)
+			lgr.ErrorStack("%w JSON: %s", data)
 		}
 
 		return result
@@ -31,7 +32,7 @@ func ObjFromJsonPtr[T any](data string) *T {
 	err := json.Unmarshal([]byte(data), &result)
 
 	if err != nil {
-		lg.LogStackTraceErr(err, "JSON: ", data)
+		lgr.ErrorStack(err.Error(), "JSON: ", data)
 		return nil
 	}
 
@@ -51,7 +52,7 @@ func QueryHeader[T any](c *gin.Context) T {
 	err := json.Unmarshal([]byte(headerValue), &result)
 
 	if err != nil {
-		lg.LogStackTraceErr(err, "JSON: ", headerValue)
+		lgr.ErrorStack(err.Error())
 		return result
 	}
 	return result
@@ -86,7 +87,7 @@ func ObjFromJson[T any](data string) T {
 	err := json.Unmarshal([]byte(data), &result)
 
 	if err != nil {
-		lg.LogStackTraceErr(err, "JSON: ", data)
+		lgr.ErrorStack(err.Error())
 		return result
 	}
 
@@ -101,7 +102,7 @@ func SafeJsonFromJson(data string) *SafeJson {
 	err := json.Unmarshal([]byte(data), &tmp)
 
 	if err != nil {
-		lg.LogStackTraceErr(err, "JSON: ", data)
+		lgr.ErrorStack(err.Error())
 		return nil
 	}
 	result.Data = tmp

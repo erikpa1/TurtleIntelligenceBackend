@@ -6,7 +6,7 @@ import (
 	"turtle/core/users"
 	"turtle/credentials"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/golang-jwt/jwt"
 	"go.mongodb.org/mongo-driver/bson"
@@ -97,7 +97,7 @@ func EncryptPassword(password string) string {
 	// Derive the key using scrypt
 	hashedPassword, err := scrypt.Key([]byte(password), salt, N, r, p, keyLen)
 	if err != nil {
-		lg.LogE("failed to generate scrypt key: %v", err)
+		lgr.Error("failed to generate scrypt key: %v", err)
 	}
 
 	// Convert the result to a hex string

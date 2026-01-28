@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/RyanCarrier/dijkstra/v2"
 )
@@ -51,13 +51,13 @@ func (self *Graph) AddArc(a, b string, distance float64) {
 		//Obojstranny connection sa robi o uroven NAD!!!
 		err1 := self.djikstraGraph.AddArc(a_i, b_i, uint64(distance*100))
 		if err1 != nil {
-			lg.LogE("Unable to find connection between", err1)
+			lgr.Error("Unable to find connection between", err1)
 		}
 	} else {
 		if a_ok == false {
-			lg.LogE("Unable to convert A", a)
+			lgr.Error("Unable to convert A", a)
 		} else {
-			lg.LogE("Unable to convert B", b)
+			lgr.Error("Unable to convert B", b)
 		}
 
 	}
@@ -65,7 +65,7 @@ func (self *Graph) AddArc(a, b string, distance float64) {
 func (self *Graph) Shortest(a, b string) PathResult {
 
 	if a == b {
-		lg.LogE("The same routes searching: [", a, "] , [", b, "]")
+		lgr.Error("The same routes searching: [", a, "] , [", b, "]")
 	}
 
 	a_i, a_ok := self.uidToIndex[a]
@@ -84,11 +84,11 @@ func (self *Graph) Shortest(a, b string) PathResult {
 				Path:     uidPath,
 			}
 		} else {
-			lg.LogE("Error between: [", a, "] or [", b, "]")
-			lg.LogE(err)
+			lgr.Error("Error between: [", a, "] or [", b, "]")
+			lgr.Error(err.Error())
 		}
 	} else {
-		lg.LogE("Unable to find: [", a, "] or [", b, "]")
+		lgr.Error("Unable to find: [", a, "] or [", b, "]")
 	}
 
 	return PathResult{}

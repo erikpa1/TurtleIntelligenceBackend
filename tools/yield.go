@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type YieldType[T any] func(func(T) bool)
@@ -17,7 +17,7 @@ func Yield[T any](rangeFunc func() []T) YieldType[T] {
 	return func(yield func(T) bool) {
 		defer func() {
 			if r := recover(); r != nil {
-				lg.LogE("Error in Yield: ", r)
+				lgr.Error("Error in Yield: ", r)
 			}
 		}()
 		for _, val := range rangeFunc() {

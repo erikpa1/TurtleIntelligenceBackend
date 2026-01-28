@@ -2,7 +2,7 @@ package filesystem
 
 import (
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 	"turtle/vfs"
 )
@@ -32,8 +32,8 @@ func PlayWriteToFileNode(context *models.NodePlayContext, node *models.Node) {
 		context.Pipeline.ActiveStep.DataStr = dataToWrite
 
 		if data.UseWd {
-			//lg.LogE("Going to write", data.ParentFolder, data.GetFileName())
-			//lg.LogOk(context.Data.GetString())
+			//lgr.Error("Going to write", data.ParentFolder, data.GetFileName())
+			//lgr.Ok(context.Data.GetString())
 			vfs.WriteFileStringToWD(data.ParentFolder, data.GetFileName(), dataToWrite)
 		} else {
 			vfs.WriteFileString(data.ParentFolder, data.GetFileName(), dataToWrite)
@@ -49,6 +49,6 @@ func PlayWriteToFileNode(context *models.NodePlayContext, node *models.Node) {
 		}
 
 	} else {
-		lg.LogStackTraceErr("Failed to cast node data to WriteToFileNode")
+		lgr.ErrorStack("Failed to cast node data to WriteToFileNode")
 	}
 }

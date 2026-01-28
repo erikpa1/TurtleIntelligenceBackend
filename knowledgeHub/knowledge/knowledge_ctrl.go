@@ -7,7 +7,7 @@ import (
 	"turtle/db"
 	"turtle/knowledgeHub/cts"
 	"turtle/knowledgeHub/node"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 
@@ -27,7 +27,7 @@ func QueryKnowledge(user *users.User, query bson.M) []*Knowledge {
 
 	query["org"] = user.Org
 
-	lg.LogI(query)
+	lgr.InfoJson(query)
 
 	return db.QueryEntities[Knowledge](cts.CT_KNOWLEDGE, query, &findOptions)
 }

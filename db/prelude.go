@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"turtle/credentials"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -76,7 +76,7 @@ func QueryEntity[T any](collection string, query bson.M) *T {
 		if err == mongo.ErrNoDocuments {
 			return nil
 		} else {
-			lg.LogStackTraceErr(err)
+			lgr.ErrorStack(err.Error())
 		}
 		return nil
 	}
@@ -86,7 +86,7 @@ func QueryEntity[T any](collection string, query bson.M) *T {
 func InsertEntity(collection string, entity any) (*mongo.InsertOneResult, error) {
 	result, err := DB.Col(collection).InsertOne(context.TODO(), entity)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	return result, err
@@ -95,7 +95,7 @@ func InsertEntity(collection string, entity any) (*mongo.InsertOneResult, error)
 func InsertMany(collection string, entities []interface{}) {
 	_, err := DB.Col(collection).InsertMany(context.TODO(), entities)
 	if err != nil {
-		lg.LogStackTraceErr(err.Error())
+		lgr.ErrorStack(err.Error())
 	}
 }
 
@@ -106,11 +106,11 @@ func DeleteByIdAndOrg(collection string, _id primitive.ObjectID, org primitive.O
 		"org": org,
 	}
 
-	lg.LogEson(deleteQuery)
+	lgr.ErrorJson(deleteQuery)
 
 	_, err := DB.Col(collection).DeleteOne(context.TODO(), deleteQuery)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	return err
@@ -119,7 +119,7 @@ func DeleteByIdAndOrg(collection string, _id primitive.ObjectID, org primitive.O
 func DeleteEntity(collection string, query bson.M) {
 	_, err := DB.Col(collection).DeleteOne(context.TODO(), query)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 }
 
@@ -128,7 +128,7 @@ func DeleteEntityWithUid(collection string, uid primitive.ObjectID) {
 		"_id": uid,
 	})
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 }
 
@@ -137,14 +137,14 @@ func DeleteEntitiesOfParent(collection string, parent primitive.ObjectID) {
 		"parent": parent,
 	})
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 }
 
 func DeleteEntities(collection string, query bson.M) error {
 	_, err := DB.Col(collection).DeleteMany(context.TODO(), query)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 	return err
 }
@@ -168,7 +168,7 @@ func UpdateEntity(collection string, entity any) {
 	_, err := DB.Col(collection).UpdateOne(context.TODO(), bson.M{"uid": uid}, bson.M{"$set": entity})
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 	}
 }
 
@@ -181,7 +181,7 @@ func SetByOrgAndId(collection string, _id primitive.ObjectID, orgId primitive.Ob
 	}, opts...)
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 		return err
 	}
 	return nil
@@ -195,7 +195,7 @@ func SetById(collection string, _id primitive.ObjectID, update interface{}, opts
 	}, opts...)
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 		return err
 	}
 	return nil
@@ -205,7 +205,7 @@ func UpdateOneCustom(collection string, filter interface{}, update interface{}, 
 	_, err := DB.Col(collection).UpdateOne(context.TODO(), filter, update, opts...)
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 		return err
 	}
 	return nil
@@ -215,7 +215,7 @@ func UpdateMany(collection string, filter bson.M, data bson.M) {
 	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, data)
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 	}
 }
 
@@ -223,7 +223,7 @@ func SetEntitiesWhere(collection string, filter bson.M, data any) {
 	_, err := DB.Col(collection).UpdateMany(context.TODO(), filter, bson.M{"$set": data})
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 	}
 }
 
@@ -242,7 +242,7 @@ func QueryEntitiesChannel[T any](ctx context.Context, collection string, query b
 		cursor, err := DB.Col(collection).Find(ctx, query, opts...)
 
 		if err != nil {
-			lg.LogStackTraceErr(err.Error())
+			lgr.ErrorStack(err.Error())
 			return // Exit if there's an error
 		}
 		defer cursor.Close(context.TODO()) // Ensure cursor is closed after iteration
@@ -250,14 +250,14 @@ func QueryEntitiesChannel[T any](ctx context.Context, collection string, query b
 		for cursor.Next(context.TODO()) {
 			var elem T // Changed to T instead of *T
 			if err := cursor.Decode(&elem); err != nil {
-				lg.LogE(err)
+				lgr.Error(err.Error())
 				return // Exit if there's an error
 			}
 			resultsChan <- &elem // Send the address of elem to the channel
 		}
 
 		if err := cursor.Err(); err != nil {
-			lg.LogE(err) // Log any cursor errors
+			lgr.Error(err.Error()) // Log any cursor errors
 		}
 	}()
 
@@ -267,7 +267,7 @@ func QueryEntitiesAsCopy[T any](collection string, query bson.M, opts ...*option
 	cursor, err := DB.Col(collection).Find(context.TODO(), query, opts...)
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	result := []T{}
@@ -277,7 +277,7 @@ func QueryEntitiesAsCopy[T any](collection string, query bson.M, opts ...*option
 
 		err := cursor.Decode(&elem)
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 		}
 		result = append(result, elem)
 	}
@@ -290,7 +290,7 @@ func QueryEntities[T any](collection string, query bson.M, opts ...*options.Find
 	cursor, err := DB.Col(collection).Find(context.TODO(), query, opts...)
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	result := []*T{}
@@ -300,7 +300,7 @@ func QueryEntities[T any](collection string, query bson.M, opts ...*options.Find
 
 		err := cursor.Decode(&elem)
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 		}
 		result = append(result, elem)
 	}
@@ -313,7 +313,7 @@ func (self *AnyDBConnection) ListContainers() []string {
 	names, err := self.Db(credentials.GetDBName()).ListCollectionNames(context.TODO(), bson.M{})
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 		return make([]string, 0)
 	}
 
@@ -333,16 +333,16 @@ func NewAnyDBConnection() AnyDBConnection {
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
-	lg.LogOk("Connected to MongoDB! ", credentials.GetDBConnStr())
-	lg.LogOk("Database name: ", credentials.GetDBName())
+	lgr.Ok("Connected to MongoDB! ", credentials.GetDBConnStr())
+	lgr.Ok("Database name: ", credentials.GetDBName())
 
 	var conn = AnyDBConnection{}
 	conn.SetIsCosmos(credentials.GetDBConnStr())
@@ -368,7 +368,7 @@ func CountEntities(collection string, query bson.M) int64 {
 	value, err := DB.Col(collection).CountDocuments(context.TODO(), query)
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 		return 0
 	}
 

@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/auth"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 )
 
@@ -16,7 +16,7 @@ func InitDefaultEntitiesApi(r *gin.Engine, namespace string, bucket string) {
 
 	dbName := namespace + "_" + bucket
 
-	lg.LogOk(fmt.Sprintf("Initializing dynamic module [%s]", totalName))
+	lgr.Ok(fmt.Sprintf("Initializing dynamic module [%s]", totalName))
 
 	_QueryDefaultEntities := func(c *gin.Context) {
 		user := auth.GetUserFromContext(c)

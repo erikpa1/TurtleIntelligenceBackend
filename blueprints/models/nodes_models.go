@@ -2,7 +2,7 @@ package models
 
 import (
 	"turtle/core/users"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -74,6 +74,6 @@ func (self *ContextData) SetString(data string) {
 	self.Type = ContextDataType.String
 	self.Data = data
 
-	lg.LogI("Setting stirng: ", data)
+	lgr.Info("Setting stirng: ", data)
 
 }

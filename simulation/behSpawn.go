@@ -1,10 +1,11 @@
 package simulation
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/simulation/simInternal"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type SpawnBehaviour struct {
@@ -55,7 +56,7 @@ func (self *SpawnBehaviour) Step() {
 		if actualTime >= self.NextSpawnTime {
 			self._Spawn()
 		} else {
-			lg.LogW(self.NextSpawnTime)
+			lgr.Info("%d", self.NextSpawnTime)
 		}
 	} else {
 		self._TryToAddActorNext()

@@ -1,7 +1,7 @@
 package users
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -71,7 +71,7 @@ func (self *User) IsAdminWithError() bool {
 	if self.IsAdmin() {
 		return true
 	} else {
-		lg.LogE(self.Uid.Hex(), "is only", self.Type)
+		lgr.Error(self.Uid.Hex(), "is only", self.Type)
 		return false
 	}
 }

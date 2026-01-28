@@ -2,7 +2,7 @@ package office
 
 import (
 	"fmt"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -27,6 +27,6 @@ func WriteExcel(filePath string) {
 	f.SetActiveSheet(index)
 	// Save spreadsheet by the given path.
 	if err := f.SaveAs(filePath); err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 }

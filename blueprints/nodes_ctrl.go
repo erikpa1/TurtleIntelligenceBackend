@@ -7,7 +7,7 @@ import (
 	"turtle/blueprints/models"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -21,7 +21,7 @@ func InsertNodes(user *users.User, nodes []*models.Node) {
 
 	db.InsertMany(cts.CT_AGENT_NODES, tools.ToIArray(nodes))
 
-	lg.LogI(fmt.Sprintf("Inserted %d nodes", len(nodes)))
+	lgr.Info(fmt.Sprintf("Inserted %d nodes", len(nodes)))
 
 }
 
@@ -34,7 +34,7 @@ func COUNode(user *users.User, node *models.Node) {
 		if user.Org == node.Org {
 			db.SetById(cts.CT_AGENT_NODES, node.Uid, node)
 		} else {
-			lg.LogE("Failed to update node for org %s", node.Org)
+			lgr.Error("Failed to update node for org %s", node.Org)
 		}
 	}
 }
@@ -66,7 +66,7 @@ func PlayNode(context *models.NodePlayContext, agentUid primitive.ObjectID) {
 	if entryNode != nil {
 		ctrl.DispatchPlayNode(context, entryNode)
 	} else {
-		lg.LogE("No node entry")
+		lgr.Error("No node entry")
 	}
 
 }

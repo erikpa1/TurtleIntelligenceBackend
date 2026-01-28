@@ -6,7 +6,7 @@ import (
 
 	"turtle/credentials"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -60,7 +60,7 @@ func DeleteTable(user *users.User, uid primitive.ObjectID) {
 			if err == nil {
 				deletionWasOk = true
 			} else {
-				lg.LogStackTraceErr(err)
+				lgr.ErrorStack(err.Error())
 			}
 		} else {
 			err := db.DeleteEntities(CT_TABLE_DATA, bson.M{
@@ -70,7 +70,7 @@ func DeleteTable(user *users.User, uid primitive.ObjectID) {
 			if err == nil {
 				deletionWasOk = true
 			} else {
-				lg.LogStackTraceErr(err)
+				lgr.ErrorStack(err.Error())
 			}
 		}
 
@@ -78,10 +78,10 @@ func DeleteTable(user *users.User, uid primitive.ObjectID) {
 
 			db.DeleteByIdAndOrg(CT_TABLES, uid, user.Org)
 		} else {
-			lg.LogE("Not going to delete table because of previous error")
+			lgr.Error("Not going to delete table because of previous error")
 		}
 	} else {
-		lg.LogE("No table to delete: ", uid.Hex())
+		lgr.Error("No table to delete: ", uid.Hex())
 	}
 
 }

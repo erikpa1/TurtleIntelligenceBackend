@@ -6,7 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func ProxyMiddleware(targetURL string) gin.HandlerFunc {
 
 		final_path := root + targetURL
 
-		lg.LogI("Heading for: ", final_path)
+		lgr.Info("Heading for: ", final_path)
 
 		targetRequest, err := http.NewRequest(c.Request.Method, final_path, c.Request.Body)
 		if err != nil {
@@ -77,7 +77,7 @@ func ProxyMiddleware2() gin.HandlerFunc {
 		root := "http://127.0.0.1:5000"
 		finalPath := root + c.Request.RequestURI
 
-		lg.LogI("Requesting:", finalPath)
+		lgr.Info("Requesting:", finalPath)
 
 		// Clone the request body if it exists
 		var bodyBytes []byte

@@ -1,13 +1,13 @@
 package docmining
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 )
 
 func _FileToProcessPosted(c *gin.Context) {
-	lg.LogE("Here")
+	lgr.Error("Here")
 
 }
 

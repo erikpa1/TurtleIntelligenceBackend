@@ -418,7 +418,7 @@ func (self *DtTimeRange) CreateMongoTimeQuery() map[string]interface{} {
 
 	query["$gte"] = startEnd[0]
 	query["$lte"] = startEnd[1]
-	//lg.LogI(fmt.Sprintf("Query: from %v to %v", time.UnixMilli(startEnd[0]), time.UnixMilli(startEnd[1])))
+	//lgr.Info(fmt.Sprintf("Query: from %v to %v", time.UnixMilli(startEnd[0]), time.UnixMilli(startEnd[1])))
 	return query
 }
 

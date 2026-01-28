@@ -3,7 +3,7 @@ package llmCtrl
 import (
 	"context"
 	"github.com/tmc/langchaingo/llms/ollama"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmModels"
 )
 
@@ -15,14 +15,14 @@ func CreateStringEmbedding(ctx context.Context, embedingString string) (llmModel
 	)
 
 	if llmErr != nil {
-		lg.LogE(llmErr.Error())
+		lgr.Error(llmErr.Error())
 		return [][]float32{}, llmErr
 	}
 
 	embeddings, err := embedder.CreateEmbedding(ctx, []string{embedingString})
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 
 	return embeddings, err
@@ -32,7 +32,7 @@ func CreateStringEmbedding(ctx context.Context, embedingString string) (llmModel
 func ExampleEmbedding() {
 	//
 	//for _, query := range queries {
-	//	lg.LogI("Going to find: ", query)
+	//	lgr.Info("Going to find: ", query)
 	//
 	//	queryEmbeding, _ := embedder.CreateEmbedding(context.Background(), []string{query})
 	//
@@ -41,7 +41,7 @@ func ExampleEmbedding() {
 	//		db.DB.VectorSearch(context.Background(), documents.CT_DOC_EMBEDDINGS, queryEmbeding[0], 5, 0.6)
 	//
 	//		for _, firstRow := range docEmbedding.Embedding {
-	//			lg.LogOk(cosineSimilarity(queryEmbeding[0], firstRow))
+	//			lgr.Ok(cosineSimilarity(queryEmbeding[0], firstRow))
 	//		}
 	//	}
 	//}

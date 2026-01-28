@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"sync"
 	"time"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func TryLock(mutex *sync.Mutex) bool {
 	if mutex.TryLock() {
 		return true
 	} else {
-		lg.LogStackTraceErr("Failed to Lock mutex, because is locked different place")
+		lgr.ErrorStack("Failed to Lock mutex, because is locked different place")
 		mutex.Lock()
 		return false
 	}
@@ -47,7 +47,7 @@ func (self *TimedMutex) Unlock() {
 		self.held = false
 		self.mu.Unlock()
 	} else {
-		lg.LogStackTraceErr("Trying to unlock unlocked mutex: ", self.Name, self.mutexInfo)
+		lgr.ErrorStack("Trying to unlock unlocked mutex: ", self.Name, self.mutexInfo)
 	}
 
 }
@@ -58,10 +58,10 @@ func (self *TimedMutex) Monitor(duration time.Duration) {
 		for {
 			time.Sleep(duration / 2) // Check at intervals shorter than the threshold
 			if self.held && time.Since(self.lockTime) > duration {
-				lg.LogE(fmt.Sprintf("Warning: Mutex [%s] held for more than %v by [%s]", self.Name, self.mutexInfo, duration))
-				lg.LogI(self.mutexInfo)
+				lgr.Error(fmt.Sprintf("Warning: Mutex [%s] held for more than %v by [%s]", self.Name, self.mutexInfo, duration))
+				lgr.Info(self.mutexInfo)
 
-				lg.LogOk("Unlocking mutex")
+				lgr.Ok("Unlocking mutex")
 				self.Unlock()
 			}
 		}

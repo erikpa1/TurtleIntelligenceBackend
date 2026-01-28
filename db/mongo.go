@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 	"turtle/credentials"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func ExportMongo(connstr string) {
@@ -21,7 +21,7 @@ func ExportMongo(connstr string) {
 	another_client, err := mongo.Connect(ctx, clientOptions)
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 		return
 	}
 
@@ -42,7 +42,7 @@ func ImportMongo(connstr string) {
 	another_client, err := mongo.Connect(ctx, clientOptions)
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 		return
 	}
 
@@ -62,7 +62,7 @@ func MigrateMongo(target *mongo.Database, source *mongo.Database) {
 		cursor, err := source.Collection(container).Find(ctx, bson.M{})
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			continue
 		}
 
@@ -71,7 +71,7 @@ func MigrateMongo(target *mongo.Database, source *mongo.Database) {
 
 			err := cursor.Decode(&elem)
 			if err != nil {
-				lg.LogE(err)
+				lgr.Error(err.Error())
 				continue
 			}
 

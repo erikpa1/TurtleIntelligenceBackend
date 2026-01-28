@@ -3,7 +3,7 @@ package blueprints
 import (
 	"turtle/auth"
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -82,7 +82,7 @@ func _PlayAgentNode(c *gin.Context) {
 		IsLocalHost: c.RemoteIP() == "::1",
 	}
 
-	lg.LogE(nodeUid)
+	lgr.ErrorJson(nodeUid)
 
 	PlayNode(&playNodeContext, nodeUid)
 

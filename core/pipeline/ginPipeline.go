@@ -1,7 +1,7 @@
 package pipeline
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +23,7 @@ func (self *GinPipeline) SetError(err error) bool {
 	self.Error = err
 
 	if err != nil {
-		lg.LogStackTraceErr(err)
+		lgr.ErrorStack(err.Error())
 	}
 
 	return err == nil

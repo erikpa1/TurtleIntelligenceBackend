@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/ollama"
@@ -25,23 +25,23 @@ func RunMemoryTest() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		lg.LogOk("You:")
+		lgr.Ok("You:")
 
 		userInput, err := reader.ReadString('\n')
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			return
 		}
 
 		userInput = strings.TrimSpace(userInput)
 
 		if userInput == "" {
-			lg.LogE("Empty input")
+			lgr.Error("Empty input")
 		}
 
-		lg.LogOk("Agent:")
-		lg.LogI("thinking...")
+		lgr.Ok("Agent:")
+		lgr.Info("thinking...")
 
 		response, err := chains.Run(
 			ctx,
@@ -51,11 +51,11 @@ func RunMemoryTest() {
 		fmt.Println("\r")
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			return
 		}
 
-		lg.LogOk(response)
+		lgr.Ok(response)
 	}
 
 }

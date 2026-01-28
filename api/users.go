@@ -3,7 +3,7 @@ package api
 import (
 	"turtle/core/users"
 	"turtle/ctrl"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ func _TryLogin(c *gin.Context) {
 	password := c.PostForm("password")
 
 	if ctrl.UserExists(login, password) {
-		lg.LogE("User don't exists")
+		lgr.Error("User don't exists")
 	}
 
 	//TODO toto naimpelmentovat

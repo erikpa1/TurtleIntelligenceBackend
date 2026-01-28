@@ -3,10 +3,11 @@ package documents
 import "C"
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _RefreshDocumentsCollection(c *gin.Context) {
@@ -14,10 +15,10 @@ func _RefreshDocumentsCollection(c *gin.Context) {
 	uid := tools.MongoObjectIdFromQuery(c)
 	coll := GetDocumentCollection(user, uid)
 
-	lg.LogE(uid)
+	lgr.ErrorJson(uid)
 
 	if coll == nil {
-		lg.LogE(fmt.Sprintf("Document collection [%s] not found", uid))
+		lgr.Error(fmt.Sprintf("Document collection [%s] not found", uid))
 		tools.AutoNotFound(c, "")
 	} else {
 		RefreshDocumentsCollection(c, user, coll)

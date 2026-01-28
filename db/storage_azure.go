@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
@@ -26,7 +26,7 @@ import (
 
 func handleError(err error) {
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 }
 
@@ -57,7 +57,8 @@ func TestStorage() {
 	handleError(err)
 
 	// List the blobs in the container
-	lg.LogI("Listing the blobs in the container:")
+
+	lgr.Info("Listing the blobs in the container:")
 
 	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
 		Include: azblob.ListBlobsInclude{Snapshots: true, Versions: true},
@@ -68,7 +69,7 @@ func TestStorage() {
 		handleError(err)
 
 		for _, blob := range resp.Segment.BlobItems {
-			lg.LogI(*blob.Name)
+			lgr.Info(*blob.Name)
 		}
 	}
 
@@ -85,8 +86,8 @@ func TestStorage() {
 	handleError(err)
 
 	// Print the content of the blob we created
-	lg.LogI("Blob contents:")
-	lg.LogI(downloadedData.String())
+	lgr.Info("Blob contents:")
+	lgr.Info(downloadedData.String())
 
 	fmt.Printf("Press enter key to delete resources and exit the application.\n")
 	bufio.NewReader(os.Stdin).ReadBytes('\n')

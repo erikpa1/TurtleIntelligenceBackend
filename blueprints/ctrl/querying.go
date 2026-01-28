@@ -5,7 +5,7 @@ import (
 	"turtle/blueprints/models"
 	"turtle/db"
 	"turtle/knowledgeHub/node"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -79,7 +79,7 @@ func GetTargetsOfNode(context *models.NodePlayContext, uid primitive.ObjectID, c
 	for i, edge := range edges {
 		_, isCycle := context.AlreadyPlayedNodes[edge.Target]
 		if isCycle {
-			lg.LogE("Cycle detected")
+			lgr.Error("Cycle detected")
 			break
 		}
 		nodes[i] = GetAgentNode(edge.Org, edge.Target)

@@ -1,13 +1,14 @@
 package llmApi
 
 import (
+	"turtle/auth"
+	"turtle/lgr"
+	"turtle/llm/llmCtrl"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/auth"
-	"turtle/lg"
-	"turtle/llm/llmCtrl"
-	"turtle/tools"
 )
 
 func _GetChat(c *gin.Context) {
@@ -41,7 +42,7 @@ func _ChatAsk(c *gin.Context) {
 
 	if isAgent {
 		respone := llmCtrl.ChatAgent(c, user, modelUid, text)
-		lg.LogE(respone)
+		lgr.ErrorJson(respone)
 	} else {
 		completion := llmCtrl.AskModel(c, user, modelUid, text)
 		llmCtrl.AddChatAnswer(user, conversation, completion)

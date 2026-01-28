@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmCtrl"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +41,7 @@ func ListVSearchDocuments(c context.Context, user *users.User, searchQuery strin
 				Doc:        GetDocument(user, docEmbedding.Uid),
 			})
 		}
-		lg.LogI(similarity)
+		lgr.InfoJson(similarity)
 
 	}
 
@@ -151,9 +151,9 @@ func CreateAndUploadDocument(c *gin.Context, user *users.User, uploadParams *Ins
 		if extractError == nil {
 
 			if uploadParams.LLMDescription {
-				lg.LogI("Going to create LLM description")
+				lgr.Info("Going to create LLM description")
 				descText := llmCtrl.AskModelForDescription(c, user, uploadParams.DescriptionModel, pdfText, 100)
-				lg.LogOk("LLM desc", descText)
+				lgr.Ok("LLM desc", descText)
 
 				db.UpdateOneCustom(CT_DOC,
 					bson.M{"_id": document.Uid},
@@ -162,7 +162,7 @@ func CreateAndUploadDocument(c *gin.Context, user *users.User, uploadParams *Ins
 
 				document.Description = descText
 
-				lg.LogOk("Uploaded document description")
+				lgr.Ok("Uploaded document description")
 
 			}
 
@@ -185,13 +185,13 @@ func CreateAndUploadDocument(c *gin.Context, user *users.User, uploadParams *Ins
 						descEmbedding,
 					)
 				} else {
-					lg.LogE(embError.Error())
+					lgr.Error(embError.Error())
 				}
 
 			}
 
 		} else {
-			lg.LogE(extractError.Error())
+			lgr.Error(extractError.Error())
 		}
 	}
 
@@ -204,7 +204,7 @@ func ExtractPdfTextInMemory(data []byte) (string, error) {
 	// Now you can use it with your PDF function
 	pdfReader, err := pdf.NewReader(reader, int64(len(data)))
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 		return "", err
 	}
 
@@ -213,7 +213,7 @@ func ExtractPdfTextInMemory(data []byte) (string, error) {
 	b, err := pdfReader.GetPlainText()
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 		return "", err
 	}
 	buf.ReadFrom(b)

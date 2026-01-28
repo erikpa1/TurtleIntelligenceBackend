@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -140,7 +140,7 @@ func HandleWebSocketConnection(c *gin.Context) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
-		lg.LogE("WebSocket upgrade error:", err)
+		lgr.Error("WebSocket upgrade error:", err)
 		return
 	}
 	client := NewClient(conn)
@@ -154,7 +154,7 @@ func HandleWebSocketConnection(c *gin.Context) {
 	go client.writePump()
 
 	// When a client connects, you can log or send a welcome message
-	lg.LogI("Client connected")
+	lgr.Info("Client connected")
 }
 
 // readPump handles incoming messages from the client
@@ -177,7 +177,7 @@ func (c *Client) readPump() {
 
 		var msg Message
 		if err := json.Unmarshal(message, &msg); err != nil {
-			lg.LogE("Invalid message format:", err)
+			lgr.Error("Invalid message format:", err)
 			continue
 		}
 
@@ -194,14 +194,14 @@ func (c *Client) writePump() {
 		case message, ok := <-c.send:
 			if !ok {
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				lg.LogE("Closing connection")
+				lgr.Error("Closing connection")
 				return
 			}
 
 			err := c.conn.WriteMessage(websocket.TextMessage, message)
 
 			if err != nil {
-				lg.LogI("Closing the connection")
+				lgr.Info("Closing the connection")
 				c.conn.Close()
 
 				MYIO.mu.Lock("writePump")
@@ -219,7 +219,7 @@ func (c *Client) writePumpSync(message []byte) {
 	err := c.conn.WriteMessage(websocket.TextMessage, message)
 
 	if err != nil {
-		lg.LogI("Closing the connection")
+		lgr.Info("Closing the connection")
 		c.conn.Close()
 
 		MYIO.mu.Lock("writePump")
@@ -246,7 +246,7 @@ func (c *Client) emitSync(event string, data interface{}, ackId *int) {
 
 	c.mu.Lock("Client|emit")
 	if err != nil {
-		lg.LogStackTraceErr(err.Error())
+		lgr.ErrorStack(err.Error())
 	} else {
 		c.writePumpSync(message)
 	}
@@ -269,7 +269,7 @@ func (c *Client) emit(event string, data interface{}, ackId *int) {
 
 	c.mu.Lock("Client|emit")
 	if err != nil {
-		lg.LogStackTraceErr(err.Error())
+		lgr.ErrorStack(err.Error())
 	} else {
 		c.send <- message
 	}
@@ -310,7 +310,7 @@ func RunMyioServer(r *gin.Engine) {
 	r.POST("/my.io/conn", _RegisterClientOnChannel)
 
 	eventHandlers["message"] = func(c *Client, msg Message) {
-		lg.LogE("Received message:", msg.Data)
+		lgr.Error("Received message:", msg.Data)
 
 		if msg.AckId != nil {
 			ackData := "Server received your message!"
@@ -320,7 +320,7 @@ func RunMyioServer(r *gin.Engine) {
 	}
 
 	r.GET("/my.io", HandleWebSocketConnection)
-	lg.LogOk("My.io registered")
+	lgr.Ok("My.io registered")
 }
 
 var MYIO = NewMyio()

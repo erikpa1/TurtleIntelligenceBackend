@@ -2,7 +2,7 @@ package turtleio
 
 import (
 	"github.com/gorilla/websocket"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type Client struct {
@@ -47,9 +47,9 @@ func (self *Client) readMessage(hub *Hub) {
 		if err != nil {
 
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				lg.LogE(err.Error())
+				lgr.Error(err.Error())
 			} else {
-				lg.LogE(err.Error())
+				lgr.Error(err.Error())
 			}
 
 			break

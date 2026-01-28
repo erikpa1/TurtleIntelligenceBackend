@@ -2,7 +2,7 @@ package tools
 
 import (
 	"github.com/RyanCarrier/dijkstra/v2"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func TestDjikstra() {
@@ -18,14 +18,14 @@ func TestDjikstra() {
 
 	best, err := graph.Shortest(0, 2)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
-	lg.LogI("Shortest distance is", best.Distance, "following path ", best.Path)
+	lgr.Info("Shortest distance is", best.Distance, "following path ", best.Path)
 
 	best, err = graph.Longest(0, 2)
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
-	lg.LogI("Longest distance is", best.Distance, "following path ", best.Path)
+	lgr.Info("Longest distance is", best.Distance, "following path ", best.Path)
 
 }

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 // trs stores translations for each language.
@@ -44,7 +44,7 @@ func InitT() {
 	})
 
 	if err != nil {
-		lg.LogE("Failed to load languages: %v", err)
+		lgr.Error("Failed to load languages: %v", err)
 	}
 }
 

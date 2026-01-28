@@ -2,7 +2,7 @@ package themes
 
 import (
 	"turtle/auth"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 
@@ -61,7 +61,7 @@ Example:
 
 	response := llmCtrl.ChatModelWithSystem(c, user, &model, &request)
 
-	lg.LogOkson(response.Result.Parameters)
+	lgr.OkJson(response.Result.Parameters)
 
 }
 

@@ -2,7 +2,7 @@ package db
 
 import (
 	"encoding/base64"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 // StorageController controls which client to use based on credentials
@@ -24,7 +24,7 @@ func NewStorageController() *StorageController {
 func (sc *StorageController) GetFileBase64(filePath string) (string, error) {
 	_bytes, err := sc.client.GetFileBytesNew(filePath)
 	if err != nil || len(_bytes) == 0 {
-		lg.LogI("Unable to find file:", filePath)
+		lgr.Info("Unable to find file:", filePath)
 		return "", err
 	}
 	return base64.StdEncoding.EncodeToString(_bytes), nil

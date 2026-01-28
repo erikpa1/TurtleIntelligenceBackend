@@ -6,7 +6,7 @@ import (
 	"io"
 	"turtle/auth"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 )
 
@@ -73,7 +73,7 @@ func _PostPdfDocument(c *gin.Context) {
 		file, _, err := c.Request.FormFile("pdf")
 
 		if err != nil {
-			lg.LogE(err.Error())
+			lgr.Error(err.Error())
 			c.JSON(400, gin.H{"error": "Failed to get file"})
 			return
 		}
@@ -87,7 +87,7 @@ func _PostPdfDocument(c *gin.Context) {
 		}
 
 		CreateAndUploadDocument(c, user, &uploadParams, data)
-		lg.LogI("Uploaded document")
+		lgr.Info("Uploaded document")
 
 	}
 

@@ -3,7 +3,7 @@ package db
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type DbCompany struct {
@@ -28,7 +28,7 @@ func InitGorm() {
 	db, err := gorm.Open(sqlite.Open("turtle.db"), &gorm.Config{})
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	err = db.AutoMigrate(
@@ -46,7 +46,7 @@ func InitGorm() {
 		if x > 10000 {
 			db.Commit()
 			x = 0
-			lg.LogOk("Done commit")
+			lgr.Ok("Done commit")
 		}
 
 		x += 1
@@ -55,6 +55,6 @@ func InitGorm() {
 
 	db.Commit()
 
-	lg.LogE(err)
+	lgr.Error(err.Error())
 
 }

@@ -3,7 +3,7 @@ package toolsApi
 import (
 	"net/http"
 	"turtle/auth"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ func _TranslateString(c *gin.Context) {
 	uid := c.Query("uid")
 	converted, _ := tools.StringToObjectID(uid)
 	hexResult := converted.Hex()
-	lg.LogE(hexResult)
+	lgr.Error(hexResult)
 	c.String(http.StatusOK, hexResult)
 
 }

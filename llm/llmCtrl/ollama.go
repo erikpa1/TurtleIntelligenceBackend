@@ -2,14 +2,15 @@ package llmCtrl
 
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"os/exec"
 	"regexp"
 	"runtime"
 	"strings"
 	"sync"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmModels"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type RunningModel struct {
@@ -28,7 +29,7 @@ func InitOllama() {
 
 	if len(localModels) > 0 {
 
-		lg.LogI("Going to init Ollama")
+		lgr.Info("Going to init Ollama")
 
 		var cmd *exec.Cmd
 
@@ -53,9 +54,9 @@ func InitOllama() {
 
 		output, err := cmd.Output()
 		if err != nil {
-			lg.LogE(err.Error())
+			lgr.Error(err.Error())
 		} else {
-			lg.LogOk("LLama probably initialized [", output, "]")
+			lgr.Ok("LLama probably initialized [", output, "]")
 		}
 	}
 
@@ -65,7 +66,7 @@ func InitOllama() {
 
 		organization := primitive.ObjectID{}
 
-		lg.LogOk("Slave, going to init blueprints")
+		lgr.Ok("Slave, going to init blueprints")
 
 		modelPort := 11434
 
@@ -77,7 +78,7 @@ func InitOllama() {
 
 				for _, model := range ListLLMModels(cluster.Org) {
 
-					lg.LogI("Going to load model: ", model.ModelVersion, "on port: ", modelPort)
+					lgr.Info("Going to load model: ", model.ModelVersion, "on port: ", modelPort)
 
 					var cmd *exec.Cmd
 
@@ -102,7 +103,7 @@ func InitOllama() {
 
 					err := cmd.Run()
 					if err != nil {
-						lg.LogE(err.Error())
+						lgr.Error(err.Error())
 					} else {
 						OllamaModelsLock.Lock()
 						tmp := RunningModel{}
@@ -129,7 +130,7 @@ func InstallOllama(cluster primitive.ObjectID, model string) string {
 
 		finalCommand := fmt.Sprintf("ollama pull %s", model)
 
-		lg.LogOk("Final command: ", finalCommand)
+		lgr.Ok("Final command: ", finalCommand)
 
 		cmd := exec.Command(
 			"sh",
@@ -139,7 +140,7 @@ func InstallOllama(cluster primitive.ObjectID, model string) string {
 		// Capture the output
 		output, err := cmd.Output()
 		if err != nil {
-			lg.LogE(err.Error())
+			lgr.Error(err.Error())
 		}
 		return string(output)
 	}
@@ -158,9 +159,9 @@ func OllamaStart() {
 	output, err := cmd.Output()
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	} else {
-		lg.LogOk(output)
+		lgr.OkJson(output)
 	}
 
 }
@@ -176,7 +177,7 @@ func OllamaList() string {
 	output, err := cmd.Output()
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 
 	return modelsToHTML(parseOllamaOutput(string(output)))

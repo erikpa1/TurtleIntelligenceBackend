@@ -7,7 +7,7 @@ import (
 	"strings"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/llm/llmModels"
 	"turtle/tools"
 
@@ -94,7 +94,7 @@ func AskModelStream(c *gin.Context, user *users.User, modelUid primitive.ObjectI
 
 	if model != nil {
 		if len(model.Clusters) == 0 {
-			lg.LogOk(fmt.Sprintf("Going to ask on local model [%s]", model.ModelVersion))
+			lgr.Ok(fmt.Sprintf("Going to ask on local model [%s]", model.ModelVersion))
 
 			AskLangChainModelStream(c, model, prompt)
 		} else {
@@ -108,7 +108,7 @@ func AskModelStream(c *gin.Context, user *users.User, modelUid primitive.ObjectI
 					strings.Contains(cluster.Url, "127.0.0.1") ||
 					strings.Contains(cluster.Url, "0.0.0.0") {
 
-					lg.LogOk(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
+					lgr.Ok(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
 
 					AskLangChainModelStream(c, model, prompt)
 				}
@@ -121,14 +121,14 @@ func AskModelStream(c *gin.Context, user *users.User, modelUid primitive.ObjectI
 				defer resp.Body.Close()
 
 				if resp.StatusCode == 200 {
-					lg.LogE(resp)
+					lgr.ErrorJson(resp)
 				}
 
-				lg.LogE("Cluster is invalid")
+				lgr.Error("Cluster is invalid")
 			}
 		}
 	} else {
-		lg.LogE("Model don't exists anymore")
+		lgr.Error("Model don't exists anymore")
 	}
 
 }
@@ -156,7 +156,7 @@ USER QUERY: {%s}
 	maybeJson, _, err := tools.FindFirstJsonString(response)
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 	}
 
 	converted := bson.M{}
@@ -164,7 +164,7 @@ USER QUERY: {%s}
 	err = json.Unmarshal([]byte(maybeJson), &converted)
 
 	if err != nil {
-		lg.LogE(err.Error())
+		lgr.Error(err.Error())
 		return ""
 	} else {
 		description, ok := converted["description"].(string)
@@ -172,7 +172,7 @@ USER QUERY: {%s}
 		if ok {
 			return description
 		} else {
-			lg.LogE("No description found")
+			lgr.Error("No description found")
 			return ""
 		}
 	}
@@ -185,13 +185,13 @@ func AskModel(c *gin.Context, user *users.User, modelUid primitive.ObjectID, pro
 
 	if model != nil {
 		if len(model.Clusters) == 0 {
-			lg.LogOk(fmt.Sprintf("Going to ask localhost LLM: %s", model.ModelVersion))
+			lgr.Ok(fmt.Sprintf("Going to ask localhost LLM: %s", model.ModelVersion))
 			return AskLangChainModel(c, model, prompt)
 		} else {
 			return AskModelRemote(c, user, model, prompt)
 		}
 	} else {
-		lg.LogE("Model don't exists anymore [", modelUid, "]")
+		lgr.Error("Model don't exists anymore [", modelUid, "]")
 		tools.AutoNotFound(c, "llm.notfound")
 	}
 
@@ -208,7 +208,7 @@ func AskModelRemote(c *gin.Context, user *users.User, model *llmModels.LLM, prom
 			strings.Contains(cluster.Url, "127.0.0.1") ||
 			strings.Contains(cluster.Url, "0.0.0.0") {
 
-			lg.LogOk(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
+			lgr.Ok(fmt.Sprintf("Going to ask on url [%s]", cluster.Url))
 
 			return AskLangChainModel(c, model, prompt)
 		}
@@ -221,10 +221,10 @@ func AskModelRemote(c *gin.Context, user *users.User, model *llmModels.LLM, prom
 		defer resp.Body.Close()
 
 		if resp.StatusCode == 200 {
-			lg.LogE(resp)
+			lgr.ErrorJson(resp)
 		}
 
-		lg.LogE("Cluster is invalid")
+		lgr.Error("Cluster is invalid")
 	}
 
 	return ""

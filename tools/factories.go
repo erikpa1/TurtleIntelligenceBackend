@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 	"sync"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type ConstructFunction func() interface{}
@@ -31,7 +31,7 @@ func (f *ClassFactory) RegisterConstructor(typeName string, constructor Construc
 	_, ok := f.constructors[typeName]
 
 	if ok {
-		lg.LogE("Entity [", typeName, "] in factory already exits")
+		lgr.Error("Entity [", typeName, "] in factory already exits")
 	} else {
 		f.constructors[typeName] = constructor
 	}

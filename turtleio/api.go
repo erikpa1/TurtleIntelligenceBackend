@@ -3,10 +3,11 @@ package turtleio
 import (
 	"net/http"
 
+	"turtle/auth"
+	"turtle/lgr"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"turtle/auth"
-	"turtle/lg"
 )
 
 var upgrader = websocket.Upgrader{
@@ -26,6 +27,6 @@ func InitTurtleSocketsApi(r *gin.Engine) {
 
 	wsHub.GoRun()
 
-	lg.LogEson(wsHandler)
+	lgr.ErrorJson(wsHandler)
 
 }

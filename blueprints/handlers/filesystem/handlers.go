@@ -2,7 +2,7 @@ package filesystem
 
 import (
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 	"turtle/vfs"
 )
@@ -17,8 +17,8 @@ func PlayLoadFileStringNode(context *models.NodePlayContext, node *models.Node) 
 			context.Data.SetString(strData)
 			context.Pipeline.ActiveStep.SetError(err)
 		} else {
-			//lg.LogE("Going to write", data.ParentFolder, data.GetFileName())
-			//lg.LogOk(context.Data.GetString())
+			//lgr.Error("Going to write", data.ParentFolder, data.GetFileName())
+			//lgr.Ok(context.Data.GetString())
 			strData, err := vfs.GetFileString(data.FilePath)
 
 			context.Data.SetString(strData)
@@ -26,7 +26,7 @@ func PlayLoadFileStringNode(context *models.NodePlayContext, node *models.Node) 
 		}
 
 	} else {
-		lg.LogStackTraceErr("Failed to cast node data to LoadFileStringNode")
+		lgr.ErrorStack("Failed to cast node data to LoadFileStringNode")
 	}
 
 }

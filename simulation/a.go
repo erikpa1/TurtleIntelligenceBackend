@@ -5,12 +5,13 @@ import (
 	"sync"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/ctrlApp"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/server"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type _RunningSim struct {
@@ -63,7 +64,7 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
 
 	for _, entity := range entities {
-		lg.LogI(entity)
+		lgr.InfoJson(entity)
 	}
 
 	world := NewSimWorld()
@@ -98,7 +99,7 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 			select {
 			case <-ctx.Done():
 				{
-					lg.LogW("User canceled simulation")
+					lgr.Error("User canceled simulation")
 					break simulationLoop
 				}
 			default:

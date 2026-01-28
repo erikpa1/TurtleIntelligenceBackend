@@ -3,7 +3,7 @@ package http
 import (
 	"io"
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 )
 
@@ -24,7 +24,7 @@ func PlayGetFileStringFromHttpRequest(context *models.NodePlayContext, node *mod
 		file, err := c.FormFile("file")
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			return
 		}
 
@@ -32,14 +32,14 @@ func PlayGetFileStringFromHttpRequest(context *models.NodePlayContext, node *mod
 		defer openedFile.Close()
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			return
 		}
 
 		fileBytes, err := io.ReadAll(openedFile)
 
 		if err != nil {
-			lg.LogE(err)
+			lgr.Error(err.Error())
 			return
 		}
 
@@ -48,7 +48,7 @@ func PlayGetFileStringFromHttpRequest(context *models.NodePlayContext, node *mod
 		data.BOutput.SetString(fileContent)
 
 	} else {
-		lg.LogStackTraceErr("Failed to cast node data to WriteToFileNode")
+		lgr.ErrorStack("Failed to cast node data to WriteToFileNode")
 	}
 
 }

@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"turtle/credentials"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type ListFileInfoStruct struct {
@@ -39,12 +39,12 @@ func IsInDevelopment() bool {
 	}
 
 	if err != nil {
-		lg.LogI("Error:", err)
+		lgr.Info("Error:", err)
 		return false
 	}
 	exeDir := filepath.Dir(exePath)
 
-	lg.LogW(exeDir)
+	lgr.Info(exeDir)
 
 	// Check if the binary is running from a temporary directory
 	if strings.Contains(exeDir, "\\AppData\\") ||
@@ -130,7 +130,7 @@ func CreateFolder(folderPath string) {
 	finalPath := filepath.Join(GetWorkingDirectory(), folderPath)
 	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
 	if err != nil {
-		lg.LogI("Create folder error:", err)
+		lgr.Info("Create folder error:", err)
 	}
 }
 
@@ -222,7 +222,7 @@ func UploadFileChunk(folder, filePath string, data []byte, offset int) error {
 	wdPath := GetWorkingDirectory()
 	finalPath := filepath.Join(wdPath, folder, filePath)
 
-	lg.LogE("Chunking: ", finalPath)
+	lgr.Error("Chunking: ", finalPath)
 
 	err := os.MkdirAll(filepath.Dir(finalPath), 0755)
 	if err != nil {
@@ -310,7 +310,7 @@ func OpenWDFolder(folder string) error {
 	result := cmd.Start()
 
 	if result != nil {
-		lg.LogStackTraceErr(result)
+		lgr.ErrorStack(result.Error())
 	}
 
 	return result
@@ -324,7 +324,7 @@ func OpenFolder(folder string) error {
 	result := cmd.Start()
 
 	if result != nil {
-		lg.LogStackTraceErr(result)
+		lgr.ErrorStack(result.Error())
 	}
 
 	return result
@@ -418,7 +418,7 @@ func ListFile(folderPath string) ([]string, error) {
 	})
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 		return nil, err // Return error if Walk fails
 	}
 
@@ -448,7 +448,8 @@ func ListWdFiles(folderPath string) ([]string, error) {
 	})
 
 	if err != nil {
-		lg.LogE(err)
+
+		lgr.Error(err.Error())
 		return nil, err // Return error if Walk fails
 	}
 
@@ -484,7 +485,7 @@ func ListFilesWithInfo(folderPath string) ([]ListFileInfoStruct, error) {
 	})
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 		return nil, err // Return error if Walk fails
 	}
 
@@ -558,10 +559,10 @@ func DeleteFile(folderPath string, file string) error {
 
 	error := os.Remove(finalPath)
 
-	lg.LogE("Going to delete: ", finalPath)
+	lgr.Error("Going to delete: ", finalPath)
 
 	if error != nil {
-		lg.LogE(error)
+		lgr.Error(error.Error())
 	}
 
 	return error

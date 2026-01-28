@@ -2,7 +2,7 @@ package tools
 
 import (
 	"math"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type Rectangle struct {
@@ -48,10 +48,10 @@ func (r *Rectangle) SetFrom2PointsRectangle(x1, z1, x2, z2 float64) {
 
 // RecalculateX1Y1X2Z2 method (placeholder)
 func (r *Rectangle) RecalculateX1Y1X2Z2() {
-	lg.LogI("TODOOO")
+	lgr.Info("TODOOO")
 }
 
 // RecalculateXZAndScale method (placeholder)
 func (r *Rectangle) RecalculateXZAndScale() {
-	lg.LogI("TODOOO")
+	lgr.Info("TODOOO")
 }

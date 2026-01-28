@@ -2,13 +2,13 @@ package llmCtrl
 
 //Source https://www.youtube.com/watch?v=1MZ2xb178NA
 import (
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/tmc/langchaingo/prompts"
 )
 
 func RunStringPromptTemplate() {
-	lg.LogI("Start lang chain templates")
+	lgr.Info("Start lang chain templates")
 
 	simpleTemplate := prompts.NewPromptTemplate(
 		"Write a {{.content_type}} about {{.subject}}",
@@ -21,6 +21,6 @@ func RunStringPromptTemplate() {
 	}
 
 	simple_prompt, _ := simpleTemplate.Format(templateInput)
-	lg.LogE(simple_prompt)
+	lgr.Error(simple_prompt)
 
 }

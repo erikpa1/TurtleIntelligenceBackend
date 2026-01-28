@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"turtle/auth"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 type Handler struct {
@@ -40,18 +40,18 @@ func (self *Handler) CreateRoom(c *gin.Context) {
 func (self *Handler) JoinRoom(c *gin.Context) {
 
 	user := auth.GetUserFromContext(c)
-	lg.LogE(user.Uid.Hex())
+	lgr.Error(user.Uid.Hex())
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 
 	if err != nil {
-		lg.LogE("WebSocket upgrade error:", err)
+		lgr.Error("WebSocket upgrade error:", err)
 		return
 	}
 
 	roomUid := c.Param("roomUid")
 
-	lg.LogE(roomUid)
+	lgr.Error(roomUid)
 
 	cl := &Client{
 		Conn:    conn,

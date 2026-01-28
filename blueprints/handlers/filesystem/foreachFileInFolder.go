@@ -3,7 +3,7 @@ package filesystem
 import (
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/models"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 	"turtle/vfs"
 )
@@ -27,7 +27,7 @@ func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.Node)
 
 		files, err := vfs.ListFile(data.FolderPath)
 
-		lg.LogE(files)
+		lgr.ErrorJson(files)
 
 		if err == nil {
 			for _, fileName := range files {
@@ -42,7 +42,7 @@ func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.Node)
 
 			}
 		} else {
-			lg.LogE(files)
+			lgr.ErrorJson(files)
 		}
 
 		nextNode := ctrl.GetTargetOfNode(context.User.Org, node.Uid, "end")
@@ -51,7 +51,7 @@ func PlayForeachFileInFolder(context *models.NodePlayContext, node *models.Node)
 			ctrl.DispatchPlayNode(context, nextNode)
 		}
 	} else {
-		lg.LogStackTraceErr("Failed to cast node data to WriteToFileNode")
+		lgr.ErrorStack("Failed to cast node data to WriteToFileNode")
 	}
 
 }

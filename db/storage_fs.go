@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path/filepath"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/vfs"
 )
 
@@ -71,7 +71,7 @@ func (DesktopClient) DownloadFile(url, container, fileName string, headers map[s
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != 200 {
-		lg.LogI("Error:", err)
+		lgr.Info("Error:", err)
 		return false, err
 	}
 	defer resp.Body.Close()

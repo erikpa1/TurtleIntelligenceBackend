@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func ToIArray[T any](data []T) []interface{} {
@@ -43,7 +43,7 @@ func MineValueFromDictList[MAP_T comparable, DATA_T any](data []map[MAP_T]interf
 func F64fromString(value string) float64 {
 	f, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		lg.LogE(f)
+		lgr.Error("%d", f)
 		return 0
 	}
 	return f
@@ -52,7 +52,7 @@ func F64fromString(value string) float64 {
 func F32fromString(value string) float32 {
 	f, err := strconv.ParseFloat(value, 32)
 	if err != nil {
-		lg.LogE(f)
+		lgr.Error("%d", f)
 		return 0
 	}
 	return float32(f)
@@ -64,7 +64,7 @@ func Int32fromString(value string) int32 {
 	}
 	f, err := strconv.ParseInt(value, 10, 32)
 	if err != nil {
-		lg.LogE(value, err)
+		lgr.Error(value, err)
 	}
 	return int32(f)
 }
@@ -75,7 +75,7 @@ func Int64fromString(value string) int64 {
 	}
 	f, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
-		lg.LogE(value, err)
+		lgr.Error(value, err)
 		return 0
 	}
 	return f
@@ -87,7 +87,7 @@ func Int8FromString(value string) int8 {
 	}
 	f, err := strconv.ParseInt(value, 10, 8)
 	if err != nil {
-		lg.LogE(value, err)
+		lgr.Error(value, err)
 		return 0
 	}
 	return int8(f)
@@ -99,7 +99,7 @@ func Float64FromString(value string) float64 {
 	}
 	f, err := strconv.ParseFloat(strings.Replace(value, ",", ".", -1), 64)
 	if err != nil {
-		lg.LogE(value, err)
+		lgr.Error(value, err)
 		return 0
 	}
 	return f
@@ -117,7 +117,7 @@ func InterfaceToInt64(value interface{}) int64 {
 	case string:
 		return Int64fromString(v)
 	default:
-		lg.LogE("Unsupported type:", v)
+		lgr.Error("Unsupported type:", v)
 		return 0
 	}
 }

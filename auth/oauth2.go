@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 	"net/http"
-	"turtle/lg"
+	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
@@ -50,7 +50,7 @@ func _Callback(c *gin.Context) {
 		return
 	}
 
-	lg.LogI(token)
+	lgr.InfoJson(token)
 }
 
 func Init_api_auth0(r *gin.Engine) {

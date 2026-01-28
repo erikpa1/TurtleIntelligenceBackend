@@ -5,7 +5,7 @@ import (
 	"turtle/blueprints/library"
 	"turtle/blueprints/models"
 
-	"turtle/lg"
+	"turtle/lgr"
 )
 
 func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {
@@ -17,7 +17,7 @@ func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {
 		nodePlayFunc(context, node)
 		step.End()
 	} else {
-		lg.LogW("Unable to find node", node.Type)
+		lgr.Error("Unable to find node", node.Type)
 	}
 
 	nextNodes := GetTargetsOfNode(context, node.Uid, "")
@@ -25,21 +25,21 @@ func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {
 	if len(nextNodes) > 0 {
 
 		for i, nextNode := range nextNodes {
-			lg.LogI(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
+			lgr.Info(fmt.Sprintf("[%d]-%s", i, nextNode.Name))
 		}
 
-		lg.LogOk("-----")
+		lgr.Ok("-----")
 
 		for _, nextNode := range nextNodes {
 
 			if nextNode == nil {
-				//lg.LogE("No next node")
+				//lgr.Error("No next node")
 			} else {
 				DispatchPlayNode(context, nextNode)
 			}
 		}
 	} else {
-		//lg.LogE("No next nodes")
+		//lgr.Error("No next nodes")
 	}
 
 }

@@ -2,7 +2,7 @@ package agentTools
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 )
 
@@ -10,7 +10,7 @@ func uid(str string) primitive.ObjectID {
 	tmp, err := tools.StringToObjectID(str)
 
 	if err != nil {
-		lg.LogE(err)
+		lgr.Error(err.Error())
 	}
 
 	return tmp

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"turtle/lg"
+	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -30,7 +30,7 @@ func (self *Pipeline) AddStep(step *PipelineStep) int {
 
 	self.Steps = append(self.Steps, step)
 
-	lg.LogOk(len(self.Steps))
+	lgr.OkJson(len(self.Steps))
 
 	return currentIndex
 }
@@ -71,7 +71,7 @@ func (self *PipelineStep) SetError(err error) {
 	self.WasError = err
 
 	if err != nil {
-		lg.LogStackTraceErr(err.Error())
+		lgr.ErrorStack(err.Error())
 	}
 
 }
