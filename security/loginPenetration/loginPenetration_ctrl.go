@@ -35,7 +35,7 @@ func ExecuteLoginBruteForce(config *LoginPenetration) (*BruteForceResult, error)
 
 	// Start with 4 character passwords and increase length
 	for length := 4; attempts < config.IterationsCount; length++ {
-		// Generate and test passwords of current length
+		// Generate and tool_calling passwords of current length
 		if tryPasswordsOfLength(config, charset, length, &attempts, result) {
 			result.Duration = time.Since(startTime)
 			result.Attempts = attempts
@@ -157,7 +157,7 @@ func main() {
 		Uid:             primitive.NewObjectID(),
 		Name:            "Test Login Penetration",
 		Url:             "https://example.com/api/login",
-		Email:           "test@example.com",
+		Email:           "tool_calling@example.com",
 		IterationsCount: 10000,
 	}
 
