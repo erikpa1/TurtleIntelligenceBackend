@@ -11,6 +11,7 @@ import (
 	"turtle/blueprints"
 	"turtle/core/usersApi"
 	"turtle/docmining"
+	"turtle/testRoutes"
 	"turtle/themes"
 	"turtle/toolsApi"
 
@@ -112,6 +113,8 @@ func dev_main() {
 	forecasting.InitForecastingApi(r)
 	crm.InitCrmApi(r)
 	security.InitSecurityApi(r)
+
+	testRoutes.InitTestRoutes(r)
 
 	usersApi.InitUsersApi(r)
 
