@@ -229,7 +229,7 @@ func GetAzureStorageCredentials() string {
 	return os.Getenv("TURTLE_AZURE_STORAGE_KEY")
 }
 
-// FillTestCredentials sets test credentials for the environment
+// FillTestCredentials sets tool_calling credentials for the environment
 func FillTestCredentials() {
 	os.Setenv(TWIN_DB_NAME, TWIN_DB_NAME_VAL_TEST)
 }
