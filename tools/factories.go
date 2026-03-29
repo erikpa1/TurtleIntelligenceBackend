@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 	"sync"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type ConstructFunction func() interface{}

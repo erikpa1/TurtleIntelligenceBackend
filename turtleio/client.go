@@ -2,7 +2,7 @@ package turtleio
 
 import (
 	"github.com/gorilla/websocket"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type Client struct {

@@ -1,8 +1,8 @@
 package pipeline
 
 import (
-	"turtle/lgr"
-	"turtle/tools"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,9 +35,9 @@ func (self *GinPipeline) WasError() bool {
 
 func (self *GinPipeline) Return() {
 	if self.WasError() {
-		tools.Auto500(self.Ctx, self.Error)
+		serverKit.Return500(self.Ctx, self.Error)
 	} else {
-		tools.AutoReturn(self.Ctx, nil)
+		serverKit.ReturnOkJson(self.Ctx, nil)
 	}
 }
 

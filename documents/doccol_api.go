@@ -4,7 +4,8 @@ import "C"
 import (
 	"fmt"
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -12,14 +13,14 @@ import (
 
 func _RefreshDocumentsCollection(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	coll := GetDocumentCollection(user, uid)
 
 	lgr.ErrorJson(uid)
 
 	if coll == nil {
 		lgr.Error(fmt.Sprintf("Document collection [%s] not found", uid))
-		tools.AutoNotFound(c, "")
+		serverKit.Return404(c, "")
 	} else {
 		RefreshDocumentsCollection(c, user, coll)
 	}
@@ -34,30 +35,30 @@ func _CreateDocumentsCollection(c *gin.Context) {
 
 func _ListDocumentCollections(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListDocumentCollections(user))
+	serverKit.ReturnOkJson(c, ListDocumentCollections(user))
 }
 
 func _ListDocumentsOfCollection(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, ListDocumentsOfCollection(user, uid))
+	uid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, ListDocumentsOfCollection(user, uid))
 }
 
 func _DeleteDocumentCollection(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteDocumentsCollection(user, uid)
 }
 
 func _UnassignDocFromCollection(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	UnassignDocumentsCollection(user, uid)
 }
 
 func _ClearCollectionDocuments(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	ClearDocumentsCollection(user, uid)
 }
 

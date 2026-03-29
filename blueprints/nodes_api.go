@@ -3,7 +3,8 @@ package blueprints
 import (
 	"turtle/auth"
 	"turtle/blueprints/models"
-	"turtle/lgr"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -15,14 +16,14 @@ func _QueryAgentNodes(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryBsonHeader(c)
 
-	tools.AutoReturn(c, QueryNodes(user, query))
+	serverKit.ReturnOkJson(c, QueryNodes(user, query))
 }
 
 func _QueryAgentEdges(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryBsonHeader(c)
 
-	tools.AutoReturn(c, QueryEdges(user, query))
+	serverKit.ReturnOkJson(c, QueryEdges(user, query))
 }
 
 func _COUNode(c *gin.Context) {
@@ -68,13 +69,13 @@ func _COUNodes(c *gin.Context) {
 }
 
 func _DeleteNode(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteNode(uid)
 }
 
 func _PlayAgentNode(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	nodeUid := tools.MongoObjectIdFromQuery(c)
+	nodeUid := serverKit.MongoObjectIdFromQuery(c)
 
 	playNodeContext := models.NodePlayContext{
 		Gin:         c,
@@ -86,13 +87,13 @@ func _PlayAgentNode(c *gin.Context) {
 
 	PlayNode(&playNodeContext, nodeUid)
 
-	tools.AutoReturn(c, bson.M{
+	serverKit.ReturnOkJson(c, bson.M{
 		"pipeline": playNodeContext.Pipeline,
 	})
 }
 
 func _PlayDiagram(c *gin.Context) {
-	nodeUid := tools.MongoObjectIdFromQuery(c)
+	nodeUid := serverKit.MongoObjectIdFromQuery(c)
 	PlayBlueprint(c, nodeUid)
 }
 

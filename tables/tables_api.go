@@ -1,16 +1,18 @@
 package tables
 
 import (
+	"turtle/auth"
+	"turtle/core/serverKit"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _QueryTables(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryHeader[bson.M](c)
-	tools.AutoReturn(c, QueryTables(user, query))
+	serverKit.ReturnOkJson(c, QueryTables(user, query))
 }
 
 func _COUTable(c *gin.Context) {
@@ -21,7 +23,7 @@ func _COUTable(c *gin.Context) {
 
 func _DeleteTable(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	table := tools.MongoObjectIdFromQuery(c)
+	table := serverKit.MongoObjectIdFromQuery(c)
 	DeleteTable(user, table)
 }
 

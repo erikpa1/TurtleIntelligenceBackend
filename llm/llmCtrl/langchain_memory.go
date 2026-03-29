@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/ollama"

@@ -5,8 +5,5 @@ import (
 )
 
 func InitApi(r *gin.Engine) {
-	initUsersApi(r)
-	initApiProjects(r)
-	initApiScenes(r)
 	initApiTools(r)
 }

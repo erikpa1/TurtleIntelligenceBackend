@@ -3,8 +3,8 @@ package simulation
 import (
 	"fmt"
 
+	"turtle/core/lgr"
 	"turtle/ctrlApp"
-	"turtle/lgr"
 	"turtle/modelsApp"
 	"turtle/simulation/simInternal"
 

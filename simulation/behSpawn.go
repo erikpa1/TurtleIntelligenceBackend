@@ -1,7 +1,7 @@
 package simulation
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/simulation/simInternal"
 	"turtle/tools"
 

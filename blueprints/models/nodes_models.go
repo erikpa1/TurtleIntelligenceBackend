@@ -1,8 +1,8 @@
 package models
 
 import (
+	"turtle/core/lgr"
 	"turtle/core/users"
-	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"

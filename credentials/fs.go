@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/user"
 	"path/filepath"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func GetDarwinWorkspace() string {

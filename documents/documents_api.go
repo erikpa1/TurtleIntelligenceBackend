@@ -2,28 +2,30 @@ package documents
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io"
 	"turtle/auth"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/db"
-	"turtle/lgr"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _ListDocuments(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListDocuments(user))
+	serverKit.ReturnOkJson(c, ListDocuments(user))
 }
 
 func _GetDocument(c *gin.Context) {
-	docUid := tools.MongoObjectIdFromQuery(c)
+	docUid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, GetDocument(user, docUid))
+	serverKit.ReturnOkJson(c, GetDocument(user, docUid))
 
 }
 
 func _GetDocumentFile(c *gin.Context) {
-	docUid := tools.MongoObjectIdFromQuery(c)
+	docUid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
 
 	doc := GetDocument(user, docUid)
@@ -32,13 +34,13 @@ func _GetDocumentFile(c *gin.Context) {
 
 		file, err := db.SC.GetFileBytes("documents", doc.FileUidName())
 
-		tools.AutoPdfOrErrorNotFound(c,
+		serverKit.AutoPdfOrErrorNotFound(c,
 			fmt.Sprintf(doc.FileFullName(), doc.Name),
 			file,
 			err)
 
 	} else {
-		tools.AutoNotFound(c, nil)
+		serverKit.Return404(c, nil)
 	}
 
 }
@@ -49,12 +51,17 @@ func _ListVSearchDocuments(c *gin.Context) {
 
 	data, err := ListVSearchDocuments(c, user, query, 0.3)
 
-	tools.AutoReturnOrError(c, err, data)
+	if err != nil {
+		serverKit.Return500(c, err)
+	} else {
+		serverKit.ReturnOkJson(c, data)
+	}
+
 }
 
 func _DeletePdfDocument(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteDocument(user, uid)
 }
 

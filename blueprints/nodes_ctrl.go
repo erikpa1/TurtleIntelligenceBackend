@@ -7,9 +7,10 @@ import (
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/cts"
 	"turtle/blueprints/models"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -107,21 +108,21 @@ func PlayBlueprint(c *gin.Context, entryNode primitive.ObjectID) {
 	parentBlueprint := GetBlueprintOfNode(user, entryNode)
 
 	if parentBlueprint.IsZero() {
-		tools.AutoErrorReturn(c, errors.New("not found blueprint"))
+		serverKit.Return404(c, errors.New("not found blueprint"))
 		return
 	}
 
 	nodes := ListNodesOfBlueprint(user, entryNode)
 
 	if len(nodes) == 0 {
-		tools.AutoErrorReturn(c, errors.New("not found nodes"))
+		serverKit.Return404(c, errors.New("not found nodes"))
 		return
 	}
 
 	edges := ListEdgesOfBlueprint(user, parentBlueprint)
 
 	if len(edges) == 0 {
-		tools.AutoErrorReturn(c, errors.New("not found edges"))
+		serverKit.Return404(c, errors.New("not found edges"))
 		return
 	}
 

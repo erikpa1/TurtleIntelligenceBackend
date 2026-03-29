@@ -1,7 +1,7 @@
 package docmining
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/gin-gonic/gin"
 )

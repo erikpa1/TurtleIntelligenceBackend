@@ -1,20 +1,22 @@
 package llmApi
 
 import (
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/llm/llmCtrl"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _ListOllama(c *gin.Context) {
-	tools.AutoReturn(c, llmCtrl.OllamaList())
+	serverKit.ReturnOkJson(c, llmCtrl.OllamaList())
 }
 
 func _InstallOllama(c *gin.Context) {
 	cluster, _ := tools.StringToObjectID(c.PostForm("cluster"))
 	model := c.PostForm("model")
-	tools.AutoReturn(c, llmCtrl.InstallOllama(cluster, model))
+	serverKit.ReturnOkJson(c, llmCtrl.InstallOllama(cluster, model))
 }
 
 func InitOllamaApi(r *gin.Engine) {

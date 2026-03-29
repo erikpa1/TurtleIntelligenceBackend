@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func ToIArray[T any](data []T) []interface{} {

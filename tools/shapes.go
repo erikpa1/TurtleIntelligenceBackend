@@ -2,7 +2,7 @@ package tools
 
 import (
 	"math"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type Rectangle struct {

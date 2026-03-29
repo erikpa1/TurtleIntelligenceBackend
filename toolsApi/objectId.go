@@ -3,7 +3,7 @@ package toolsApi
 import (
 	"net/http"
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"

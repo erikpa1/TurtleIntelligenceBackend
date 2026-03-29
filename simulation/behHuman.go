@@ -2,7 +2,7 @@ package simulation
 
 import (
 	"math/rand"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/simulation/simMath"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

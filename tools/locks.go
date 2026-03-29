@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"time"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func TryLock(mutex *sync.Mutex) bool {

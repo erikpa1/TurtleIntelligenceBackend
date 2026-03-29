@@ -1,22 +1,24 @@
 package knowledge
 
 import (
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _QueryKnowledge(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryBsonHeader(c)
-	tools.AutoReturn(c, QueryKnowledge(user, query))
+	serverKit.ReturnOkJson(c, QueryKnowledge(user, query))
 }
 
 func _GetKnowledge(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	knowUid := tools.MongoObjectIdFromQuery(c)
+	knowUid := serverKit.MongoObjectIdFromQuery(c)
 
-	tools.AutoReturn(c, GetKnowledge(user, knowUid))
+	serverKit.ReturnOkJson(c, GetKnowledge(user, knowUid))
 
 }
 
@@ -40,7 +42,7 @@ func _COUKnowledgeStep(c *gin.Context) {
 
 func _DeleteKnowledge(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	knowUid := tools.MongoObjectIdFromQuery(c)
+	knowUid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteKnowledge(user, knowUid)
 
 }

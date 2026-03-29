@@ -1,26 +1,28 @@
 package flows
 
 import (
+	"turtle/auth"
+	"turtle/core/serverKit"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _ListFlows(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListFlows(user))
+	serverKit.ReturnOkJson(c, ListFlows(user))
 
 }
 
 func _GetFlow(c *gin.Context) {
-	flowUid := tools.MongoObjectIdFromQuery(c)
+	flowUid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, GetFlow(user, flowUid))
+	serverKit.ReturnOkJson(c, GetFlow(user, flowUid))
 }
 
 func _DeleteFlow(c *gin.Context) {
-	flowUid := tools.MongoObjectIdFromQuery(c)
+	flowUid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
 	DeleteFlow(user, flowUid)
 }
@@ -34,9 +36,9 @@ func _COUFlow(c *gin.Context) {
 func _CallFlow(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
-	status, errStr := CallFlow(user, tools.MongoObjectIdFromQuery(c))
+	status, errStr := CallFlow(user, serverKit.MongoObjectIdFromQuery(c))
 
-	tools.AutoReturn(c, bson.M{
+	serverKit.ReturnOkJson(c, bson.M{
 		"status":  status,
 		"respnse": errStr,
 	})

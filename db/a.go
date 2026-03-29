@@ -3,7 +3,7 @@ package db
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type DbCompany struct {

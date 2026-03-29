@@ -4,7 +4,7 @@ import (
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/models"
 	"turtle/blueprints/types"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/tools"
 )
 

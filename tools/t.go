@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 // trs stores translations for each language.

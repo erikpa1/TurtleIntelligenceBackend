@@ -1,15 +1,16 @@
 package loginPenetration
 
 import (
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/dynamicModules"
-	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _RunPenetrationTesting(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	RunLoginPenTest(user, uid)
 }
 

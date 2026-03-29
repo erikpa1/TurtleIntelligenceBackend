@@ -2,7 +2,7 @@ package themes
 
 import (
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 

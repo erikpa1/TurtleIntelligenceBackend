@@ -2,8 +2,8 @@ package llmCtrl
 
 import (
 	"fmt"
+	"turtle/core/lgr"
 	"turtle/core/users"
-	"turtle/lgr"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tmc/langchaingo/llms"

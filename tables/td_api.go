@@ -2,18 +2,20 @@ package tables
 
 import (
 	"fmt"
+	"turtle/core/serverKit"
+
+	"turtle/auth"
+	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _QueryTableData(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryHeader[bson.M](c)
 	namespace := c.GetHeader("namespace")
-	tools.AutoReturn(c, QueryTableData(user, namespace, query))
+	serverKit.ReturnOkJson(c, QueryTableData(user, namespace, query))
 }
 
 func CreateGinRouting(r *gin.Engine, nameSpace string) {

@@ -1,9 +1,9 @@
 package themes
 
 import (
+	"turtle/core/lgr"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lgr"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

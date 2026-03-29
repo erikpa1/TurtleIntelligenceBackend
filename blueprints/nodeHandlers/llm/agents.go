@@ -3,7 +3,7 @@ package llm
 import (
 	"turtle/blueprints/ctrl"
 	"turtle/blueprints/models"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 	"turtle/tools"

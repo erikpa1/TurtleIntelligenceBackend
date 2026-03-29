@@ -3,7 +3,7 @@ package tools
 import (
 	"runtime/debug"
 	"sync"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func Recover(message string, onErrr ...func(any)) {

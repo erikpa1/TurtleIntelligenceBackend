@@ -2,9 +2,9 @@ package llmApi
 
 import (
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/llm/llmCtrl"
-	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,15 +12,15 @@ import (
 )
 
 func _GetChat(c *gin.Context) {
-	objectUid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, llmCtrl.GetChat(objectUid))
+	objectUid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, llmCtrl.GetChat(objectUid))
 }
 
 func _AskModel(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	modelUid, _ := primitive.ObjectIDFromHex(c.PostForm("modelUid"))
 	text := c.PostForm("text")
-	tools.AutoReturn(c, llmCtrl.AskModel(c, user, modelUid, text))
+	serverKit.ReturnOkJson(c, llmCtrl.AskModel(c, user, modelUid, text))
 }
 
 func _AskModelStream(c *gin.Context) {
@@ -53,19 +53,19 @@ func _ChatAsk(c *gin.Context) {
 func _StartChat(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	name := c.PostForm("name")
-	tools.AutoReturn(c, llmCtrl.StartLLMChat(user, name))
+	serverKit.ReturnOkJson(c, llmCtrl.StartLLMChat(user, name))
 
 }
 
 func _GetChatsHistory(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, llmCtrl.QueryChatsHistory(bson.M{
+	serverKit.ReturnOkJson(c, llmCtrl.QueryChatsHistory(bson.M{
 		"userUid": user.Uid,
 	}))
 }
 
 func _DeleteChat(c *gin.Context) {
-	chatUid := tools.MongoObjectIdFromQuery(c)
+	chatUid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
 	llmCtrl.DeleteChat(user.Uid, chatUid)
 }

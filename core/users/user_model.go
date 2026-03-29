@@ -1,7 +1,7 @@
 package users
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

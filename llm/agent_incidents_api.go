@@ -4,12 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"turtle/auth"
-	"turtle/tools"
+	"turtle/core/serverKit"
 )
 
 func _ListIncidents(c *gin.Context) {
 
-	tools.AutoReturn(c, bson.M{})
+	serverKit.ReturnOkJson(c, bson.M{})
 
 }
 

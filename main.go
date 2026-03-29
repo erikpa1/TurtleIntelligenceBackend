@@ -11,6 +11,7 @@ import (
 	"turtle/blueprints"
 	"turtle/core/usersApi"
 	"turtle/docmining"
+	"turtle/netess"
 	"turtle/testRoutes"
 	"turtle/themes"
 	"turtle/toolsApi"
@@ -37,7 +38,7 @@ import (
 	"turtle/tables"
 	"turtle/tags"
 
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/models"
 	"turtle/server"
 	"turtle/vfs"
@@ -128,8 +129,9 @@ func dev_main() {
 	themes.InitThemesApi(r)
 
 	docmining.InitDocMiningApi(r)
-
 	toolsApi.InitToolsApi(r)
+
+	netess.InitNetessApi(r)
 
 	r.Use(static.Serve("/", static.LocalFile("./static", true)))
 	//r.NoRoute(tools.ProxyMiddleware2())

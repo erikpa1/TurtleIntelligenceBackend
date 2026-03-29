@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type Handler struct {

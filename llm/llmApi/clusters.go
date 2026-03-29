@@ -3,6 +3,7 @@ package llmApi
 import (
 	"github.com/gin-gonic/gin"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 	"turtle/tools"
@@ -10,17 +11,17 @@ import (
 
 func _ListLLMClusters(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, llmCtrl.ListLLMClusters(user.Org))
+	serverKit.ReturnOkJson(c, llmCtrl.ListLLMClusters(user.Org))
 }
 
 func _ListLlmModels(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, llmCtrl.ListLLMModels(user.Org))
+	serverKit.ReturnOkJson(c, llmCtrl.ListLLMModels(user.Org))
 }
 
 func _DeleteLLMCluster(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	llmCtrl.DeleteLLMCluster(user, uid)
 }
 
@@ -32,8 +33,8 @@ func _COULLMCluster(c *gin.Context) {
 
 func _GetLLMCluster(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, llmCtrl.GetLLMCluster(user, uid))
+	uid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, llmCtrl.GetLLMCluster(user, uid))
 }
 
 func _COULlmModel(c *gin.Context) {
@@ -44,14 +45,14 @@ func _COULlmModel(c *gin.Context) {
 
 func _DeleteLlmModel(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	llmCtrl.DeleteLLMModel(user, uid)
 }
 
 func _GetLLMModel(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, llmCtrl.GetLLMModel(user, uid))
+	uid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, llmCtrl.GetLLMModel(user, uid))
 }
 
 func InitClustersOnly(r *gin.Engine) {

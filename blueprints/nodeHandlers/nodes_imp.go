@@ -6,7 +6,7 @@ import (
 	"turtle/databases/tsqlite"
 	"turtle/formats/office"
 
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/vfs"
 )
 

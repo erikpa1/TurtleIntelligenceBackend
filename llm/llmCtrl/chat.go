@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/core/users"
 	"turtle/db"
-	"turtle/lgr"
 	"turtle/llm/llmModels"
 	"turtle/tools"
 
@@ -192,7 +193,7 @@ func AskModel(c *gin.Context, user *users.User, modelUid primitive.ObjectID, pro
 		}
 	} else {
 		lgr.Error("Model don't exists anymore [", modelUid, "]")
-		tools.AutoNotFound(c, "llm.notfound")
+		serverKit.Return404(c, "llm.notfound")
 	}
 
 	return "--unanswered--"

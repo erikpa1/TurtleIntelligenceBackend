@@ -1,13 +1,14 @@
 package agentTools
 
 import (
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
-	"turtle/tools"
+	"turtle/core/serverKit"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _ListAgentTools(c *gin.Context) {
-	tools.AutoReturn(c, ListAgentsTools())
+	serverKit.ReturnOkJson(c, ListAgentsTools())
 
 }
 

@@ -6,8 +6,8 @@ import (
 	"turtle/blueprints/models"
 	"turtle/core/users"
 
+	"turtle/core/lgr"
 	"turtle/db"
-	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"

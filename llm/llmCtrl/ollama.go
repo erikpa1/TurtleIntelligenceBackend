@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/llm/llmModels"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

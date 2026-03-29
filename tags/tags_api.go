@@ -1,16 +1,18 @@
 package tags
 
 import (
+	"turtle/auth"
+	"turtle/core/serverKit"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	"turtle/auth"
-	"turtle/tools"
 )
 
 func _ListTags(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryHeader[bson.M](c)
-	tools.AutoReturn(c, ListTags(user, query))
+	serverKit.ReturnOkJson(c, ListTags(user, query))
 }
 
 func _DeleteTag(c *gin.Context) {

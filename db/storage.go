@@ -2,7 +2,7 @@ package db
 
 import (
 	"encoding/base64"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 // StorageController controls which client to use based on credentials

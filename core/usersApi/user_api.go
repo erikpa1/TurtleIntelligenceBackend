@@ -1,7 +1,8 @@
 package usersApi
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -27,13 +28,13 @@ func _COUUser(c *gin.Context) {
 
 func _ListUsers(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, users.QueryUsers(user, bson.M{}))
+	serverKit.ReturnOkJson(c, users.QueryUsers(user, bson.M{}))
 }
 
 func _QueryUsers(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryBsonHeader(c)
-	tools.AutoReturn(c, users.QueryUsers(user, query))
+	serverKit.ReturnOkJson(c, users.QueryUsers(user, query))
 }
 
 func InitUsersApi(r *gin.Engine) {

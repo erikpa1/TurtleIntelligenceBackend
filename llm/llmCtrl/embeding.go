@@ -3,7 +3,7 @@ package llmCtrl
 import (
 	"context"
 	"github.com/tmc/langchaingo/llms/ollama"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/llm/llmModels"
 )
 

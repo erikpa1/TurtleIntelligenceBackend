@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 	"net/http"
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"

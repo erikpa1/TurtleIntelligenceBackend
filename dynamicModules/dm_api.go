@@ -2,13 +2,15 @@ package dynamicModules
 
 import (
 	"fmt"
+	"turtle/auth"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
+	"turtle/db"
+	"turtle/tools"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"turtle/auth"
-	"turtle/db"
-	"turtle/lgr"
-	"turtle/tools"
 )
 
 func InitDefaultEntitiesApi(r *gin.Engine, namespace string, bucket string) {
@@ -21,7 +23,7 @@ func InitDefaultEntitiesApi(r *gin.Engine, namespace string, bucket string) {
 	_QueryDefaultEntities := func(c *gin.Context) {
 		user := auth.GetUserFromContext(c)
 		query := tools.QueryHeader[bson.M](c)
-		tools.AutoReturn(c, db.QueryEntities[bson.M](dbName, user.FillOrgQuery(query)))
+		serverKit.ReturnOkJson(c, db.QueryEntities[bson.M](dbName, user.FillOrgQuery(query)))
 	}
 
 	_COUDefaultEntity := func(c *gin.Context) {
@@ -42,7 +44,7 @@ func InitDefaultEntitiesApi(r *gin.Engine, namespace string, bucket string) {
 
 	_DeleteDefaultEntity := func(c *gin.Context) {
 		user := auth.GetUserFromContext(c)
-		entityUid := tools.MongoObjectIdFromQuery(c)
+		entityUid := serverKit.MongoObjectIdFromQuery(c)
 		db.DeleteEntity(dbName, bson.M{"_id": entityUid, "org": user.Org})
 
 	}

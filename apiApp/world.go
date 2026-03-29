@@ -2,8 +2,9 @@ package apiApp
 
 import (
 	"turtle/auth"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 	"turtle/ctrlApp"
-	"turtle/lgr"
 	"turtle/modelsApp"
 	"turtle/simulation"
 	"turtle/tools"
@@ -63,35 +64,35 @@ func _GetWorld(c *gin.Context) {
 	model := ctrlApp.GetModel(uid)
 
 	if model != nil {
-		tools.AutoReturn(c, bson.M{
+		serverKit.ReturnOkJson(c, bson.M{
 			"uid":         model.Uid,
 			"name":        model.Name,
 			"entities":    ctrlApp.ListEntitiesOfWorld(model.Uid),
 			"connections": ctrlApp.ListConnectionsOfWorld(model.Uid),
 		})
 	} else {
-		tools.AutoNotFound(c, "notfound")
+		serverKit.Return404(c, "notfound")
 	}
 
 }
 
 func _PlayWorld(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, simulation.RunSimulation(uid, bson.M{}))
+	uid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, simulation.RunSimulation(uid, bson.M{}))
 }
 
 func _PauseWorld(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	simulation.PauseSimulation(uid)
 }
 
 func _StopWorld(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	simulation.StopSimulation(uid)
 }
 
 func _ResumeWorld(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	simulation.ResumeSimulation(uid)
 }
 

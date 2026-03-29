@@ -2,7 +2,7 @@ package tools
 
 import (
 	"strconv"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func StringToInt32(value string, defval int32) int32 {

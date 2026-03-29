@@ -2,24 +2,25 @@ package themes
 
 import (
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
 )
 
 func _ListThemes(c *gin.Context) {
-	tools.AutoReturn(c, ListThemes())
+	serverKit.ReturnOkJson(c, ListThemes())
 }
 
 func _GetTheme(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, GetTheme(user, uid))
+	serverKit.ReturnOkJson(c, GetTheme(user, uid))
 }
 
 func _GetDefaultTheme(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, GetDefaultTheme(user))
+	serverKit.ReturnOkJson(c, GetDefaultTheme(user))
 }
 
 func _COUTheme(c *gin.Context) {
@@ -36,7 +37,7 @@ func _ImportTheme(c *gin.Context) {
 
 func _DeleteTheme(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteTheme(user, uid)
 
 }

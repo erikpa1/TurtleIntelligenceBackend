@@ -1,8 +1,8 @@
 package testRoutes
 
 import (
-	"turtle/lgr"
-	"turtle/tools"
+	"turtle/core/lgr"
+	"turtle/core/serverKit"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,7 +10,7 @@ import (
 
 func _Here(c *gin.Context) {
 	lgr.Error("Here")
-	tools.AutoReturn(c, bson.M{"hello": "world"})
+	serverKit.ReturnOkJson(c, bson.M{"hello": "world"})
 }
 
 func InitTestRoutes(r *gin.Engine) {

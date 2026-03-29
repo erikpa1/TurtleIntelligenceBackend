@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/RyanCarrier/dijkstra/v2"
 )

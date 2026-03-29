@@ -1,17 +1,19 @@
 package forecasting
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/tables"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func _QueryForecasts(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 	query := tools.QueryHeader[bson.M](c)
-	tools.AutoReturn(c, QueryForecasts(user, query))
+	serverKit.ReturnOkJson(c, QueryForecasts(user, query))
 }
 
 func _GetForecast(c *gin.Context) {
@@ -25,12 +27,12 @@ func _COUForecast(c *gin.Context) {
 }
 
 func _DeleteForecast(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 	DeleteForecast(uid)
 }
 
 func _ListForecastingMethods(c *gin.Context) {
-	tools.AutoReturn(c, ListForecastingMethods())
+	serverKit.ReturnOkJson(c, ListForecastingMethods())
 }
 
 func InitForecastingApi(r *gin.Engine) {

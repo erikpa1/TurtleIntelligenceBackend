@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 type YieldType[T any] func(func(T) bool)

@@ -1,14 +1,16 @@
 package domains
 
 import (
-	"github.com/gin-gonic/gin"
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/tools"
+
+	"github.com/gin-gonic/gin"
 )
 
 func _ListDomains(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, ListDomains(user))
+	serverKit.ReturnOkJson(c, ListDomains(user))
 }
 
 func _COUDomain(c *gin.Context) {
@@ -19,7 +21,7 @@ func _COUDomain(c *gin.Context) {
 
 func _DeleteDomain(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	domain := tools.MongoObjectIdFromQuery(c)
+	domain := serverKit.MongoObjectIdFromQuery(c)
 	DeleteDomain(user, domain)
 }
 

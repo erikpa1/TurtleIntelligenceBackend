@@ -2,7 +2,7 @@ package llmCtrl
 
 //Source https://www.youtube.com/watch?v=1MZ2xb178NA
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/tmc/langchaingo/prompts"
 )

@@ -2,6 +2,7 @@ package blueprints
 
 import (
 	"turtle/auth"
+	"turtle/core/serverKit"
 	"turtle/llm/llmCtrl"
 	"turtle/llm/llmModels"
 	"turtle/tools"
@@ -12,13 +13,13 @@ import (
 
 func _ListBlueprints(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
-	tools.AutoReturn(c, llmCtrl.ListLLMAgents(user))
+	serverKit.ReturnOkJson(c, llmCtrl.ListLLMAgents(user))
 }
 
 func _DeleteBlueprint(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 
 	DeleteNodesOfBlueprint(user, uid)
 	llmCtrl.DeleteLLMAgent(user, uid)
@@ -35,12 +36,12 @@ func _TestLLMAgent(c *gin.Context) {
 	text := c.PostForm("text")
 	agent, _ := primitive.ObjectIDFromHex(c.PostForm("agent"))
 
-	tools.AutoReturn(c, llmCtrl.ChatAgent(c, user, agent, text))
+	serverKit.ReturnOkJson(c, llmCtrl.ChatAgent(c, user, agent, text))
 
 }
 
 func _GetAllAgentsPrompt(c *gin.Context) {
 	user := auth.GetUserFromContext(c)
 
-	tools.AutoReturn(c, llmCtrl.GetOverallAgentsPrompt(user, "[your query here]"))
+	serverKit.ReturnOkJson(c, llmCtrl.GetOverallAgentsPrompt(user, "[your query here]"))
 }

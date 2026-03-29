@@ -5,7 +5,7 @@ import (
 	"turtle/blueprints/library"
 	"turtle/blueprints/models"
 
-	"turtle/lgr"
+	"turtle/core/lgr"
 )
 
 func DispatchPlayNode(context *models.NodePlayContext, node *models.Node) {

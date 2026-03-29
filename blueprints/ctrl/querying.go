@@ -3,9 +3,9 @@ package ctrl
 import (
 	"turtle/blueprints/cts"
 	"turtle/blueprints/models"
+	"turtle/core/lgr"
 	"turtle/db"
 	"turtle/knowledgeHub/node"
-	"turtle/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson"

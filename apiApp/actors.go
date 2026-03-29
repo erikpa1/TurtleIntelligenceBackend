@@ -3,6 +3,7 @@ package apiApp
 import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"turtle/core/serverKit"
 	"turtle/ctrlApp"
 	"turtle/modelsApp"
 	"turtle/tools"
@@ -10,11 +11,11 @@ import (
 
 func _QueryActors(c *gin.Context) {
 	query := tools.QueryHeader[bson.M](c)
-	tools.AutoReturn(c, ctrlApp.QueryActors(query))
+	serverKit.ReturnOkJson(c, ctrlApp.QueryActors(query))
 }
 func _GetActor(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
-	tools.AutoReturn(c, ctrlApp.GetActor(uid))
+	uid := serverKit.MongoObjectIdFromQuery(c)
+	serverKit.ReturnOkJson(c, ctrlApp.GetActor(uid))
 }
 
 func _CouActor(c *gin.Context) {
@@ -23,7 +24,7 @@ func _CouActor(c *gin.Context) {
 }
 
 func _DeleteActor(c *gin.Context) {
-	uid := tools.MongoObjectIdFromQuery(c)
+	uid := serverKit.MongoObjectIdFromQuery(c)
 
 	ctrlApp.DeleteActor(uid)
 }

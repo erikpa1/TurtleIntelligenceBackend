@@ -2,7 +2,7 @@ package filesystem
 
 import (
 	"turtle/blueprints/models"
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/tools"
 	"turtle/vfs"
 )

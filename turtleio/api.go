@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"turtle/auth"
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"

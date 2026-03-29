@@ -3,7 +3,7 @@ package tools
 import (
 	"encoding/json"
 
-	"turtle/lgr"
+	"turtle/core/lgr"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"

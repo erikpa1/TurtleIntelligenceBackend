@@ -1,7 +1,7 @@
 package models
 
 import (
-	"turtle/lgr"
+	"turtle/core/lgr"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
