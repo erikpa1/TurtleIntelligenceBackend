@@ -63,10 +63,6 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
 
-	for _, entity := range entities {
-		lgr.InfoJson(entity)
-	}
-
 	world := NewSimWorld()
 	world.IsOnline = true
 	world.LoadEntities(entities)
@@ -88,10 +84,15 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 
 	go func() {
 		defer tools.Recover("Failed to run simulation", func(e any) {
+			lgr.Error("Failed to run simulation")
 			StopSimulation(runSim.Uid)
 		})
 
+		lgr.Error("%d", world.Stepper.End)
+
 		var second tools.Seconds = 0
+
+		lgr.Error("%d", world.Stepper.End)
 
 	simulationLoop:
 		for second = 0; second < world.Stepper.End; second++ {
@@ -136,6 +137,8 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 		delete(RUNNING_SIMS, runSim.Uid)
 		RUNNING_SIMS_LOCK.Unlock()
 	}()
+
+	lgr.Ok("Simulation ended")
 
 	return bson.M{
 		"runUid":    runSim.Uid,

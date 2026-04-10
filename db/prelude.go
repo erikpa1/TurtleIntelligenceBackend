@@ -341,8 +341,8 @@ func NewAnyDBConnection() AnyDBConnection {
 		lgr.Error(err.Error())
 	}
 
-	lgr.Ok("Connected to MongoDB! ", credentials.GetDBConnStr())
-	lgr.Ok("Database name: ", credentials.GetDBName())
+	lgr.Ok("Connected to MongoDB: %s", credentials.GetDBConnStr())
+	lgr.Ok("Database name: %s", credentials.GetDBName())
 
 	var conn = AnyDBConnection{}
 	conn.SetIsCosmos(credentials.GetDBConnStr())
