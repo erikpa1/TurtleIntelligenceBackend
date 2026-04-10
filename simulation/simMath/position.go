@@ -2,6 +2,7 @@ package simMath
 
 import (
 	"math"
+	"math/rand/v2"
 )
 
 type Position [3]float32
@@ -56,4 +57,33 @@ func (self *Position) MoveTo(dest Position, speed float32) float32 {
 
 	// Return remaining distance to destination
 	return distance - travelDistance
+}
+
+func (self Position) RandomizeXZ(circleRadius float32) Position {
+	tmp := self.Randomize(circleRadius)
+	tmp[1] = self[1]
+	return tmp
+}
+
+func (self Position) Randomize(circleRadius float32) Position {
+	// Generate random spherical coordinates
+	// Use rejection sampling to get a uniform distribution within a sphere
+	var dx, dy, dz float32
+	for {
+		// Random point in [-1, 1]^3 cube
+		dx = (rand.Float32()*2 - 1) * circleRadius
+		dy = (rand.Float32()*2 - 1) * circleRadius
+		dz = (rand.Float32()*2 - 1) * circleRadius
+
+		// Accept only if within the sphere
+		if dx*dx+dy*dy+dz*dz <= circleRadius*circleRadius {
+			break
+		}
+	}
+
+	return Position{
+		self[0] + dx,
+		self[1] + dy,
+		self[2] + dz,
+	}
 }

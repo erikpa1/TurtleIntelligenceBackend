@@ -1,6 +1,8 @@
 package simulation
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type BufferBehaviour struct {
 	World  *SimWorld
@@ -88,13 +90,17 @@ func (self *BufferBehaviour) TakeActor(actor *SimActor) bool {
 
 	if canTake {
 		self.Actors = append(self.Actors, actor)
+		actor.UpdatePosition(self.Entity.Position.RandomizeXZ(1))
 	}
 
 	return canTake
 }
 
 func (self *BufferBehaviour) CanTakeActor(actor *SimActor) bool {
-	return false
+	if self.Capacity == -1 {
+		return true
+	}
+	return len(self.Actors) < int(self.Capacity)
 }
 
 // Entity provideder behaviour
