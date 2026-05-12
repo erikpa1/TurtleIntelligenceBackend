@@ -17,6 +17,7 @@ type SimEntity struct {
 	Position  simMath.Position
 	TypeData  *tools.SafeJson
 	Wold      *SimWorld
+	Functions map[string]any
 }
 
 func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
