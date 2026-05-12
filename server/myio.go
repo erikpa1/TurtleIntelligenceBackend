@@ -192,7 +192,7 @@ func HandleWebSocketConnection(c *gin.Context) {
 	go client.readPump()
 	go client.writePump()
 
-	lgr.Info("Client connected:", client.uid)
+	lgr.Info("Client connected: %s", client.uid)
 }
 
 // ─────────────────────────────────────────────
@@ -296,7 +296,7 @@ func (c *Client) writePump() {
 			// read deadline fires and readPump exits, which closes the conn.
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				lgr.Error("Ping failed for client", c.uid, ":", err)
+				lgr.Error("Ping failed for client: %s %s", c.uid, ":", err)
 				return
 			}
 		}

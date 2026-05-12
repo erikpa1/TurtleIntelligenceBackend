@@ -64,14 +64,20 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
 
 	world := NewSimWorld()
+	world.Uid = modelUid
 	world.IsOnline = true
 	world.LoadEntities(entities)
 	world.LoadConnections(connections)
 	world.PrepareSimulation()
 
+	return RunWorld(world)
+}
+
+func RunWorld(world *SimWorld) bson.M {
+
 	runSim := &_RunningSim{}
 	runSim.Uid = primitive.NewObjectID()
-	runSim.Model = modelUid
+	runSim.Model = world.Uid
 
 	ctx, cancel := context.WithCancel(context.Background())
 
