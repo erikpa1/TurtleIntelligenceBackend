@@ -1,4 +1,4 @@
-package simulation
+package simulation2
 
 type SimFunctions map[string]interface{}
 
@@ -7,14 +7,4 @@ func GetSimFunction[T any](entity *SimEntity, fnName string) (T, bool) {
 	return tmp, casted
 }
 
-const TAKE_ACTOR_FUNCTION_NAME = "TakeActor"
-
 type TakeActorFunction func(self *SimEntity, actor *SimActor) bool
-
-func InitSimFunctions() bool {
-	InitBehBuffer()
-
-	return true
-}
-
-var SimInit = InitSimFunctions()

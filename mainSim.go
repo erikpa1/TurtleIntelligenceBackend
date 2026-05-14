@@ -1,10 +1,8 @@
 package main
 
-import (
-	"turtle/simulation"
-)
+import "turtle/simulation2"
 
 func main() {
 
-	simulation.Run()
+	simulation2.Run()
 }
