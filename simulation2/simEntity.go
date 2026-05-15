@@ -10,17 +10,18 @@ import (
 )
 
 type SimEntity struct {
-	RuntimeId int64
-	Uid       primitive.ObjectID
-	Name      string
-	Type      string
-	Position  simMath.Position
-	TypeData  *tools.SafeJson
-	Wold      *SimWorld
-	Functions map[string]any
+	RuntimeId       int64
+	Uid             primitive.ObjectID
+	Name            string
+	Type            string
+	Position        simMath.Position
+	TypeData        *tools.SafeJson
+	World           *SimWorld
+	Functions       map[string]any
+	BehaviourEntity SimBehData
 }
 
-func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
+func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {
 	self.Uid = def.Uid
 	self.Name = def.Name
 	self.Type = def.Type
@@ -28,4 +29,11 @@ func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
 	self.TypeData = tools.NewSafeJson()
 	self.TypeData.Data = def.TypeData
 
+}
+
+func NewSimEntity() *SimEntity {
+	return &SimEntity{
+		Functions: make(map[string]any),
+		TypeData:  tools.NewSafeJson(),
+	}
 }

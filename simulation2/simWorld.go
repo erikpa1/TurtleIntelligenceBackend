@@ -59,13 +59,13 @@ func (self *SimWorld) GetRuntimeId() int64 {
 
 }
 
-func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
+func (self *SimWorld) LoadEntities(entities []*modelsApp.WorldEntity) {
 	for _, entity := range entities {
 
-		simEntity := &SimEntity{}
+		simEntity := NewSimEntity()
 		simEntity.FromEntity(entity)
 		simEntity.RuntimeId = self.GetRuntimeId()
-		simEntity.Wold = self
+		simEntity.World = self
 
 		entityType := entity.Type
 
@@ -106,7 +106,7 @@ func (self *SimWorld) PrepareSimulation() {
 
 	for _, stage := range stages {
 		for _, entity := range self.SimEntities {
-			fnInit, haveInit := GetSimFunction[FnStep](entity, fmt.Sprintf("%s%d", FN_INIT, stage))
+			fnInit, haveInit := GetSimFunction[FnStep](entity, fmt.Sprintf("%s%d", FN_INIT_BASE, stage))
 			if haveInit {
 				fnInit(entity)
 			}

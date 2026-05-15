@@ -20,7 +20,7 @@ type SimEntity struct {
 	Functions map[string]any
 }
 
-func (self *SimEntity) FromEntity(def *modelsApp.Entity) {
+func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {
 	self.Uid = def.Uid
 	self.Name = def.Name
 	self.Type = def.Type

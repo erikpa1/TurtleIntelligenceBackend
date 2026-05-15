@@ -7,7 +7,7 @@ import (
 	"turtle/modelsApp"
 )
 
-func CreateEntities(entities []*modelsApp.Entity) {
+func CreateEntities(entities []*modelsApp.WorldEntity) {
 	convert := make([]interface{}, len(entities))
 	for i, entity := range entities {
 		convert[i] = entity
@@ -15,7 +15,7 @@ func CreateEntities(entities []*modelsApp.Entity) {
 	db.InsertMany(CT_MODEL_ENTITIES, convert)
 }
 
-func UpdateEntities(entities []*modelsApp.Entity) {
+func UpdateEntities(entities []*modelsApp.WorldEntity) {
 	for _, entity := range entities {
 		db.SetEntitiesWhere(CT_MODEL_ENTITIES, bson.M{"_id": entity.Uid}, entity)
 
@@ -55,7 +55,7 @@ func DeleteConnection(a, b primitive.ObjectID) {
 	})
 }
 
-func ListEntitiesOfWorld(worldUid primitive.ObjectID) []*modelsApp.Entity {
+func ListEntitiesOfWorld(worldUid primitive.ObjectID) []*modelsApp.WorldEntity {
 	return QueryWorldEntities(bson.M{"model": worldUid})
 }
 
@@ -63,6 +63,6 @@ func ListConnectionsOfWorld(worldUid primitive.ObjectID) []*modelsApp.EntityConn
 	return db.QueryEntities[modelsApp.EntityConnection](CT_MODEL_CONNECTIONS, bson.M{"model": worldUid})
 }
 
-func QueryWorldEntities(query bson.M) []*modelsApp.Entity {
-	return db.QueryEntities[modelsApp.Entity](CT_MODEL_ENTITIES, query)
+func QueryWorldEntities(query bson.M) []*modelsApp.WorldEntity {
+	return db.QueryEntities[modelsApp.WorldEntity](CT_MODEL_ENTITIES, query)
 }

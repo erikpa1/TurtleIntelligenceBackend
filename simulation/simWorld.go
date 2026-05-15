@@ -71,7 +71,7 @@ func (self *SimWorld) ListBehaviours() []ISimBehaviour {
 	return behavioursList
 }
 
-func (self *SimWorld) LoadEntities(entities []*modelsApp.Entity) {
+func (self *SimWorld) LoadEntities(entities []*modelsApp.WorldEntity) {
 	for _, entity := range entities {
 		simEntity := SimEntity{}
 		simEntity.FromEntity(entity)

@@ -4,7 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Entity struct {
+type WorldEntity struct {
 	Uid          primitive.ObjectID            `json:"uid" bson:"_id,omitempty"`
 	Model        primitive.ObjectID            `json:"model" bson:"model"`
 	Dependencies map[string]primitive.ObjectID `json:"dependencies" bson:"dependencies"`

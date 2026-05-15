@@ -8,7 +8,10 @@ func Run() {
 
 	newActor := NewSimActor()
 
-	buffer := &SimEntity{}
+	spawn := NewSimEntity()
+	NewSpawnBehaviour(spawn)
+
+	buffer := NewSimEntity()
 	NewBufferBehaviour(buffer)
 
 	takeEntity, haveTakeEntity := GetSimFunction[TakeActorFunction](buffer, FN_TAKE_ACTOR_FUNCTION_NAME)
@@ -17,7 +20,7 @@ func Run() {
 		takeEntity(buffer, newActor)
 	}
 
-	process := &SimEntity{}
+	process := NewSimEntity()
 	NewProcessBehaviour(process)
 
 	takeEntity, haveTakeEntity = GetSimFunction[TakeActorFunction](process, FN_TAKE_ACTOR_FUNCTION_NAME)

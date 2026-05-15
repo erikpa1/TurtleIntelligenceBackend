@@ -17,12 +17,12 @@ import (
 func _SaveWorld(c *gin.Context) {
 
 	type SaveWorldResponse struct {
-		Uid                primitive.ObjectID      `json:"uid"`
-		Modified           []*modelsApp.Entity     `json:"modified"`
-		Created            []*modelsApp.Entity     `json:"created"`
-		Deleted            []primitive.ObjectID    `json:"deleted"`
-		CreatedConnections [][2]primitive.ObjectID `json:"createdConnections"`
-		DeletedConnections [][2]primitive.ObjectID `json:"deletedConnections"`
+		Uid                primitive.ObjectID       `json:"uid"`
+		Modified           []*modelsApp.WorldEntity `json:"modified"`
+		Created            []*modelsApp.WorldEntity `json:"created"`
+		Deleted            []primitive.ObjectID     `json:"deleted"`
+		CreatedConnections [][2]primitive.ObjectID  `json:"createdConnections"`
+		DeletedConnections [][2]primitive.ObjectID  `json:"deletedConnections"`
 	}
 
 	request := tools.ObjFromJson[SaveWorldResponse](c.PostForm("data"))

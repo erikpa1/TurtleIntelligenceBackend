@@ -5,9 +5,10 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 	"turtle/core/lgr"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // SafeJson provides safe methods to parse, access, and modify JSON Data.
@@ -121,7 +122,7 @@ func (s *SafeJson) GetInt8(key string, notFound int8) int8 {
 
 // GetInt retrieves an int value or a default if the key is not found.
 func (s *SafeJson) GetSeconds(key string, notFound Seconds) Seconds {
-	if val, ok := s.Data[key].(float64); ok {
+	if val, ok := s.Data[key].(int64); ok {
 		return Seconds(val)
 	}
 	return notFound
