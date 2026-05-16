@@ -122,9 +122,17 @@ func (s *SafeJson) GetInt8(key string, notFound int8) int8 {
 
 // GetInt retrieves an int value or a default if the key is not found.
 func (s *SafeJson) GetSeconds(key string, notFound Seconds) Seconds {
-	if val, ok := s.Data[key].(int64); ok {
-		return Seconds(val)
+
+	if val, hasVal := s.Data[key]; hasVal {
+
+		if castedVal, ok := val.(Seconds); ok {
+			return castedVal
+		} else {
+			lgr.Error("Error parsing JSON value: %T", val)
+		}
+
 	}
+
 	return notFound
 }
 
