@@ -12,6 +12,7 @@ import (
 	"turtle/core/usersApi"
 	"turtle/docmining"
 	"turtle/netess"
+	"turtle/simulation2"
 	"turtle/testRoutes"
 	"turtle/themes"
 	"turtle/toolsApi"
@@ -115,6 +116,8 @@ func dev_main() {
 	crm.InitCrmApi(r)
 	security.InitSecurityApi(r)
 
+	simulation2.InitSimulationApi(r)
+
 	testRoutes.InitTestRoutes(r)
 
 	usersApi.InitUsersApi(r)
@@ -149,7 +152,7 @@ func dev_main() {
 
 	turtleio.InitTurtleSocketsApi(r)
 
-	lgr.Info("Running in: ", vfs.GetExeFile())
+	lgr.Info("Running in: %s", vfs.GetExeFile())
 
 	srv := &http.Server{
 		Addr:         addr, // Change to your desired port

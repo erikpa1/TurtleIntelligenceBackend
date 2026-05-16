@@ -6,7 +6,7 @@ import (
 	"turtle/core/lgr"
 	"turtle/ctrlApp"
 	"turtle/modelsApp"
-	"turtle/simulation2/simInternal"
+	"turtle/simulation/simInternal"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -71,8 +71,10 @@ func (self *SimWorld) LoadEntities(entities []*modelsApp.WorldEntity) {
 
 		constructor, ok := BEH_FACTORY.Behaviours[entityType]
 
-		if ok == false {
+		if ok {
 			constructor(simEntity)
+		} else {
+			lgr.Error("No constructor found for entity type %s", entityType)
 		}
 
 		self.SimEntities[entity.Uid] = simEntity
@@ -106,9 +108,13 @@ func (self *SimWorld) PrepareSimulation() {
 
 	for _, stage := range stages {
 		for _, entity := range self.SimEntities {
-			fnInit, haveInit := GetSimFunction[FnStep](entity, fmt.Sprintf("%s%d", FN_INIT_BASE, stage))
+			fnName := fmt.Sprintf("%s%d", FN_INIT_BASE, stage)
+			fnInit, haveInit := GetSimFunction[FnInit](entity, fnName)
+
 			if haveInit {
 				fnInit(entity)
+			} else {
+				//lgr.Error("%s, have no fn %s", entity.type, fnName)
 			}
 		}
 	}
@@ -134,7 +140,7 @@ func (self *SimWorld) ClearStates() {
 }
 
 func (self *SimWorld) Step() {
-	lgr.Info(fmt.Sprintf("Step (%d/%d)", self.Stepper.Now, self.Stepper.End))
+	lgr.Info("Step [%d/%d]", self.Stepper.Now, self.Stepper.End)
 
 	for _, entity := range self.SimEntities {
 		fnStep, haveStep := GetSimFunction[FnStep](entity, FN_STEP)

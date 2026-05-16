@@ -93,12 +93,7 @@ func RunWorld(world *SimWorld) bson.M {
 			lgr.Error("Failed to run simulation")
 			StopSimulation(runSim.Uid)
 		})
-
-		lgr.Error("%d", world.Stepper.End)
-
 		var second tools.Seconds = 0
-
-		lgr.Error("%d", world.Stepper.End)
 
 	simulationLoop:
 		for second = 0; second < world.Stepper.End; second++ {
@@ -142,9 +137,9 @@ func RunWorld(world *SimWorld) bson.M {
 		RUNNING_SIMS_LOCK.Lock()
 		delete(RUNNING_SIMS, runSim.Uid)
 		RUNNING_SIMS_LOCK.Unlock()
-	}()
 
-	lgr.Ok("Simulation ended")
+		lgr.Ok("Simulation ended")
+	}()
 
 	return bson.M{
 		"runUid":    runSim.Uid,

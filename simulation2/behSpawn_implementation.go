@@ -2,7 +2,7 @@ package simulation2
 
 import (
 	"turtle/core/lgr"
-	"turtle/simulation2/simInternal"
+	"turtle/simulation/simInternal"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -86,5 +86,20 @@ func (self SpawnBehaviour) _CalculateNextSpawn() {
 		Second: nextSpawnTime,
 	})
 
-	lgr.Info("Next spawn event at, %d", nextSpawnTime)
+	lgr.Info(self.FormatInfo("Next spawn event at, %d", nextSpawnTime))
+
+}
+
+//Implementaiton
+
+func _SpawnInit1(self *SpawnBehaviour) {
+	self._CalculateNextSpawn()
+}
+
+func _SpawnStep(self *SpawnBehaviour) {
+
+}
+
+func _SpawnInit2(self *SpawnBehaviour) {
+
 }

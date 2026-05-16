@@ -1,6 +1,7 @@
 package simulation2
 
 import (
+	"fmt"
 	"turtle/simulation/simMath"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,4 +37,8 @@ func NewSimEntity() *SimEntity {
 		Functions: make(map[string]any),
 		TypeData:  tools.NewSafeJson(),
 	}
+}
+
+func (self *SimEntity) FormatInfo(format string, args ...interface{}) string {
+	return fmt.Sprintf("[%s] %s", self.Type, fmt.Sprintf(format, args...))
 }

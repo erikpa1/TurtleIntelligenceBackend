@@ -274,7 +274,7 @@ func (c *Client) writePump() {
 	defer func() {
 		ticker.Stop()
 		c.conn.Close()
-		lgr.Info("writePump exited for client:", c.uid)
+		//lgr.Info("writePump exited for client:", c.uid)
 	}()
 
 	for {

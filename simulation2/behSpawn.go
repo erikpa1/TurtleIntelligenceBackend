@@ -6,8 +6,8 @@ func InitSpawnBehaviour() {
 	var _step FnStep = _SpawnStep
 	SPAWN_FUNCTIONS[FN_STEP] = _step
 
-	var _init FnInit = _SpawnInit1
-	SPAWN_FUNCTIONS[FN_INIT1] = _init
+	var _init1 FnInit = _SpawnInit1
+	SPAWN_FUNCTIONS[FN_INIT1] = _init1
 
 }
 
@@ -22,19 +22,5 @@ func NewSpawnBehaviour(entity *SimEntity) {
 	spawnBehaviour["Actor"] = nil
 
 	entity.BehaviourEntity = spawnBehaviour
-
-}
-
-//Implementaiton
-
-func _SpawnInit1(self *SpawnBehaviour) {
-	self._CalculateNextSpawn()
-}
-
-func _SpawnStep(self *SpawnBehaviour) {
-
-}
-
-func _SpawnInit2(self *SpawnBehaviour) {
 
 }

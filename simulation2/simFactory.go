@@ -1,10 +1,10 @@
 package simulation2
 
-var BEH_FACTORY = NewBehavioursFactory()
-
 type BehavioursFactory struct {
 	Behaviours map[string]func(entity *SimEntity)
 }
+
+var BEH_FACTORY = NewBehavioursFactory()
 
 func NewBehavioursFactory() *BehavioursFactory {
 
@@ -14,7 +14,7 @@ func NewBehavioursFactory() *BehavioursFactory {
 
 	tmp.Behaviours["buffer"] = NewBufferBehaviour
 	tmp.Behaviours["process"] = NewProcessBehaviour
-	tmp.Behaviours["process"] = NewSpawnBehaviour
+	tmp.Behaviours["spawn"] = NewSpawnBehaviour
 
 	return tmp
 }
