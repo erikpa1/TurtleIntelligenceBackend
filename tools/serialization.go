@@ -105,6 +105,5 @@ func SafeJsonFromJson(data string) *SafeJson {
 		lgr.ErrorStack(err.Error())
 		return nil
 	}
-	result.Data = tmp
 	return result
 }

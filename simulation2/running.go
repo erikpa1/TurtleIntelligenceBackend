@@ -36,7 +36,7 @@ func ResumeSimulation(uid primitive.ObjectID) {
 
 }
 
-func StopSimulation(uid primitive.ObjectID) {
+func StopSimulation(uid primitive.ObjectID) bool {
 	RUNNING_SIMS_LOCK.Lock()
 	defer RUNNING_SIMS_LOCK.Unlock()
 
@@ -44,7 +44,10 @@ func StopSimulation(uid primitive.ObjectID) {
 		entity.IsPaused = true
 		entity.CtxCancel()
 		delete(RUNNING_SIMS, uid)
+		return true
 	}
+
+	return false
 
 }
 

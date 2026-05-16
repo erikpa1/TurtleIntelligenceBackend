@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"turtle/auth"
-	"turtle/core/lgr"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -26,7 +25,5 @@ func InitTurtleSocketsApi(r *gin.Engine) {
 	r.GET("/turtleio/join/:roomId", auth.LoginRequired, wsHandler.JoinRoom)
 
 	wsHub.GoRun()
-
-	lgr.ErrorJson(wsHandler)
 
 }

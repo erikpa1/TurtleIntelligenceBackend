@@ -90,6 +90,10 @@ func MaxInt64() int64 {
 	return (int64(^uint64(0) >> 1))
 }
 
+func MaxSeconds() Seconds {
+	return Seconds(MaxInt64())
+}
+
 func MaxInt32() int32 {
 	return int32(^uint32(0) >> 1)
 }

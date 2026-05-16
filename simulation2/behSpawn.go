@@ -1,6 +1,8 @@
 package simulation2
 
-import "turtle/core/lgr"
+import (
+	"turtle/tools"
+)
 
 var SPAWN_FUNCTIONS = SimFunctions{}
 
@@ -16,16 +18,13 @@ func InitSpawnBehaviour() {
 func NewSpawnBehaviour(entity *SimEntity) {
 	entity.Functions = SPAWN_FUNCTIONS
 
-	lgr.ErrorJson(entity.TypeData.Data)
-
 	spawnBehaviour := make(SimBehData)
 	spawnBehaviour["SpawnInterval"] = entity.TypeData.GetSeconds("spawn_interval", 1)
 	spawnBehaviour["SpawnLimit"] = entity.TypeData.GetInt64("spawn_limit", 1)
 	spawnBehaviour["SpawnActor"] = entity.TypeData.GetPrimitiveObjectId("actor")
+	spawnBehaviour[spwn_NextSpawnTime] = tools.MaxSeconds()
 
 	spawnBehaviour["Actor"] = nil
-
-	lgr.OkJson(spawnBehaviour)
 
 	entity.BehaviourEntity = spawnBehaviour
 

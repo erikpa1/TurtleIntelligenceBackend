@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type SimBehData map[string]interface{}
+type SimBehData tools.SafeJson
 
 // GetString returns the value at key as a string. Returns empty string if key doesn't exist or value isn't a string.
 func (d SimBehData) GetString(key string) string {
@@ -53,7 +53,8 @@ func (d SimBehData) SetSeconds(key string, data tools.Seconds) tools.Seconds {
 	return data
 }
 func (d SimBehData) GetSeconds(key string) tools.Seconds {
-	return tools.Seconds(d.GetInt64(key))
+	a := tools.SafeJson(d)
+	return a.GetSeconds(key, 0)
 }
 
 // GetInt64 returns the value at key as an int64.

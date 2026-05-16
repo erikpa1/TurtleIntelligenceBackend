@@ -2,10 +2,10 @@ package agentTools
 
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/core/lgr"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type AgentToolResult struct {
@@ -16,18 +16,18 @@ type AgentToolResult struct {
 }
 
 type AgentTool struct {
-	Uid         primitive.ObjectID                         `json:"uid" bson:"_id,omitempty"`
-	Name        string                                     `json:"name" bson:"name"`
-	Description string                                     `json:"description" bson:"description"`
-	Icon        string                                     `json:"icon" bson:"icon"`
-	Inputs      string                                     `json:"inputs" bson:"inputs"`
-	Type        string                                     `json:"type" bson:"type"`
-	Provider    string                                     `json:"provider" bson:"provider"`
-	Category    string                                     `json:"category" bson:"category"`
-	Fn          func(result *AgentToolResult, data bson.M) `json:"-" bson:"-"`
+	Uid         primitive.ObjectID                                 `json:"uid" bson:"_id,omitempty"`
+	Name        string                                             `json:"name" bson:"name"`
+	Description string                                             `json:"description" bson:"description"`
+	Icon        string                                             `json:"icon" bson:"icon"`
+	Inputs      string                                             `json:"inputs" bson:"inputs"`
+	Type        string                                             `json:"type" bson:"type"`
+	Provider    string                                             `json:"provider" bson:"provider"`
+	Category    string                                             `json:"category" bson:"category"`
+	Fn          func(result *AgentToolResult, data tools.SafeJson) `json:"-" bson:"-"`
 }
 
-func (self *AgentTool) CallFn(result *AgentToolResult, data bson.M) {
+func (self *AgentTool) CallFn(result *AgentToolResult, data tools.SafeJson) {
 	defer tools.Recover(fmt.Sprintf("Failed to CALL [%s][%s]", self.Name, self.Uid.Hex()))
 
 	if self.Fn != nil {
@@ -41,12 +41,12 @@ func (self *AgentTool) CallFn(result *AgentToolResult, data bson.M) {
 type AgentToolUsage struct {
 	Uid        primitive.ObjectID `json:"uid"`
 	Name       string             `json:"name"`
-	Parameters bson.M             `json:"parameters"`
+	Parameters tools.SafeJson     `json:"parameters"`
 	ToolResult *AgentToolResult   `json:"toolResult"`
 }
 
 type AgentToolCall struct {
 	SelectedTool primitive.ObjectID `json:"selected_tool"`
-	Parameters   bson.M             `json:"parameters"`
+	Parameters   tools.SafeJson     `json:"parameters"`
 	Reasoning    string             `json:"reasoning"`
 }

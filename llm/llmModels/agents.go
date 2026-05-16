@@ -1,10 +1,11 @@
 package llmModels
 
 import (
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/agentTools"
 	"turtle/tools"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type LLMAgent struct {
@@ -63,7 +64,7 @@ type LLMAgentPerformance struct {
 type Mistral7bResponse struct {
 	SelectedAgent primitive.ObjectID `json:"selected_agent" bson:"selected_agent"`
 	Confidence    float32            `json:"confidence"`
-	Parameters    bson.M             `json:"parameters"`
+	Parameters    tools.SafeJson     `json:"parameters"`
 	Reasoning     string             `json:"reasoning"`
 }
 

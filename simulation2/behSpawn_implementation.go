@@ -10,8 +10,17 @@ import (
 
 type SpawnBehaviour = SimEntity
 
+const spwn_NextSpawnTime = "_nextSpawnTime"
+const spwn_SpawnedCount = "_spawnedCount"
+
 func (self SpawnBehaviour) GetSpawnLimit() int {
 	return self.BehaviourEntity.GetInt("SpawnLimit")
+}
+
+func (self SpawnBehaviour) IncSpawnCount() int {
+	tmp := self.BehaviourEntity.GetInt(spwn_SpawnedCount) + 1
+	self.BehaviourEntity.Set(spwn_SpawnedCount, tmp)
+	return tmp
 }
 
 func (self SpawnBehaviour) GetSpawnInterval() tools.Seconds {
@@ -19,7 +28,8 @@ func (self SpawnBehaviour) GetSpawnInterval() tools.Seconds {
 }
 
 func (self SpawnBehaviour) GetNextSpawnTime() tools.Seconds {
-	return self.BehaviourEntity.GetSeconds("NextSpawnTime")
+	tmp := self.BehaviourEntity.GetSeconds(spwn_NextSpawnTime)
+	return tmp
 }
 
 func (self SpawnBehaviour) GetActorUidToSpawn() primitive.ObjectID {
@@ -33,12 +43,11 @@ func (self SpawnBehaviour) GetActiveActor() *SimActor {
 func (self SpawnBehaviour) Step() {
 	actualTime := self.World.Stepper.Now
 
-	if self.GetActiveActor() == nil {
+	actor := self.GetActiveActor()
 
+	if actor == nil {
 		if actualTime >= self.GetNextSpawnTime() {
 			self.Spawn()
-		} else {
-			lgr.Info("%d", self.GetNextSpawnTime())
 		}
 	} else {
 		self._TryToAddActorNext()
@@ -53,12 +62,19 @@ func (self SpawnBehaviour) SetActiveActor(actor *SimActor) *SimActor {
 func (self SpawnBehaviour) Spawn() {
 	actor := self.SetActiveActor(self.World.SpawnActorWithUid(self.GetActorUidToSpawn()))
 
+	lgr.Error("Spawned actor %v", actor)
+
 	if actor != nil {
+		self.IncSpawnCount()
 		actor.Position = self.Position
+		self._TryToAddActorNext()
 	}
+
 }
 
 func (self SpawnBehaviour) _TryToAddActorNext() {
+
+	lgr.Error("Heeere")
 
 	connections, hasConnections := self.World.SimConnections[self.Uid]
 
@@ -78,7 +94,7 @@ func (self SpawnBehaviour) _TryToAddActorNext() {
 }
 
 func (self SpawnBehaviour) _CalculateNextSpawn() {
-	nextSpawnTime := self.BehaviourEntity.SetSeconds("NextSpawnTime", self.World.Stepper.Now+self.GetSpawnInterval())
+	nextSpawnTime := self.BehaviourEntity.SetSeconds(spwn_NextSpawnTime, self.World.Stepper.Now+self.GetSpawnInterval())
 
 	self.World.CreateUpcomingEvent(simInternal.SimUpcomingEvent{
 		Id:     self.RuntimeId,
@@ -86,7 +102,7 @@ func (self SpawnBehaviour) _CalculateNextSpawn() {
 		Second: nextSpawnTime,
 	})
 
-	lgr.Info(self.FormatInfo("Next spawn event at, %d", nextSpawnTime))
+	lgr.Info(self.FormatInfo("Next spawn event at: (%d/%d)", nextSpawnTime, self.World.Stepper.End))
 
 }
 
@@ -97,9 +113,14 @@ func _SpawnInit1(self *SpawnBehaviour) {
 }
 
 func _SpawnStep(self *SpawnBehaviour) {
-
+	self.Step()
 }
 
-func _SpawnInit2(self *SpawnBehaviour) {
+func (self *SpawnBehaviour) _Spawn() {
+	actor := self.SetActiveActor(self.World.SpawnActorWithUid(self.GetActorUidToSpawn()))
+
+	if actor != nil {
+		actor.Position = self.Position
+	}
 
 }

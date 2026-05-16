@@ -178,7 +178,7 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 			definition = tmp
 			self.ActorsDefinitions[uid] = definition
 		} else {
-			lgr.Error("SimActor definition [%s] not found", uid.Hex())
+			lgr.ErrorStack("SimActor definition [%s] not found", uid.Hex())
 			return nil
 		}
 	}

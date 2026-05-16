@@ -1,6 +1,7 @@
 package simulation2
 
 import (
+	"fmt"
 	"turtle/auth"
 	"turtle/core/lgr"
 	"turtle/core/serverKit"
@@ -87,7 +88,13 @@ func _PauseWorld(c *gin.Context) {
 
 func _StopWorld(c *gin.Context) {
 	uid := serverKit.MongoObjectIdFromQuery(c)
-	StopSimulation(uid)
+
+	stoped := StopSimulation(uid)
+
+	if stoped == false {
+		serverKit.Return404(c, fmt.Errorf("Simulation with uid [%v] not found", uid))
+	}
+
 }
 
 func _ResumeWorld(c *gin.Context) {

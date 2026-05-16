@@ -2,11 +2,8 @@ package agentTools
 
 import (
 	"fmt"
-	"turtle/core/lgr"
 	"turtle/db"
 	"turtle/tools"
-
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func InitVfsTools() {
@@ -32,12 +29,7 @@ func InitVfsTools() {
 
 }
 
-func _VfsWrite(result *AgentToolResult, data bson.M) {
-
-	safe := tools.SafeJson{}
-	safe.Data = data
-
-	lgr.OkJson(data)
+func _VfsWrite(result *AgentToolResult, safe tools.SafeJson) {
 
 	filePath := safe.GetString("filePath", "x.txt")
 	fileBody := safe.GetString("fileBody", "--not_found--")

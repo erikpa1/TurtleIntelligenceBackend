@@ -16,7 +16,7 @@ type SimEntity struct {
 	Name            string
 	Type            string
 	Position        simMath.Position
-	TypeData        *tools.SafeJson
+	TypeData        tools.SafeJson
 	World           *SimWorld
 	Functions       map[string]any
 	BehaviourEntity SimBehData
@@ -27,8 +27,7 @@ func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {
 	self.Name = def.Name
 	self.Type = def.Type
 	self.Position = def.Position
-	self.TypeData = tools.NewSafeJson()
-	self.TypeData.Data = def.TypeData
+	self.TypeData = def.TypeData
 
 }
 

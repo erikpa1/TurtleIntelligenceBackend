@@ -2,7 +2,6 @@ package agentTools
 
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"turtle/tools"
 )
 
@@ -20,10 +19,7 @@ func InitMathTools() {
 
 }
 
-func _MathMultiply(result *AgentToolResult, data bson.M) {
-
-	safe := tools.SafeJson{}
-	safe.Data = data
+func _MathMultiply(result *AgentToolResult, safe tools.SafeJson) {
 
 	numberA := safe.GetDouble("numberA", 0)
 	numberB := safe.GetDouble("numberB", 0)

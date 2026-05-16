@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 )
@@ -156,9 +157,34 @@ func getStackTrace(skip, maxDepth int) []string {
 	return stack
 }
 
+// projectName is auto-detected from the working directory at startup.
+var projectName = detectProjectName()
+
+func detectProjectName() string {
+	wd, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	return filepath.Base(wd)
+}
+
+// trimPath shortens the file path to be relative to the project root,
+// making it clickable in IDE consoles.
+func trimPath(file string) string {
+	if projectName == "" {
+		return file
+	}
+	if idx := strings.Index(file, projectName); idx != -1 {
+		// Skip past "projectName/" to get a path relative to the working dir
+		return file[idx+len(projectName)+1:]
+	}
+	return file
+}
+
 // log is the internal logging function
 func log(logType, color, format string, args ...interface{}) {
 	file, line := getCallerInfo(3)
+	file = trimPath(file)
 	message := fmt.Sprintf(format, args...)
 
 	mu.Lock()

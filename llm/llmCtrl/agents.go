@@ -272,7 +272,7 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 
 			if serializationErr == nil {
 
-				safeOne := &tools.SafeJson{Data: resultBson}
+				safeOne := tools.SafeJson(resultBson)
 
 				uid, uuidOk := primitive.ObjectIDFromHex(safeOne.GetString("selected_agent", ""))
 
@@ -281,7 +281,7 @@ func ChatAgenticModelRaw(c *gin.Context, user *users.User, model *llmModels.LLM,
 				}
 
 				result.Result.Confidence = float32(safeOne.GetFloat64("confidence", 0))
-				result.Result.Parameters = safeOne.GetSafeJson("parameters").Data
+				result.Result.Parameters = safeOne.GetSafeJson("parameters")
 				result.Result.Reasoning = safeOne.GetString("reasoning", "--no-reason--")
 
 				result.AgentUid = result.Result.SelectedAgent
@@ -373,7 +373,7 @@ func ChatAgent(c *gin.Context, user *users.User, agentUid primitive.ObjectID, te
 				}
 
 				result.Result.Confidence = float32(resultBson["confidence"].(float64))
-				result.Result.Parameters = bson.M(resultBson["parameters"].(map[string]interface{}))
+				result.Result.Parameters = resultBson["parameters"].(map[string]interface{})
 				result.Result.Reasoning = resultBson["reasoning"].(string)
 
 				result.AgentUid = result.Result.SelectedAgent
