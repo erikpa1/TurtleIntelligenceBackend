@@ -1,19 +1,28 @@
 package simulation2
 
-import "turtle/core/lgr"
-
 var BUFFER_FUNCTIONS = SimFunctions{}
 
 func InitBehBuffer() {
-	var _takeActor FnTakeActor = _SimBufferTakeEntity
+	var _takeActor FnTakeActor = _BufferTakeEntity
 	BUFFER_FUNCTIONS[FN_TAKE_ACTOR_FUNCTION_NAME] = _takeActor
-}
 
-func _SimBufferTakeEntity(self *SimEntity, actor *SimActor) bool {
-	lgr.Error("Buffer taking entity")
-	return false
+	var _step FnStep = _StepBufferBeh
+	PROCESS_FUNCTIONS[FN_STEP] = _step
 }
 
 func NewBufferBehaviour(entity *SimEntity) {
+
+	//TODO sem naimplementovat premenne
+
 	entity.Functions = BUFFER_FUNCTIONS
+}
+
+func _BufferTakeEntity(self *SimEntity, actor *SimActor) bool {
+	proces := GetBehProcess(self)
+	return proces.TakeActor(actor)
+}
+
+func _StepBufferBeh(self *SimEntity) {
+	buffer := GetBehBuffer(self)
+	buffer.Step()
 }

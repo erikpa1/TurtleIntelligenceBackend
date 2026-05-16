@@ -12,9 +12,9 @@ func NewBehavioursFactory() *BehavioursFactory {
 		Behaviours: make(map[string]func(entity *SimEntity)),
 	}
 
-	tmp.Behaviours["buffer"] = NewBufferBehaviour
 	tmp.Behaviours["process"] = NewProcessBehaviour
 	tmp.Behaviours["spawn"] = NewSpawnBehaviour
+	tmp.Behaviours["buffer"] = NewBufferBehaviour
 	tmp.Behaviours["sink"] = NewSinkBehaviour
 
 	return tmp
