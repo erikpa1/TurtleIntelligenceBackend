@@ -3,7 +3,8 @@ package simulation2
 func InitSimFunctions() bool {
 	InitBehBuffer()
 	InitBehProcess()
-	InitSpawnBehaviour()
+	InitBehSpawn()
+	InitBehSink()
 
 	return true
 }

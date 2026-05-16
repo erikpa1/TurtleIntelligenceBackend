@@ -22,4 +22,4 @@ func GetSimFunction[T any](entity *SimEntity, fnName string) (T, bool) {
 	return tmp, true
 }
 
-type TakeActorFunction func(self *SimEntity, actor *SimActor) bool
+type FnTakeActor func(self *SimEntity, actor *SimActor) bool

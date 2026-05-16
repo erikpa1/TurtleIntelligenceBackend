@@ -5,7 +5,7 @@ import "turtle/core/lgr"
 var BUFFER_FUNCTIONS = SimFunctions{}
 
 func InitBehBuffer() {
-	var _takeActor TakeActorFunction = _SimBufferTakeEntity
+	var _takeActor FnTakeActor = _SimBufferTakeEntity
 	BUFFER_FUNCTIONS[FN_TAKE_ACTOR_FUNCTION_NAME] = _takeActor
 }
 

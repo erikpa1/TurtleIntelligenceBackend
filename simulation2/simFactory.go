@@ -15,6 +15,7 @@ func NewBehavioursFactory() *BehavioursFactory {
 	tmp.Behaviours["buffer"] = NewBufferBehaviour
 	tmp.Behaviours["process"] = NewProcessBehaviour
 	tmp.Behaviours["spawn"] = NewSpawnBehaviour
+	tmp.Behaviours["sink"] = NewSinkBehaviour
 
 	return tmp
 }

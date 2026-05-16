@@ -14,7 +14,7 @@ func Run() {
 	buffer := NewSimEntity()
 	NewBufferBehaviour(buffer)
 
-	takeEntity, haveTakeEntity := GetSimFunction[TakeActorFunction](buffer, FN_TAKE_ACTOR_FUNCTION_NAME)
+	takeEntity, haveTakeEntity := GetSimFunction[FnTakeActor](buffer, FN_TAKE_ACTOR_FUNCTION_NAME)
 
 	if haveTakeEntity {
 		takeEntity(buffer, newActor)
@@ -23,7 +23,7 @@ func Run() {
 	process := NewSimEntity()
 	NewProcessBehaviour(process)
 
-	takeEntity, haveTakeEntity = GetSimFunction[TakeActorFunction](process, FN_TAKE_ACTOR_FUNCTION_NAME)
+	takeEntity, haveTakeEntity = GetSimFunction[FnTakeActor](process, FN_TAKE_ACTOR_FUNCTION_NAME)
 
 	if haveTakeEntity {
 		takeEntity(buffer, newActor)

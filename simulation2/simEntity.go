@@ -11,15 +11,16 @@ import (
 )
 
 type SimEntity struct {
-	RuntimeId       int64
-	Uid             primitive.ObjectID
-	Name            string
-	Type            string
-	Position        simMath.Position
-	TypeData        tools.SafeJson
-	World           *SimWorld
-	Functions       map[string]any
-	BehaviourEntity SimBehData
+	RuntimeId int64
+	Uid       primitive.ObjectID
+	Name      string
+	Type      string
+	Position  simMath.Position
+	TypeData  tools.SafeJson
+	World     *SimWorld
+	Functions map[string]any
+	Data      SimBehData
+	Impl      any
 }
 
 func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {

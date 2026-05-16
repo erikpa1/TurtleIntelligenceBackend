@@ -1,20 +1,36 @@
 package simulation2
 
-import "turtle/core/lgr"
+import "turtle/simulation/stats"
 
 var PROCESS_FUNCTIONS = SimFunctions{}
 
 func InitBehProcess() {
-	var _takeActor TakeActorFunction = _SimProcessTakeEntity
+	var _takeActor FnTakeActor = _SimProcessTakeEntity
 	PROCESS_FUNCTIONS[FN_TAKE_ACTOR_FUNCTION_NAME] = _takeActor
-}
 
-func _SimProcessTakeEntity(self *SimEntity, actor *SimActor) bool {
-	lgr.Error("Process taking actor")
-	return false
+	var _step FnStep = _StepProcessBehaviour
+	PROCESS_FUNCTIONS[FN_STEP] = _step
+
 }
 
 func NewProcessBehaviour(entity *SimEntity) {
-	entity.Functions = PROCESS_FUNCTIONS
+	proces := &BehProcess{}
+	proces.Entity = entity
+	proces.World = entity.World
+	proces.ProcessTime = entity.TypeData.GetString("processTime", "00:10")
 
+	proces.Statistics = stats.NewProcessStats()
+
+	entity.Impl = proces
+	entity.Functions = PROCESS_FUNCTIONS
+}
+
+func _SimProcessTakeEntity(self *SimEntity, actor *SimActor) bool {
+	proces := GetBehProcess(self)
+	return proces.TakeActor(actor)
+}
+
+func _StepProcessBehaviour(self *SimEntity) {
+	proces := GetBehProcess(self)
+	proces.Step()
 }

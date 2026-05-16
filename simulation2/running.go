@@ -18,6 +18,7 @@ type _RunningSim struct {
 	Uid       primitive.ObjectID
 	Model     primitive.ObjectID
 	User      primitive.ObjectID
+	Speed     int64
 	IsPaused  bool
 	Ctx       context.Context
 	CtxCancel context.CancelFunc
@@ -81,6 +82,7 @@ func RunWorld(world *SimWorld) bson.M {
 	runSim := &_RunningSim{}
 	runSim.Uid = primitive.NewObjectID()
 	runSim.Model = world.Uid
+	runSim.Speed = 100 //0
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -126,7 +128,7 @@ func RunWorld(world *SimWorld) bson.M {
 					stepDuration := time.Since(stepStart)
 
 					// Calculate remaining sleep time (1 second target - step duration)
-					targetDuration := 1000 * time.Millisecond
+					targetDuration := time.Duration(runSim.Speed) * time.Millisecond
 					remainingSleep := targetDuration - stepDuration
 
 					// Only sleep if there's remaining time
