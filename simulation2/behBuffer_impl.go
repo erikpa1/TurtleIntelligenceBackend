@@ -39,19 +39,29 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 			return
 		}
 	}
+
+	self.UpdateCountToClient()
 }
 
 //Entity taker behavour
+
+func (self *BehBuffer) UpdateCountToClient() {
+
+	actorsCount := len(self.Actors)
+
+	lgr.Error("%d", actorsCount)
+
+	self.World.UpdateActorState(self.Entity.RuntimeId, "count", actorsCount)
+}
 
 func (self *BehBuffer) TakeActor(actor *SimActor) bool {
 
 	canTake := self.CanTakeActor(actor)
 
-	lgr.Error("%v", canTake)
-
 	if canTake {
 		self.Actors = append(self.Actors, actor)
 		actor.UpdatePosition(self.Entity.Position.RandomizeXZ(1))
+		self.UpdateCountToClient()
 	}
 
 	return canTake

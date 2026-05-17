@@ -10,4 +10,5 @@ func InitBehSink() {
 
 func NewSinkBehaviour(entity *SimEntity) {
 	entity.Functions = SINK_FUNCITONS
+	entity.Impl = &BehSink{}
 }

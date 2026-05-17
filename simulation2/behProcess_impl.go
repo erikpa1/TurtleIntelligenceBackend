@@ -58,9 +58,18 @@ func (self *BehProcess) Step() {
 		} else if self.ActiveState == PROC_STAT_BLOCKED {
 			self._TryToPassEntityNext()
 		} else if self.ActiveState == PROC_STAT_WORKING {
+
+			remaining := tools.Seconds(0)
+
 			if now >= self.ProcessFinish {
 				self._FinishManufacturing()
+				remaining = 0
+			} else {
+				remaining = self.ProcessFinish - now
 			}
+
+			self.World.UpdateActorState(self.Entity.RuntimeId, "remaining", remaining)
+
 		}
 	}
 
@@ -74,6 +83,7 @@ func (self *BehProcess) Step() {
 }
 
 func (self *BehProcess) _StartManufacturing() {
+
 	finishTime := tools.Seconds(tools.AnyExpr_CompileSeconds(self.ProcessTime, 10))
 	self.ProcessFinish = finishTime + self.World.Stepper.Now
 	self.ChangeState(PROC_STAT_WORKING)
@@ -102,7 +112,6 @@ func (self *BehProcess) ChangeState(newState ProcessStates) {
 }
 
 func (self *BehProcess) _TryToPassEntityNext() {
-
 	connections, hasConnections := self.World.SimConnections[self.Entity.Uid]
 
 	if hasConnections {
