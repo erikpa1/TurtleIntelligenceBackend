@@ -13,8 +13,8 @@ import (
 )
 
 type SimWorld struct {
-	Uid  primitive.ObjectID
-	Name string
+	Uid  primitive.ObjectID `json:"uid"`
+	Name string             `json:"name"`
 
 	SimEntities    map[primitive.ObjectID]*SimEntity
 	SimActors      map[int64]*SimActor

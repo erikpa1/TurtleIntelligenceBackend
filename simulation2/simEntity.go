@@ -2,6 +2,7 @@ package simulation2
 
 import (
 	"fmt"
+	"turtle/core/lgr"
 	"turtle/simulation/simMath"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,4 +42,15 @@ func NewSimEntity() *SimEntity {
 
 func (self *SimEntity) FormatInfo(format string, args ...interface{}) string {
 	return fmt.Sprintf("[%s] %s", self.Type, fmt.Sprintf(format, args...))
+}
+
+func CastImplementation[T any](imp any) *T {
+	tmp, ok := imp.(*T)
+	if ok {
+		return tmp
+	}
+
+	var fullType T
+	lgr.Error("Failed to cast [%T] to [%T]", imp, fullType)
+	return nil
 }

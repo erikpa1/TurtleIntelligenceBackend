@@ -230,6 +230,7 @@ func ErrorJson(data interface{}) {
 	jsonBytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		Error("Error marshaling JSON: %v", err)
+		Error("%v", data)
 		return
 	}
 	log("ERROR", ColorRed, "\n%s", string(jsonBytes))

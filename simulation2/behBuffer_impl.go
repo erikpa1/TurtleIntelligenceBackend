@@ -1,6 +1,8 @@
 package simulation2
 
 import (
+	"turtle/core/lgr"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,7 +18,8 @@ type BehBuffer struct {
 }
 
 func GetBehBuffer(entity *SimEntity) *BehBuffer {
-	return entity.Impl.(*BehBuffer)
+	return CastImplementation[BehBuffer](entity.Impl)
+
 }
 
 func (self *BehBuffer) Step() {
@@ -41,7 +44,10 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 //Entity taker behavour
 
 func (self *BehBuffer) TakeActor(actor *SimActor) bool {
+
 	canTake := self.CanTakeActor(actor)
+
+	lgr.Error("%v", canTake)
 
 	if canTake {
 		self.Actors = append(self.Actors, actor)

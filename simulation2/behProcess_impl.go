@@ -98,11 +98,6 @@ func (self *BehProcess) _FinishManufacturing() {
 }
 
 func (self *BehProcess) ChangeState(newState ProcessStates) {
-
-	if newState == PROC_STAT_BLOCKED {
-		lgr.ErrorStack("Heere????")
-	}
-
 	self.ActiveState = newState
 }
 
