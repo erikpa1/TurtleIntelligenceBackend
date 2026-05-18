@@ -1,8 +1,6 @@
 package simulation2
 
 import (
-	"turtle/core/lgr"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -36,7 +34,7 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 			self.PopActor()
 		}
 		if len(self.Actors) == 0 {
-			return
+			break
 		}
 	}
 
@@ -46,11 +44,7 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 //Entity taker behavour
 
 func (self *BehBuffer) UpdateCountToClient() {
-
 	actorsCount := len(self.Actors)
-
-	lgr.Error("%d", actorsCount)
-
 	self.World.UpdateActorState(self.Entity.RuntimeId, "count", actorsCount)
 }
 

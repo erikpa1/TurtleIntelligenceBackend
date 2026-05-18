@@ -17,9 +17,10 @@ type BehSpawn struct {
 	SpawnMultiplication int
 	SpawnActorUid       primitive.ObjectID
 
-	ActiveActor   *SimActor
-	SpawnedCount  int
-	NextSpawnTime tools.Seconds
+	ActiveActor     *SimActor
+	SpawnedCount    int
+	RemainingSpawns int
+	NextSpawnTime   tools.Seconds
 }
 
 func GetBehSpawn(entity *SimEntity) *BehSpawn {
@@ -29,17 +30,30 @@ func GetBehSpawn(entity *SimEntity) *BehSpawn {
 func (self *BehSpawn) Step() {
 	actualTime := self.World.Stepper.Now
 
-	if self.ActiveActor == nil {
-		if actualTime >= self.NextSpawnTime {
-			self.Spawn()
+	// If we still have an active actor that couldn't be passed yet, try to pass it first.
+	if self.ActiveActor != nil {
+		passed := self._TryToPassActor()
+		if !passed {
+			return
 		}
-	} else {
-		self._TryToPassActor()
+	}
+
+	// If we have leftover spawns from a previous multiplication cycle, continue them
+	// before scheduling/processing the next interval-based spawn.
+	if self.RemainingSpawns > 0 {
+		self._ProcessRemainingSpawns()
+		return
+	}
+
+	// No active actor, no remaining spawns from the previous cycle:
+	// time to start a new spawn cycle when the interval elapses.
+	if actualTime >= self.NextSpawnTime {
+		self.Spawn()
 	}
 }
 
 /*
-Spawn tries to spawn entity, it have limit of max spawn entity
+Spawn tries to spawn entity, it has a limit of max spawn entities
 */
 func (self *BehSpawn) Spawn() {
 	if self.CanSpawn() {
@@ -48,29 +62,65 @@ func (self *BehSpawn) Spawn() {
 }
 
 /*
-ForceSpawn spawns entity without limit
+ForceSpawn starts a new spawn cycle, attempting to spawn SpawnMultiplication entities.
+Any that cannot be spawned/passed immediately are deferred via RemainingSpawns and
+retried on subsequent steps.
 */
 func (self *BehSpawn) ForceSpawn() {
+	self.RemainingSpawns = self.SpawnMultiplication
+	self._ProcessRemainingSpawns()
+}
 
-	for i := 1; i <= self.SpawnMultiplication; i++ {
+/*
+_ProcessRemainingSpawns attempts to spawn and pass entities while there are remaining
+slots in the current multiplication cycle. Stops as soon as one actor cannot be passed,
+leaving it as ActiveActor so it will be retried on the next Step().
+*/
+func (self *BehSpawn) _ProcessRemainingSpawns() {
+	for self.RemainingSpawns > 0 {
 
-		//CLaude
+		// Respect the spawn limit during multiplication as well.
+		if !self.CanSpawn() {
+			self.RemainingSpawns = 0
+			self._CalculateNextSpawn()
+			return
+		}
 
 		self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActorUid)
 		lgr.Ok("Spawned actor %v", self.ActiveActor)
 
-		if self.ActiveActor != nil {
-			self.SpawnedCount++
-			self.ActiveActor.Position = self.Entity.Position
-			self.NextSpawnTime = tools.MaxSeconds()
-			self._TryToPassActor()
+		if self.ActiveActor == nil {
+			// Spawning failed at the world level; abandon the cycle and reschedule.
+			self.RemainingSpawns = 0
+			self._CalculateNextSpawn()
+			return
 		}
 
+		self.SpawnedCount++
+		self.RemainingSpawns--
+
+		self.World.UpdateActorState(self.Entity.RuntimeId, "count", self.SpawnedCount)
+
+		self.ActiveActor.Position = self.Entity.Position
+		self.NextSpawnTime = tools.MaxSeconds()
+
+		passed := self._TryToPassActor()
+		if !passed {
+			// Couldn't deliver this actor to a connection — pause the cycle.
+			// We'll retry on the next Step(); the remaining count is preserved.
+			return
+		}
 	}
 
+	// All multiplications for this cycle were spawned and passed successfully.
+	self._CalculateNextSpawn()
 }
 
-func (self *BehSpawn) _TryToPassActor() {
+/*
+_TryToPassActor attempts to hand the current ActiveActor over to one of the entity's
+connections. Returns true if the actor was successfully taken.
+*/
+func (self *BehSpawn) _TryToPassActor() bool {
 
 	connections, hasConnections := self.World.SimConnections[self.Entity.Uid]
 
@@ -79,11 +129,12 @@ func (self *BehSpawn) _TryToPassActor() {
 			taken := connection.TakeActor(self.ActiveActor)
 			if taken {
 				self.ActiveActor = nil
-				self._CalculateNextSpawn()
-				return
+				return true
 			}
 		}
 	}
+
+	return false
 }
 
 func (self *BehSpawn) _CalculateNextSpawn() {

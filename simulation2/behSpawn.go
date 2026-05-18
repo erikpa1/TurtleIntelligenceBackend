@@ -18,7 +18,13 @@ func NewSpawnBehaviour(entity *SimEntity) {
 	spawn.World = entity.World
 
 	spawn.SpawnInterval = entity.TypeData.GetSeconds("spawn_interval", 1)
-	spawn.SpawnLimit = int(entity.TypeData.GetInt64("spawn_limit", 1))
+	spawn.SpawnLimit = entity.TypeData.GetInt("spawn_limit", 1)
+
+	spawn.SpawnMultiplication = entity.TypeData.GetInt("spawn_multiplication", 1)
+
+	if spawn.SpawnMultiplication <= 0 {
+		spawn.SpawnMultiplication = 1
+	}
 
 	spawn.SpawnActorUid = entity.TypeData.GetPrimitiveObjectId("actor")
 	spawn.NextSpawnTime = tools.MaxSeconds()
