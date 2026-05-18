@@ -12,9 +12,10 @@ type BehSpawn struct {
 	World  *SimWorld
 	Entity *SimEntity
 
-	SpawnInterval tools.Seconds
-	SpawnLimit    int
-	SpawnActorUid primitive.ObjectID
+	SpawnInterval       tools.Seconds
+	SpawnLimit          int
+	SpawnMultiplication int
+	SpawnActorUid       primitive.ObjectID
 
 	ActiveActor   *SimActor
 	SpawnedCount  int
@@ -33,23 +34,44 @@ func (self *BehSpawn) Step() {
 			self.Spawn()
 		}
 	} else {
-		self._TryToAddActorNext()
+		self._TryToPassActor()
 	}
 }
 
+/*
+Spawn tries to spawn entity, it have limit of max spawn entity
+*/
 func (self *BehSpawn) Spawn() {
-	self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActorUid)
-
-	lgr.Ok("Spawned actor %v", self.ActiveActor)
-
-	if self.ActiveActor != nil {
-		self.SpawnedCount++
-		self.ActiveActor.Position = self.Entity.Position
-		self._TryToAddActorNext()
+	if self.CanSpawn() {
+		self.ForceSpawn()
 	}
 }
 
-func (self *BehSpawn) _TryToAddActorNext() {
+/*
+ForceSpawn spawns entity without limit
+*/
+func (self *BehSpawn) ForceSpawn() {
+
+	for i := 1; i <= self.SpawnMultiplication; i++ {
+
+		//CLaude
+
+		self.ActiveActor = self.World.SpawnActorWithUid(self.SpawnActorUid)
+		lgr.Ok("Spawned actor %v", self.ActiveActor)
+
+		if self.ActiveActor != nil {
+			self.SpawnedCount++
+			self.ActiveActor.Position = self.Entity.Position
+			self.NextSpawnTime = tools.MaxSeconds()
+			self._TryToPassActor()
+		}
+
+	}
+
+}
+
+func (self *BehSpawn) _TryToPassActor() {
+
 	connections, hasConnections := self.World.SimConnections[self.Entity.Uid]
 
 	if hasConnections {
@@ -74,4 +96,12 @@ func (self *BehSpawn) _CalculateNextSpawn() {
 	})
 
 	lgr.Info(self.Entity.FormatInfo("Next spawn event at: (%d/%d)", self.NextSpawnTime, self.World.Stepper.End))
+}
+
+func (self *BehSpawn) CanSpawn() bool {
+	if self.SpawnLimit < 0 {
+		return true
+	} else {
+		return self.SpawnedCount < self.SpawnLimit
+	}
 }

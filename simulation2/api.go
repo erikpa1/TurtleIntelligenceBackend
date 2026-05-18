@@ -37,12 +37,12 @@ func _SaveWorld(c *gin.Context) {
 		ctrlApp.CreateConnections(request.Uid, request.CreatedConnections)
 	}
 
-	lgr.OkJson(request.Modified)
+	lgr.Ok("Modified [%d]", request.Modified)
 	if len(request.Modified) > 0 {
 		ctrlApp.UpdateEntities(request.Modified)
 	}
 
-	lgr.OkJson(request.DeletedConnections)
+	lgr.Error("Deleted connectinos [%d]", request.DeletedConnections)
 	if len(request.DeletedConnections) > 0 {
 
 		for _, conn := range request.DeletedConnections {
