@@ -19,6 +19,7 @@ func NewSpawnBehaviour(entity *SimEntity) {
 
 	spawn.SpawnInterval = entity.TypeData.GetSeconds("spawn_interval", 1)
 	spawn.SpawnLimit = entity.TypeData.GetInt("spawn_limit", 1)
+	spawn.SpawnOnInit = entity.TypeData.GetBool("spawn_on_init", false)
 
 	spawn.SpawnMultiplication = entity.TypeData.GetInt("spawn_multiplication", 1)
 
@@ -35,7 +36,12 @@ func NewSpawnBehaviour(entity *SimEntity) {
 
 func _SpawnInit1(self *SimEntity) {
 	spawn := GetBehSpawn(self)
-	spawn._CalculateNextSpawn()
+	if spawn.SpawnOnInit {
+		spawn.Spawn()
+	} else {
+		spawn._CalculateNextSpawn()
+	}
+
 }
 
 func _SpawnStep(self *SimEntity) {

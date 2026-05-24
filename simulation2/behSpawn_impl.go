@@ -13,6 +13,7 @@ type BehSpawn struct {
 	Entity *SimEntity
 
 	SpawnInterval       tools.Seconds
+	SpawnOnInit         bool
 	SpawnLimit          int
 	SpawnMultiplication int
 	SpawnActorUid       primitive.ObjectID
@@ -150,7 +151,7 @@ func (self *BehSpawn) _CalculateNextSpawn() {
 }
 
 func (self *BehSpawn) CanSpawn() bool {
-	if self.SpawnLimit < 0 {
+	if self.SpawnLimit <= 0 {
 		return true
 	} else {
 		return self.SpawnedCount < self.SpawnLimit
