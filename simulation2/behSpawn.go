@@ -5,6 +5,9 @@ import "turtle/tools"
 var SPAWN_FUNCTIONS = SimFunctions{}
 
 func InitBehSpawn() {
+
+	BEH_FACTORY.Behaviours["spawn"] = NewSpawnBehaviour
+
 	var _init1 FnInit = _SpawnInit1
 	SPAWN_FUNCTIONS[FN_INIT1] = _init1
 

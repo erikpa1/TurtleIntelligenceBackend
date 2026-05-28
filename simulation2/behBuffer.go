@@ -3,6 +3,8 @@ package simulation2
 var BUFFER_FUNCTIONS = SimFunctions{}
 
 func InitBehBuffer() {
+	BEH_FACTORY.Behaviours["buffer"] = NewBufferBehaviour
+
 	var _takeActor FnTakeActor = _BufferTakeEntity
 	BUFFER_FUNCTIONS[FN_TAKE_ACTOR_FUNCTION_NAME] = _takeActor
 

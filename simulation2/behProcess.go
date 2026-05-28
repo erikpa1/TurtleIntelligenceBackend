@@ -5,6 +5,9 @@ import "turtle/simulation/stats"
 var PROCESS_FUNCTIONS = SimFunctions{}
 
 func InitBehProcess() {
+
+	BEH_FACTORY.Behaviours["process"] = NewProcessBehaviour
+
 	var _takeActor FnTakeActor = _SimProcessTakeEntity
 	PROCESS_FUNCTIONS[FN_TAKE_ACTOR_FUNCTION_NAME] = _takeActor
 
