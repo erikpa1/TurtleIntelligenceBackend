@@ -1,6 +1,9 @@
 package simulation2
 
-import "turtle/tools"
+import (
+	"turtle/simulation2/rvar"
+	"turtle/tools"
+)
 
 var SPAWN_FUNCTIONS = SimFunctions{}
 
@@ -20,7 +23,7 @@ func NewSpawnBehaviour(entity *SimEntity) {
 	spawn.Entity = entity
 	spawn.World = entity.World
 
-	spawn.SpawnInterval = entity.TypeData.GetSeconds("spawn_interval", 1)
+	spawn.SpawnInterval = rvar.NewRvarr(entity.TypeData.GetString("spawn_interval", "1"))
 	spawn.SpawnLimit = entity.TypeData.GetInt("spawn_limit", 1)
 	spawn.SpawnOnInit = entity.TypeData.GetBool("spawn_on_init", false)
 

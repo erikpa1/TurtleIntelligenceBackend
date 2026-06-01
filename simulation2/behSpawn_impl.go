@@ -3,6 +3,7 @@ package simulation2
 import (
 	"turtle/core/lgr"
 	"turtle/simulation/simInternal"
+	"turtle/simulation2/rvar"
 	"turtle/tools"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,7 +13,9 @@ type BehSpawn struct {
 	World  *SimWorld
 	Entity *SimEntity
 
-	SpawnInterval       tools.Seconds
+	// SpawnInterval is the (possibly random) gap between spawn cycles, compiled
+	// from an expression such as "5s" or "exp(30s)" and re-sampled each cycle.
+	SpawnInterval       *rvar.Rvar
 	SpawnOnInit         bool
 	SpawnLimit          int
 	SpawnMultiplication int
@@ -139,7 +142,7 @@ func (self *BehSpawn) _TryToPassActor() bool {
 }
 
 func (self *BehSpawn) _CalculateNextSpawn() {
-	self.NextSpawnTime = self.World.Stepper.Now + self.SpawnInterval
+	self.NextSpawnTime = self.World.Stepper.Now + tools.Seconds(self.SpawnInterval.GetInt64())
 
 	self.World.CreateUpcomingEvent(simInternal.SimUpcomingEvent{
 		Id:     self.Entity.RuntimeId,

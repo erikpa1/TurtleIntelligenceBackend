@@ -1,6 +1,9 @@
 package simulation2
 
-import "turtle/simulation/stats"
+import (
+	"turtle/simulation/stats"
+	"turtle/simulation2/rvar"
+)
 
 var PROCESS_FUNCTIONS = SimFunctions{}
 
@@ -20,7 +23,7 @@ func NewProcessBehaviour(entity *SimEntity) {
 	proces := &BehProcess{}
 	proces.Entity = entity
 	proces.World = entity.World
-	proces.ProcessTime = entity.TypeData.GetString("processTime", "00:10")
+	proces.ProcessTime = rvar.NewRvarr(entity.TypeData.GetString("processTime", "00:10"))
 
 	proces.Statistics = stats.NewProcessStats()
 

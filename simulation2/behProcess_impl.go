@@ -4,6 +4,7 @@ import (
 	"turtle/core/lgr"
 	"turtle/simulation/simInternal"
 	"turtle/simulation/stats"
+	"turtle/simulation2/rvar"
 	"turtle/tools"
 )
 
@@ -20,7 +21,10 @@ type BehProcess struct {
 	Entity      *SimEntity
 	ActiveActor *SimActor
 
-	ProcessTime   string
+	// ProcessTime is the (possibly random) duration of one processing cycle,
+	// compiled from an expression such as "00:10", "10s" or "normal(60s, 5s)"
+	// and sampled once when manufacturing starts.
+	ProcessTime   *rvar.Rvar
 	ProcessFinish tools.Seconds
 
 	ActiveState ProcessStates
@@ -84,7 +88,7 @@ func (self *BehProcess) Step() {
 
 func (self *BehProcess) _StartManufacturing() {
 
-	finishTime := tools.Seconds(tools.AnyExpr_CompileSeconds(self.ProcessTime, 10))
+	finishTime := tools.Seconds(self.ProcessTime.GetInt64())
 	self.ProcessFinish = finishTime + self.World.Stepper.Now
 	self.ChangeState(PROC_STAT_WORKING)
 
