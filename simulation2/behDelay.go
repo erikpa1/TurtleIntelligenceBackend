@@ -2,6 +2,7 @@ package simulation2
 
 import (
 	"turtle/simulation/stats"
+	"turtle/simulation2/rvar"
 	"turtle/tools"
 )
 
@@ -25,7 +26,7 @@ func NewDelayBehaviour(entity *SimEntity) {
 	delay.World = entity.World
 	delay.Actors = make(map[tools.Seconds][]*SimActor)
 
-	delay.DelayTime = entity.TypeData.GetString("delayTime", "00:10")
+	delay.DelayTime = rvar.NewRvarr(entity.TypeData.GetString("delayTime", "00:10"))
 
 	delay.Statistics = stats.NewProcessStats()
 

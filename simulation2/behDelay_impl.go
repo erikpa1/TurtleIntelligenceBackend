@@ -1,7 +1,10 @@
 package simulation2
 
 import (
+	"slices"
+
 	"turtle/simulation/stats"
+	"turtle/simulation2/rvar"
 	"turtle/tools"
 )
 
@@ -14,8 +17,10 @@ type BehDelay struct {
 	// same simulation step), so the value is a slice preserving arrival order.
 	Actors map[tools.Seconds][]*SimActor
 
-	// Configured delay duration (e.g. "00:10") parsed into seconds on use.
-	DelayTime string
+	// DelayTime is the (possibly random) delay each actor waits before being
+	// released downstream. It is compiled from an expression such as "00:10",
+	// "10s" or "exp(10s)" and sampled once per arriving actor.
+	DelayTime *rvar.Rvar
 
 	Statistics *stats.ProcessStats
 }
@@ -24,64 +29,91 @@ func GetBehDelay(entity *SimEntity) *BehDelay {
 	return CastImplementation[BehDelay](entity.Impl)
 }
 
-// TakeActor accepts an actor into the infinite delay buffer.
-// It always returns true because the delay has no capacity limit.
-func (d *BehDelay) TakeActor(actor *SimActor) bool {
-	delay := tools.ParseSeconds(d.DelayTime)
-	releaseTime := d.World.Now() + delay
+// TakeActor accepts an actor into the infinite delay buffer. It always returns
+// true because the delay has no capacity limit. Each actor draws its own delay
+// from DelayTime, so the wait can be fixed or random per actor.
+func (self *BehDelay) TakeActor(actor *SimActor) bool {
+	now := self.World.Stepper.Now
+	delay := tools.Seconds(self.DelayTime.GetInt64())
+	releaseTime := now + delay
 
-	d.Actors[releaseTime] = append(d.Actors[releaseTime], actor)
-
-	d.Statistics.OnEnter(d.World.Now())
-
-	// Make sure we get stepped at the moment this actor is due to leave.
-	d.Entity.ScheduleStep(releaseTime)
+	self.Actors[releaseTime] = append(self.Actors[releaseTime], actor)
+	actor.UpdatePosition(self.Entity.Position.RandomizeXZ(1))
+	self.UpdateCountToClient()
 
 	return true
 }
 
-// Step releases all actors whose delay has elapsed. Actors are passed
-// downstream one at a time; any actor that the downstream refuses to
-// take is kept in the buffer and will be retried on the next step.
-func (d *BehDelay) Step() {
-	now := d.World.Now()
+// Step releases all actors whose delay has elapsed, passing them downstream one
+// at a time. Any actor a downstream entity refuses is kept and retried next
+// step. Because the world steps every entity on every tick, no explicit
+// rescheduling is needed.
+func (self *BehDelay) Step() {
+	now := self.World.Stepper.Now
 
-	// Collect the release times that are due, so we can iterate in
-	// chronological order (Go maps have no defined iteration order).
-	dueTimes := make([]tools.Seconds, 0, len(d.Actors))
-	for t := range d.Actors {
+	// Collect release times that are due, sorted so we release in chronological
+	// order (Go map iteration order is undefined).
+	dueTimes := make([]tools.Seconds, 0, len(self.Actors))
+	for t := range self.Actors {
 		if t <= now {
 			dueTimes = append(dueTimes, t)
 		}
 	}
-	tools.SortSeconds(dueTimes)
+	slices.Sort(dueTimes)
+
+	connections := self.World.GetConnectionsOf(self.Entity.Uid)
+	blocked := false
 
 	for _, t := range dueTimes {
-		bucket := d.Actors[t]
+		bucket := self.Actors[t]
 		remaining := bucket[:0]
 
 		for _, actor := range bucket {
-			if d.Entity.OfferActorDownstream(actor) {
-				d.Statistics.OnLeave(now)
-			} else {
-				// Downstream refused — keep this actor (and any after
-				// it, to preserve FIFO order within the bucket).
-				remaining = append(remaining, actor)
+			if self._TryPassDownstream(actor, connections) {
+				continue
 			}
+			remaining = append(remaining, actor)
 		}
 
 		if len(remaining) == 0 {
-			delete(d.Actors, t)
+			delete(self.Actors, t)
 		} else {
-			d.Actors[t] = remaining
-			// Stop pushing further buckets: a blocked downstream means
-			// later actors must wait too, preserving order.
+			// A blocked downstream means later actors must wait too; stop
+			// pushing further buckets so order is preserved across ticks.
+			self.Actors[t] = remaining
+			blocked = true
 			break
 		}
 	}
 
-	// If anything is still waiting, make sure we get stepped again.
-	if len(d.Actors) > 0 {
-		d.Entity.ScheduleStep(now + 1)
+	if blocked {
+		self.Statistics.BlockedTime += 1
 	}
+
+	self.UpdateCountToClient()
+}
+
+// _TryPassDownstream offers an actor to each connected entity in turn and
+// returns true as soon as one accepts it.
+func (self *BehDelay) _TryPassDownstream(actor *SimActor, connections []*SimEntity) bool {
+	for _, conn := range connections {
+		if conn.TakeActor(actor) {
+			return true
+		}
+	}
+	return false
+}
+
+// UpdateCountToClient publishes how many actors are currently waiting.
+func (self *BehDelay) UpdateCountToClient() {
+	self.World.UpdateActorState(self.Entity.RuntimeId, "count", self.WaitingCount())
+}
+
+// WaitingCount returns the total number of actors still inside the delay.
+func (self *BehDelay) WaitingCount() int {
+	total := 0
+	for _, bucket := range self.Actors {
+		total += len(bucket)
+	}
+	return total
 }
