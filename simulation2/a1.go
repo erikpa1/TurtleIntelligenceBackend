@@ -7,6 +7,9 @@ func InitSimFunctions() bool {
 	InitBehSpawn()
 	InitBehSink()
 
+	//Statistiscs
+	InitEntryStatistics()
+
 	return true
 }
 
