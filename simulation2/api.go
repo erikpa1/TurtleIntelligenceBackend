@@ -7,6 +7,7 @@ import (
 	"turtle/core/serverKit"
 	"turtle/ctrlApp"
 	"turtle/modelsApp"
+	"turtle/simulation2/rbac"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -94,6 +95,9 @@ func _StopWorld(c *gin.Context) {
 	if stoped == false {
 		serverKit.Return404(c, fmt.Errorf("Simulation with uid [%v] not found", uid))
 	}
+}
+
+func _ListStatisticsOfSimulation(c *gin.Context) {
 
 }
 
@@ -103,11 +107,18 @@ func _ResumeWorld(c *gin.Context) {
 }
 
 func InitSimulationApi(r *gin.Engine) {
-	r.GET("/api/simulation", auth.LoginRequired, _GetWorld)
-	r.POST("/api/simulation/save", auth.LoginRequired, _SaveWorld)
-	r.POST("/api/simulation/simulate", _PlayWorld)
-	r.POST("/api/simulation/stop", _StopWorld)
-	r.POST("/api/simulation/pause", _PauseWorld)
-	r.POST("/api/simulation/resume", _ResumeWorld)
+
+	//Basic
+	r.GET("/api/simulation", auth.Rbac(rbac.RBAC_SIM_READER), _GetWorld)
+	r.POST("/api/simulation/save", auth.Rbac(rbac.RBAC_SIM_EDITOR), _SaveWorld)
+
+	//Controls
+	r.POST("/api/simulation/simulate", auth.Rbac(rbac.RBAC_SIM_READER), _PlayWorld)
+	r.POST("/api/simulation/stop", auth.Rbac(rbac.RBAC_SIM_READER), _StopWorld)
+	r.POST("/api/simulation/pause", auth.Rbac(rbac.RBAC_SIM_READER), _PauseWorld)
+	r.POST("/api/simulation/resume", auth.Rbac(rbac.RBAC_SIM_READER), _ResumeWorld)
+
+	//Statistics
+	r.GET("/api/simulation/statistics", auth.Rbac(rbac.RBAC_SIM_READER), _ListStatisticsOfSimulation)
 
 }

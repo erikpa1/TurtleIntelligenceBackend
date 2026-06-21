@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 	"time"
+	"turtle/simulation2/statistics"
 
 	"turtle/core/lgr"
 	"turtle/ctrlApp"
@@ -27,6 +28,26 @@ type _RunningSim struct {
 var RUNNING_SIMS = make(map[primitive.ObjectID]*_RunningSim)
 var RUNNING_SIMS_LOCK = new(sync.Mutex)
 
+func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
+	runUid := primitive.NewObjectID()
+
+	statistics.SimulationStatsPrepare(modelUid, runUid)
+
+	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
+	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
+
+	world := NewSimWorld()
+	world.Uid = modelUid
+	world.IsOnline = true
+	world.LoadEntities(entities)
+	world.LoadConnections(connections)
+	world.PrepareSimulation()
+
+	statistics.SimulationStateChanged(runUid, statistics.SIM_STATE_LOADED)
+
+	return RunWorld(world, runUid)
+}
+
 func ResumeSimulation(uid primitive.ObjectID) {
 	RUNNING_SIMS_LOCK.Lock()
 	defer RUNNING_SIMS_LOCK.Unlock()
@@ -34,6 +55,8 @@ func ResumeSimulation(uid primitive.ObjectID) {
 	if _, ok := RUNNING_SIMS[uid]; ok {
 		RUNNING_SIMS[uid].IsPaused = false
 	}
+
+	statistics.SimulationStateChanged(uid, statistics.SIM_STATE_STARTED)
 
 }
 
@@ -48,6 +71,8 @@ func StopSimulation(uid primitive.ObjectID) bool {
 		return true
 	}
 
+	statistics.SimulationStateChanged(uid, statistics.SIM_STATE_STOPPED)
+
 	return false
 
 }
@@ -58,26 +83,13 @@ func PauseSimulation(uid primitive.ObjectID) {
 
 	if entity, ok := RUNNING_SIMS[uid]; ok {
 		entity.IsPaused = true
-
 	}
+
+	statistics.SimulationStateChanged(uid, statistics.SIM_STATE_PAUSED)
+
 }
 
-func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
-
-	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
-	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
-
-	world := NewSimWorld()
-	world.Uid = modelUid
-	world.IsOnline = true
-	world.LoadEntities(entities)
-	world.LoadConnections(connections)
-	world.PrepareSimulation()
-
-	return RunWorld(world)
-}
-
-func RunWorld(world *SimWorld) bson.M {
+func RunWorld(world *SimWorld, runUid primitive.ObjectID) bson.M {
 
 	runSim := &_RunningSim{}
 	runSim.Uid = primitive.NewObjectID()
@@ -93,10 +105,13 @@ func RunWorld(world *SimWorld) bson.M {
 	RUNNING_SIMS[runSim.Uid] = runSim
 	RUNNING_SIMS_LOCK.Unlock()
 
+	statistics.SimulationStateChanged(runUid, statistics.SIM_STATE_STARTED)
+
 	go func() {
 		defer tools.Recover("Failed to run simulation", func(e any) {
 			lgr.Error("Failed to run simulation")
 			StopSimulation(runSim.Uid)
+			statistics.SimulationFailed(runUid, e.(string))
 		})
 		var second tools.Seconds = 0
 
@@ -137,7 +152,12 @@ func RunWorld(world *SimWorld) bson.M {
 					}
 				}
 			}
+
+			statistics.SimulationPing(runUid)
+
 		}
+
+		statistics.SimulationStateChanged(runUid, statistics.SIM_STATE_FINISHED)
 
 		RUNNING_SIMS_LOCK.Lock()
 		delete(RUNNING_SIMS, runSim.Uid)

@@ -87,6 +87,14 @@ type IdpImplementation interface {
 	RedirectToIdp(c *gin.Context)
 }
 
+func Rbac(role string) func(c *gin.Context) {
+
+	return func(c *gin.Context) {
+		LoginRequired(c)
+	}
+
+}
+
 func LoginRequired(c *gin.Context) {
 	if credentials.AuthProvider() == credentials.AUTH_PROVIDER_NONE {
 		c.Next()
