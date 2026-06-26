@@ -7,6 +7,9 @@ func InitSimFunctions() bool {
 	InitBehSpawn()
 	InitBehSink()
 
+	//Movable antities
+	InitBehWorkerPool()
+
 	//Statistiscs
 	InitEntryStatistics()
 
