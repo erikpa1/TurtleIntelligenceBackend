@@ -1,6 +1,7 @@
 package simulation2
 
 import (
+	"turtle/simulation2/models"
 	"turtle/simulation2/rvar"
 )
 
@@ -8,12 +9,12 @@ var BEH_WORKER_FUNCTTIONS = SimFunctions{}
 
 func InitBehWorkerPool() {
 
-	BEH_FACTORY.Behaviours["workerPool"] = NewSpawnBehaviour
+	BEH_FACTORY.Behaviours["workerPool"] = NewBehWorkerPool
 
-	var _init1 FnInit = _SpawnInit1
+	var _init1 FnInit = _BehWorkerInit1
 	SPAWN_FUNCTIONS[FN_INIT1] = _init1
 
-	var _step FnStep = _SpawnStep
+	var _step FnStep = _BehWorkerStep
 	SPAWN_FUNCTIONS[FN_STEP] = _step
 }
 
@@ -21,6 +22,7 @@ func NewBehWorkerPool(entity *SimEntity) {
 	pool := &BehWorkerPool{}
 	pool.Entity = entity
 	pool.World = entity.World
+	pool.WorkersMap = make(map[int64]*models.Worker)
 
 	pool.WorkersCount = rvar.NewRvarr(entity.TypeData.GetString("workers_count", "1"))
 	pool.SpawnOnRequest = entity.TypeData.GetBool("spawn_limit", false)
@@ -31,16 +33,12 @@ func NewBehWorkerPool(entity *SimEntity) {
 }
 
 func _BehWorkerInit1(self *SimEntity) {
-	spawn := GetBehSpawn(self)
-	if spawn.SpawnOnInit {
-		spawn.Spawn()
-	} else {
-		spawn._CalculateNextSpawn()
-	}
+	pool := GetWorkerPool(self)
+	pool.InitSpawnWorkers()
 
 }
 
-func _BehWorkerStepStep(self *SimEntity) {
-	spawn := GetBehSpawn(self)
-	spawn.Step()
+func _BehWorkerStep(self *SimEntity) {
+	pool := GetWorkerPool(self)
+	pool.Step()
 }

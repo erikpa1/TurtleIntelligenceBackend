@@ -120,5 +120,13 @@ func (r *Rvar) GetInt64() int64 {
 	return int64(v)
 }
 
+func (r *Rvar) GetInt() int {
+	v := math.Round(r.GetFloat64())
+	if v < 0 {
+		v = 0
+	}
+	return int(v)
+}
+
 // Expr returns the original expression the Rvar was built from.
 func (r *Rvar) Expr() string { return r.expr }

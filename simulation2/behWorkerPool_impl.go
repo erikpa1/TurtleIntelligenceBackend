@@ -1,6 +1,7 @@
 package simulation2
 
 import (
+	"turtle/core/lgr"
 	"turtle/simulation2/models"
 	"turtle/simulation2/rvar"
 )
@@ -20,6 +21,24 @@ func GetWorkerPool(entity *SimEntity) *BehWorkerPool {
 	return entity.Impl.(*BehWorkerPool)
 }
 
-func (worker *BehWorkerPool) InitSpawnActors() {
+func (self *BehWorkerPool) InitSpawnWorkers() {
 
+	for self.SpawnOnInit {
+
+		spawnVar := self.WorkersCount.GetInt()
+
+		for i := 0; i < spawnVar; i++ {
+			self.SpawnWorker()
+		}
+	}
+}
+
+func (self *BehWorkerPool) SpawnWorker() {
+	worker := models.NewWorker()
+	worker.Position = self.Entity.Position
+	worker.RuntimeId = self.World.GetRuntimeId()
+}
+
+func (self *BehWorkerPool) Step() {
+	lgr.Error("Stepping")
 }

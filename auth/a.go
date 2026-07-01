@@ -87,7 +87,7 @@ type IdpImplementation interface {
 	RedirectToIdp(c *gin.Context)
 }
 
-func Rbac(role string) func(c *gin.Context) {
+func Rbac(module, role string) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		LoginRequired(c)

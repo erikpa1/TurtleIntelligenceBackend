@@ -108,17 +108,18 @@ func _ResumeWorld(c *gin.Context) {
 
 func InitSimulationApi(r *gin.Engine) {
 
+	rbac.InitSimRbacRolesApi(r)
 	//Basic
-	r.GET("/api/simulation", auth.Rbac(rbac.RBAC_SIM_READER), _GetWorld)
-	r.POST("/api/simulation/save", auth.Rbac(rbac.RBAC_SIM_EDITOR), _SaveWorld)
+	r.GET("/api/simulation", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _GetWorld)
+	r.POST("/api/simulation/save", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_EDITOR), _SaveWorld)
 
 	//Controls
-	r.POST("/api/simulation/simulate", auth.Rbac(rbac.RBAC_SIM_READER), _PlayWorld)
-	r.POST("/api/simulation/stop", auth.Rbac(rbac.RBAC_SIM_READER), _StopWorld)
-	r.POST("/api/simulation/pause", auth.Rbac(rbac.RBAC_SIM_READER), _PauseWorld)
-	r.POST("/api/simulation/resume", auth.Rbac(rbac.RBAC_SIM_READER), _ResumeWorld)
+	r.POST("/api/simulation/simulate", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _PlayWorld)
+	r.POST("/api/simulation/stop", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _StopWorld)
+	r.POST("/api/simulation/pause", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _PauseWorld)
+	r.POST("/api/simulation/resume", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _ResumeWorld)
 
 	//Statistics
-	r.GET("/api/simulation/statistics", auth.Rbac(rbac.RBAC_SIM_READER), _ListStatisticsOfSimulation)
+	r.GET("/api/simulation/statistics", auth.Rbac(rbac.RBAC_MODULE, rbac.RBAC_SIM_READER), _ListStatisticsOfSimulation)
 
 }
