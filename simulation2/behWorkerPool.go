@@ -1,7 +1,6 @@
 package simulation2
 
 import (
-	"turtle/simulation2/models"
 	"turtle/simulation2/rvar"
 )
 
@@ -22,7 +21,7 @@ func NewBehWorkerPool(entity *SimEntity) {
 	pool := &BehWorkerPool{}
 	pool.Entity = entity
 	pool.World = entity.World
-	pool.WorkersMap = make(map[int64]*models.Worker)
+	pool.WorkersMap = make(map[int64]*Worker)
 
 	pool.WorkersCount = rvar.NewRvarr(entity.TypeData.GetString("workers_count", "1"))
 	pool.SpawnOnRequest = entity.TypeData.GetBool("spawn_limit", false)

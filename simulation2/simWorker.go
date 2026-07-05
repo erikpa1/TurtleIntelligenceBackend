@@ -1,20 +1,20 @@
-package models
+package simulation2
 
 import (
-	"turtle/simulation/simMath"
+	"turtle/simulation2/models"
 	"turtle/tools"
 )
 
 type Worker struct {
 	RuntimeId  int64
 	Name       string
-	ActiveTask *WorkerTask
+	ActiveTask *models.WorkerTask
 	Aee        tools.AnyEventEmitter
-	Position   simMath.Position
+	Actor      *SimActor
 }
 
 func NewWorker() *Worker {
 	return &Worker{
-		Position: simMath.Position{0, 0, 0},
+		Actor: &SimActor{},
 	}
 }

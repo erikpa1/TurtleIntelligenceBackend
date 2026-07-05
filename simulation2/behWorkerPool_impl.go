@@ -2,8 +2,9 @@ package simulation2
 
 import (
 	"turtle/core/lgr"
-	"turtle/simulation2/models"
 	"turtle/simulation2/rvar"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BehWorkerPool struct {
@@ -14,7 +15,7 @@ type BehWorkerPool struct {
 	SpawnOnRequest bool //Spawns entity when no free actor required
 	WorkersCount   *rvar.Rvar
 
-	WorkersMap map[int64]*models.Worker
+	WorkersMap map[int64]*Worker
 }
 
 func GetWorkerPool(entity *SimEntity) *BehWorkerPool {
@@ -34,9 +35,12 @@ func (self *BehWorkerPool) InitSpawnWorkers() {
 }
 
 func (self *BehWorkerPool) SpawnWorker() {
-	worker := models.NewWorker()
-	worker.Position = self.Entity.Position
-	worker.RuntimeId = self.World.GetRuntimeId()
+	worker := NewWorker()
+
+	actor := self.World.SpawnActorWithUid(primitive.ObjectID{})
+	worker.Actor = actor
+	self.WorkersMap[worker.RuntimeId] = worker
+
 }
 
 func (self *BehWorkerPool) Step() {
