@@ -1,7 +1,8 @@
-package simulation2
+package behaviours
 
 import (
 	"slices"
+	"turtle/simulation2/entities"
 
 	"turtle/simulation/stats"
 	"turtle/simulation2/rvar"
@@ -9,13 +10,13 @@ import (
 )
 
 type BehDelay struct {
-	World  *SimWorld
-	Entity *SimEntity
+	World  *entities.SimWorld
+	Entity *entities.SimEntity
 
 	// Actors waiting to be released, keyed by their scheduled release time.
 	// Multiple actors can share the same release time (they arrived in the
 	// same simulation step), so the value is a slice preserving arrival order.
-	Actors map[tools.Seconds][]*SimActor
+	Actors map[tools.Seconds][]*entities.SimActor
 
 	// DelayTime is the (possibly random) delay each actor waits before being
 	// released downstream. It is compiled from an expression such as "00:10",
@@ -25,14 +26,14 @@ type BehDelay struct {
 	Statistics *stats.ProcessStats
 }
 
-func GetBehDelay(entity *SimEntity) *BehDelay {
-	return CastImplementation[BehDelay](entity.Impl)
+func GetBehDelay(entity *entities.SimEntity) *BehDelay {
+	return entities.CastImplementation[BehDelay](entity.Impl)
 }
 
 // TakeActor accepts an actor into the infinite delay buffer. It always returns
 // true because the delay has no capacity limit. Each actor draws its own delay
 // from DelayTime, so the wait can be fixed or random per actor.
-func (self *BehDelay) TakeActor(actor *SimActor) bool {
+func (self *BehDelay) TakeActor(actor *entities.SimActor) bool {
 	now := self.World.Stepper.Now
 	delay := tools.Seconds(self.DelayTime.GetInt64())
 	releaseTime := now + delay
@@ -95,7 +96,7 @@ func (self *BehDelay) Step() {
 
 // _TryPassDownstream offers an actor to each connected entity in turn and
 // returns true as soon as one accepts it.
-func (self *BehDelay) _TryPassDownstream(actor *SimActor, connections []*SimEntity) bool {
+func (self *BehDelay) _TryPassDownstream(actor *entities.SimActor, connections []*entities.SimEntity) bool {
 	for _, conn := range connections {
 		if conn.TakeActor(actor) {
 			return true

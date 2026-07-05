@@ -1,16 +1,19 @@
-package simulation2
+package behaviours
 
-import "turtle/core/lgr"
+import (
+	"turtle/core/lgr"
+	"turtle/simulation2/entities"
+)
 
 type BehSink struct {
 	Count int64
 }
 
-func GetBehSink(entity *SimEntity) *BehSink {
-	return CastImplementation[BehSink](entity.Impl)
+func GetBehSink(entity *entities.SimEntity) *BehSink {
+	return entities.CastImplementation[BehSink](entity.Impl)
 }
 
-func _SinkTakeActor(entity *SimEntity, actor *SimActor) bool {
+func _SinkTakeActor(entity *entities.SimEntity, actor *entities.SimActor) bool {
 	//TODO dat sem statistiky
 	lgr.Error("Unspawning entity: %v", actor)
 	entity.World.UnspawnActor(actor)

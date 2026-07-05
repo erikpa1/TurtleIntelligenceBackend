@@ -1,29 +1,33 @@
 package simulation2
 
-import "turtle/core/lgr"
+import (
+	"turtle/core/lgr"
+	"turtle/simulation2/behaviours"
+	"turtle/simulation2/entities"
+)
 
 func Run() {
 	//worldUid, _ := primitive.ObjectIDFromHex("69d9148ae3786775863e2fcf")
 	//simulation.RunSimulation(worldUid, bson.M{})
 
-	newActor := NewSimActor()
+	newActor := entities.NewSimActor()
 
-	spawn := NewSimEntity()
-	NewSpawnBehaviour(spawn)
+	spawn := entities.NewSimEntity()
+	behaviours.NewSpawnBehaviour(spawn)
 
-	buffer := NewSimEntity()
-	NewBufferBehaviour(buffer)
+	buffer := entities.NewSimEntity()
+	behaviours.NewBufferBehaviour(buffer)
 
-	takeEntity, haveTakeEntity := GetSimFunction[FnTakeActor](buffer, FN_TAKE_ACTOR_FUNCTION_NAME)
+	takeEntity, haveTakeEntity := entities.GetSimFunction[entities.FnTakeActor](buffer, entities.FN_TAKE_ACTOR_FUNCTION_NAME)
 
 	if haveTakeEntity {
 		takeEntity(buffer, newActor)
 	}
 
-	process := NewSimEntity()
-	NewProcessBehaviour(process)
+	process := entities.NewSimEntity()
+	behaviours.NewProcessBehaviour(process)
 
-	takeEntity, haveTakeEntity = GetSimFunction[FnTakeActor](process, FN_TAKE_ACTOR_FUNCTION_NAME)
+	takeEntity, haveTakeEntity = entities.GetSimFunction[entities.FnTakeActor](process, entities.FN_TAKE_ACTOR_FUNCTION_NAME)
 
 	if haveTakeEntity {
 		takeEntity(buffer, newActor)

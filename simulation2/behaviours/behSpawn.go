@@ -1,24 +1,25 @@
-package simulation2
+package behaviours
 
 import (
+	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
 	"turtle/tools"
 )
 
-var SPAWN_FUNCTIONS = SimFunctions{}
+var SPAWN_FUNCTIONS = entities.SimFunctions{}
 
 func InitBehSpawn() {
 
-	BEH_FACTORY.Behaviours["spawn"] = NewSpawnBehaviour
+	entities.BEH_FACTORY.Behaviours["spawn"] = NewSpawnBehaviour
 
-	var _init1 FnInit = _SpawnInit1
-	SPAWN_FUNCTIONS[FN_INIT1] = _init1
+	var _init1 entities.FnInit = _SpawnInit1
+	SPAWN_FUNCTIONS[entities.FN_INIT1] = _init1
 
-	var _step FnStep = _SpawnStep
-	SPAWN_FUNCTIONS[FN_STEP] = _step
+	var _step entities.FnStep = _SpawnStep
+	SPAWN_FUNCTIONS[entities.FN_STEP] = _step
 }
 
-func NewSpawnBehaviour(entity *SimEntity) {
+func NewSpawnBehaviour(entity *entities.SimEntity) {
 	spawn := &BehSpawn{}
 	spawn.Entity = entity
 	spawn.World = entity.World
@@ -40,7 +41,7 @@ func NewSpawnBehaviour(entity *SimEntity) {
 	entity.Functions = SPAWN_FUNCTIONS
 }
 
-func _SpawnInit1(self *SimEntity) {
+func _SpawnInit1(self *entities.SimEntity) {
 	spawn := GetBehSpawn(self)
 	if spawn.SpawnOnInit {
 		spawn.Spawn()
@@ -50,7 +51,7 @@ func _SpawnInit1(self *SimEntity) {
 
 }
 
-func _SpawnStep(self *SimEntity) {
+func _SpawnStep(self *entities.SimEntity) {
 	spawn := GetBehSpawn(self)
 	spawn.Step()
 }

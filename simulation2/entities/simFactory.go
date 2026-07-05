@@ -1,4 +1,4 @@
-package simulation2
+package entities
 
 type BehavioursFactory struct {
 	Behaviours map[string]func(entity *SimEntity)

@@ -1,15 +1,18 @@
-package simulation2
+package behaviours
 
-import "turtle/tools"
+import (
+	"turtle/simulation2/entities"
+	"turtle/tools"
+)
 
 type EntryRecord struct {
-	ActorId int64         // adjust type to match SimActor.Uid
+	ActorId int64         // adjust type to match entities.SimActor.Uid
 	Time    tools.Seconds // adjust type to match Stepper.Now
 }
 
 type BehEntryStatistics struct {
-	World  *SimWorld
-	Entity *SimEntity
+	World  *entities.SimWorld
+	Entity *entities.SimEntity
 
 	// Statistics
 	Entries    []EntryRecord // chronological log of every actor that entered
@@ -18,11 +21,11 @@ type BehEntryStatistics struct {
 	FirstEntry tools.Seconds // time of the first entry (adjust type)
 }
 
-func GetBehEntryStatistics(entity *SimEntity) *BehEntryStatistics {
+func GetBehEntryStatistics(entity *entities.SimEntity) *BehEntryStatistics {
 	return entity.Impl.(*BehEntryStatistics)
 }
 
-func (self *BehEntryStatistics) TakeActor(actor *SimActor) bool {
+func (self *BehEntryStatistics) TakeActor(actor *entities.SimActor) bool {
 
 	now := self.World.Stepper.Now
 
@@ -42,7 +45,7 @@ func (self *BehEntryStatistics) TakeActor(actor *SimActor) bool {
 	return false
 }
 
-func (self *BehEntryStatistics) recordEntry(actor *SimActor, now tools.Seconds) {
+func (self *BehEntryStatistics) recordEntry(actor *entities.SimActor, now tools.Seconds) {
 	if self.EntryCount == 0 {
 		self.FirstEntry = now
 	}

@@ -1,4 +1,4 @@
-package simulation2
+package entities
 
 const FN_STEP = "Step"
 

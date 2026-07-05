@@ -1,22 +1,23 @@
-package simulation2
+package behaviours
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"turtle/simulation2/entities"
 )
 
 type BehBuffer struct {
-	World  *SimWorld
-	Entity *SimEntity
+	World  *entities.SimWorld
+	Entity *entities.SimEntity
 
-	Actors []*SimActor
+	Actors []*entities.SimActor
 
 	Capacity     int64
 	InitialCount int64
 	InitialActor primitive.ObjectID
 }
 
-func GetBehBuffer(entity *SimEntity) *BehBuffer {
-	return CastImplementation[BehBuffer](entity.Impl)
+func GetBehBuffer(entity *entities.SimEntity) *BehBuffer {
+	return entities.CastImplementation[BehBuffer](entity.Impl)
 
 }
 
@@ -48,7 +49,7 @@ func (self *BehBuffer) UpdateCountToClient() {
 	self.World.UpdateActorState(self.Entity.RuntimeId, "count", actorsCount)
 }
 
-func (self *BehBuffer) TakeActor(actor *SimActor) bool {
+func (self *BehBuffer) TakeActor(actor *entities.SimActor) bool {
 
 	canTake := self.CanTakeActor(actor)
 
@@ -61,7 +62,7 @@ func (self *BehBuffer) TakeActor(actor *SimActor) bool {
 	return canTake
 }
 
-func (self *BehBuffer) CanTakeActor(actor *SimActor) bool {
+func (self *BehBuffer) CanTakeActor(actor *entities.SimActor) bool {
 	if self.Capacity == -1 {
 		return true
 	}
@@ -69,11 +70,11 @@ func (self *BehBuffer) CanTakeActor(actor *SimActor) bool {
 }
 
 // Entity provideder behaviour
-func (self *BehBuffer) PopActor() *SimActor {
+func (self *BehBuffer) PopActor() *entities.SimActor {
 	return self.PopBack()
 }
 
-func (self *BehBuffer) PopBack() *SimActor {
+func (self *BehBuffer) PopBack() *entities.SimActor {
 	if len(self.Actors) == 0 {
 		return nil // or handle empty slice case
 	}

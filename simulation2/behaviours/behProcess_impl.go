@@ -1,9 +1,10 @@
-package simulation2
+package behaviours
 
 import (
 	"turtle/core/lgr"
 	"turtle/simulation/simInternal"
 	"turtle/simulation/stats"
+	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
 	"turtle/tools"
 )
@@ -17,9 +18,9 @@ const (
 )
 
 type BehProcess struct {
-	World       *SimWorld
-	Entity      *SimEntity
-	ActiveActor *SimActor
+	World       *entities.SimWorld
+	Entity      *entities.SimEntity
+	ActiveActor *entities.SimActor
 
 	// ProcessTime is the (possibly random) duration of one processing cycle,
 	// compiled from an expression such as "00:10", "10s" or "normal(60s, 5s)"
@@ -32,11 +33,11 @@ type BehProcess struct {
 	Statistics *stats.ProcessStats
 }
 
-func GetBehProcess(entity *SimEntity) *BehProcess {
+func GetBehProcess(entity *entities.SimEntity) *BehProcess {
 	return entity.Impl.(*BehProcess)
 }
 
-func (self *BehProcess) TakeActor(actor *SimActor) bool {
+func (self *BehProcess) TakeActor(actor *entities.SimActor) bool {
 	canTake := self.CanTakeActor(actor)
 
 	if canTake {
@@ -48,7 +49,7 @@ func (self *BehProcess) TakeActor(actor *SimActor) bool {
 	return canTake
 }
 
-func (self *BehProcess) CanTakeActor(actor *SimActor) bool {
+func (self *BehProcess) CanTakeActor(actor *entities.SimActor) bool {
 	return self.ActiveActor == nil
 }
 

@@ -1,17 +1,19 @@
 package simulation2
 
+import "turtle/simulation2/behaviours"
+
 func InitSimFunctions() bool {
-	InitBehBuffer()
-	InitBehProcess()
-	InitBehDelay()
-	InitBehSpawn()
-	InitBehSink()
+	behaviours.InitBehBuffer()
+	behaviours.InitBehProcess()
+	behaviours.InitBehDelay()
+	behaviours.InitBehSpawn()
+	behaviours.InitBehSink()
 
 	//Movable antities
-	InitBehWorkerPool()
+	behaviours.InitBehWorkerPool()
 
 	//Statistiscs
-	InitEntryStatistics()
+	behaviours.InitEntryStatistics()
 
 	return true
 }

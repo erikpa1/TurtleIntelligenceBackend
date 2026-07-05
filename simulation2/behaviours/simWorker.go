@@ -1,6 +1,7 @@
-package simulation2
+package behaviours
 
 import (
+	"turtle/simulation2/entities"
 	"turtle/simulation2/models"
 	"turtle/tools"
 )
@@ -10,11 +11,11 @@ type Worker struct {
 	Name       string
 	ActiveTask *models.WorkerTask
 	Aee        tools.AnyEventEmitter
-	Actor      *SimActor
+	Actor      *entities.SimActor
 }
 
 func NewWorker() *Worker {
 	return &Worker{
-		Actor: &SimActor{},
+		Actor: &entities.SimActor{},
 	}
 }

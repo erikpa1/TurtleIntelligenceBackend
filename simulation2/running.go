@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 	"time"
+	"turtle/simulation2/entities"
 	"turtle/simulation2/statistics"
 
 	"turtle/core/lgr"
@@ -33,13 +34,13 @@ func RunSimulation(modelUid primitive.ObjectID, simParams bson.M) bson.M {
 
 	statistics.SimulationStatsPrepare(modelUid, runUid)
 
-	entities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
+	worldEntities := ctrlApp.QueryWorldEntities(bson.M{"model": modelUid})
 	connections := ctrlApp.ListConnectionsOfWorld(modelUid)
 
-	world := NewSimWorld()
+	world := entities.NewSimWorld()
 	world.Uid = modelUid
 	world.IsOnline = true
-	world.LoadEntities(entities)
+	world.LoadEntities(worldEntities)
 	world.LoadConnections(connections)
 	world.PrepareSimulation()
 
@@ -89,7 +90,7 @@ func PauseSimulation(uid primitive.ObjectID) {
 
 }
 
-func RunWorld(world *SimWorld, runUid primitive.ObjectID) bson.M {
+func RunWorld(world *entities.SimWorld, runUid primitive.ObjectID) bson.M {
 
 	runSim := &_RunningSim{}
 	runSim.Uid = primitive.NewObjectID()

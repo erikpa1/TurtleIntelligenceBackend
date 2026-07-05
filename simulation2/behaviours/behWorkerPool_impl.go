@@ -1,15 +1,16 @@
-package simulation2
+package behaviours
 
 import (
 	"turtle/core/lgr"
+	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BehWorkerPool struct {
-	World  *SimWorld
-	Entity *SimEntity
+	World  *entities.SimWorld
+	Entity *entities.SimEntity
 
 	SpawnOnInit    bool
 	SpawnOnRequest bool //Spawns entity when no free actor required
@@ -18,7 +19,7 @@ type BehWorkerPool struct {
 	WorkersMap map[int64]*Worker
 }
 
-func GetWorkerPool(entity *SimEntity) *BehWorkerPool {
+func GetWorkerPool(entity *entities.SimEntity) *BehWorkerPool {
 	return entity.Impl.(*BehWorkerPool)
 }
 

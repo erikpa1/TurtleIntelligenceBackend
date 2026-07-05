@@ -1,8 +1,9 @@
-package simulation2
+package behaviours
 
 import (
 	"turtle/core/lgr"
 	"turtle/simulation/simInternal"
+	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
 	"turtle/tools"
 
@@ -10,8 +11,8 @@ import (
 )
 
 type BehSpawn struct {
-	World  *SimWorld
-	Entity *SimEntity
+	World  *entities.SimWorld
+	Entity *entities.SimEntity
 
 	// SpawnInterval is the (possibly random) gap between spawn cycles, compiled
 	// from an expression such as "5s" or "exp(30s)" and re-sampled each cycle.
@@ -21,13 +22,13 @@ type BehSpawn struct {
 	SpawnMultiplication int
 	SpawnActorUid       primitive.ObjectID
 
-	ActiveActor     *SimActor
+	ActiveActor     *entities.SimActor
 	SpawnedCount    int
 	RemainingSpawns int
 	NextSpawnTime   tools.Seconds
 }
 
-func GetBehSpawn(entity *SimEntity) *BehSpawn {
+func GetBehSpawn(entity *entities.SimEntity) *BehSpawn {
 	return entity.Impl.(*BehSpawn)
 }
 

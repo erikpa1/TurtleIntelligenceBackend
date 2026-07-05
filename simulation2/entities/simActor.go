@@ -1,4 +1,4 @@
-package simulation2
+package entities
 
 import (
 	"fmt"
