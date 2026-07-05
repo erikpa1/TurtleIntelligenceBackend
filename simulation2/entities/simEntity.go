@@ -18,8 +18,8 @@ type SimEntity struct {
 	Type      string
 	Position  simMath.Position
 	TypeData  tools.SafeJson
-	World     *SimWorld
-	Functions map[string]any
+	World     *SimWorld      `json:"-"`
+	Functions map[string]any `json:"-"`
 	Data      SimBehData
 	Impl      any
 }

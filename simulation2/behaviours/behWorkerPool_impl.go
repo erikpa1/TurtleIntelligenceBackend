@@ -40,10 +40,16 @@ func (self *BehWorkerPool) SpawnWorker() {
 
 	actor := self.World.SpawnActorWithUid(primitive.ObjectID{})
 	worker.Actor = actor
+	worker.Actor.UpdatePosition(self.Entity.Position)
 	self.WorkersMap[worker.RuntimeId] = worker
 
 }
 
 func (self *BehWorkerPool) Step() {
 	lgr.Error("Stepping")
+
+	for _, worker := range self.WorkersMap {
+		worker.Actor.UpdatePosition(worker.Actor.Position.RandomizeXZ(5))
+	}
+
 }

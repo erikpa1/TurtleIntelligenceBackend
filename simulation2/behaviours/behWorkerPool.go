@@ -12,10 +12,10 @@ func InitBehWorkerPool() {
 	entities.BEH_FACTORY.Behaviours["workerPool"] = NewBehWorkerPool
 
 	var _init1 entities.FnInit = _BehWorkerInit1
-	SPAWN_FUNCTIONS[entities.FN_INIT1] = _init1
+	BEH_WORKER_FUNCTTIONS[entities.FN_INIT1] = _init1
 
 	var _step entities.FnStep = _BehWorkerStep
-	SPAWN_FUNCTIONS[entities.FN_STEP] = _step
+	BEH_WORKER_FUNCTTIONS[entities.FN_STEP] = _step
 }
 
 func NewBehWorkerPool(entity *entities.SimEntity) {

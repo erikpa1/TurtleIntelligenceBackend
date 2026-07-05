@@ -229,7 +229,7 @@ func Ok(format string, args ...interface{}) {
 func ErrorJson(data interface{}) {
 	jsonBytes, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
-		Error("Error marshaling JSON: %v", err)
+		ErrorStack("Error marshaling JSON: %v", err)
 		Error("%v", data)
 		return
 	}
