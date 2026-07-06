@@ -60,8 +60,9 @@ func (self *Position) MoveTo(dest Position, speed float32) float32 {
 }
 
 func (self Position) RandomizeXZ(circleRadius float32) Position {
+	previousY := self[1]
 	tmp := self.Randomize(circleRadius)
-	tmp[1] = self[1]
+	tmp[1] = previousY
 	return tmp
 }
 

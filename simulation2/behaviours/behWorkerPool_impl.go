@@ -4,8 +4,6 @@ import (
 	"turtle/core/lgr"
 	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BehWorkerPool struct {
@@ -25,7 +23,7 @@ func GetWorkerPool(entity *entities.SimEntity) *BehWorkerPool {
 
 func (self *BehWorkerPool) InitSpawnWorkers() {
 
-	for self.SpawnOnInit {
+	if self.SpawnOnInit {
 
 		spawnVar := self.WorkersCount.GetInt()
 
@@ -36,20 +34,20 @@ func (self *BehWorkerPool) InitSpawnWorkers() {
 }
 
 func (self *BehWorkerPool) SpawnWorker() {
-	worker := NewWorker()
+	worker := NewWorker(self.World.SpawnActorWithUid(WORKER_OBJECTID))
+	self.WorkersMap[worker.Actor.Id] = worker
 
-	actor := self.World.SpawnActorWithUid(primitive.ObjectID{})
-	worker.Actor = actor
+	worker.Actor.Color = "#ffffff"
 	worker.Actor.UpdatePosition(self.Entity.Position)
-	self.WorkersMap[worker.RuntimeId] = worker
+
+	lgr.ErrorJson(self.Entity.Position)
 
 }
 
 func (self *BehWorkerPool) Step() {
-	lgr.Error("Stepping")
 
 	for _, worker := range self.WorkersMap {
 		worker.Actor.UpdatePosition(worker.Actor.Position.RandomizeXZ(5))
+		lgr.Error("%v", worker.Actor.Id)
 	}
-
 }

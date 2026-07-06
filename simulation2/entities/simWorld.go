@@ -30,8 +30,7 @@ type SimWorld struct {
 	StatesUpdates         map[int64]bson.M
 	StatesUpcomingEvents  []simInternal.SimUpcomingEvent
 
-	ActorsIds int64
-	RuntimeId int64
+	RuntimeId int64 // Incrementation of entities runtime
 }
 
 func NewSimWorld() *SimWorld {
@@ -49,6 +48,8 @@ func NewSimWorld() *SimWorld {
 	tmp.StatesUpdates = make(map[int64]bson.M)
 	tmp.StatesUpcomingEvents = make([]simInternal.SimUpcomingEvent, 0)
 
+	tmp.InitDefaultActors()
+
 	return tmp
 }
 
@@ -56,7 +57,13 @@ func (self *SimWorld) GetRuntimeId() int64 {
 	tmp := self.RuntimeId
 	self.RuntimeId += 1
 	return tmp
+}
 
+func (self *SimWorld) InitDefaultActors() {
+	self.ActorsDefinitions[primitive.ObjectID{}] = &modelsApp.Actor{
+		Name:  "Worker",
+		Color: "#ffffff",
+	}
 }
 
 func (self *SimWorld) LoadEntities(entities []*modelsApp.WorldEntity) {
@@ -158,11 +165,9 @@ func (self *SimWorld) UnspawnActor(actor *SimActor) {
 	delete(self.SimActors, actor.Id)
 }
 
-func (self *SimWorld) SpwanCustomActor(actor *SimActor) {
-	actor.Id = self.ActorsIds
+func (self *SimWorld) SpawnCustomActor(actor *SimActor) {
+	actor.Id = self.GetRuntimeId()
 	actor.World = self
-
-	self.ActorsIds += 1
 	self.StatesCreatedActors[actor.Id] = actor
 
 }
@@ -184,10 +189,9 @@ func (self *SimWorld) SpawnActorWithUid(uid primitive.ObjectID) *SimActor {
 	}
 
 	actor := NewSimActor()
-	actor.Id = self.ActorsIds
+	actor.Id = self.GetRuntimeId()
 	actor.World = self
 
-	self.ActorsIds += 1
 	actor.FromActorDefinition(definition)
 
 	self.StatesCreatedActors[actor.Id] = actor
@@ -209,7 +213,8 @@ func (self *SimWorld) UpdateActorState(key int64, stateKey string, value any) {
 
 		} else {
 			self.StatesUpdates[key] = bson.M{
-				stateKey: value}
+				stateKey: value,
+			}
 		}
 
 	}
