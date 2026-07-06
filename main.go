@@ -11,6 +11,8 @@ import (
 	"turtle/blueprints"
 	"turtle/core/usersApi"
 	"turtle/docmining"
+	"turtle/inventory"
+	manufacturing "turtle/manufacutring"
 	"turtle/netess"
 	"turtle/simulation2"
 	"turtle/testRoutes"
@@ -130,6 +132,9 @@ func dev_main() {
 	flows.InitFlowsApi(r)
 
 	themes.InitThemesApi(r)
+
+	inventory.InitInventoryApi(r)
+	manufacturing.InitManufacturingApi(r)
 
 	docmining.InitDocMiningApi(r)
 	toolsApi.InitToolsApi(r)
