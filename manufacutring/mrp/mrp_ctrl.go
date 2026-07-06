@@ -78,7 +78,12 @@ func RunMrp(user *users.User) *MrpResult {
 		return p
 	}
 
-	result := &MrpResult{GeneratedAt: time.Now().Format(time.RFC3339)}
+	result := &MrpResult{
+		GeneratedAt:   time.Now().Format(time.RFC3339),
+		PlannedOrders: []PlannedOrder{},
+		Requirements:  []RequirementRow{},
+		Exceptions:    []MrpException{},
+	}
 
 	// Independent demand seeds the top level items.
 	for _, d := range demandList {

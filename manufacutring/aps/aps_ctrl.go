@@ -52,7 +52,12 @@ func RunAps(user *users.User) *ApsResult {
 		return orders[i].BomLevel > orders[j].BomLevel // deeper items first
 	})
 
-	result := &ApsResult{GeneratedAt: time.Now().Format(time.RFC3339)}
+	result := &ApsResult{
+		GeneratedAt:     time.Now().Format(time.RFC3339),
+		Operations:      []ScheduledOperation{},
+		WorkCenterLoads: []WorkCenterLoad{},
+		Unscheduled:     []string{},
+	}
 
 	wcFree := map[string]time.Time{}  // next free moment per work center
 	loadHours := map[string]float64{} // scheduled hours per work center
