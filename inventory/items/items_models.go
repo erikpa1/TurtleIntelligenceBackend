@@ -27,5 +27,19 @@ type Item struct {
 	ReorderPoint float64 `json:"reorderPoint" bson:"reorderPoint"`
 	Warehouse    string  `json:"warehouse,omitempty" bson:"warehouse,omitempty"`
 
+	// MRP / planning view (SAP material master MRP view). These drive the
+	// requirements planning run in the manufacturing/mrp module.
+	//
+	// ProcurementType is "make" (produced in-house, exploded through its BOM)
+	// or "buy" (procured externally). Empty is inferred from the presence of a
+	// BOM at planning time.
+	ProcurementType string  `json:"procurementType,omitempty" bson:"procurementType,omitempty"`
+	LeadTimeDays    float64 `json:"leadTimeDays" bson:"leadTimeDays"`
+	SafetyStock     float64 `json:"safetyStock" bson:"safetyStock"`
+	// LotSize is a fixed rounding value; 0 means lot-for-lot (order the exact
+	// net requirement).
+	LotSize    float64 `json:"lotSize" bson:"lotSize"`
+	MinLotSize float64 `json:"minLotSize" bson:"minLotSize"`
+
 	Active bool `json:"active" bson:"active"`
 }

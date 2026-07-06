@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Turtle → SAP correspondence schema (CSP)",
+  "description": "Maps Turtle Intelligence inventory + manufacturing/APS entities to their SAP PP / MM / PP-DS equivalents (transactions and tables). Reference artifact, not executable.",
+  "version": "1.0.0",
+  "modules": {
+    "inventory.item": {
+      "turtleCollection": "inventory_items",
+      "turtleRoutes": ["/api/inventory/items", "/api/inventory/item"],
+      "sapModule": "MM",
+      "sapTransactions": ["MM01", "MM02", "MM03"],
+      "sapTables": ["MARA", "MAKT", "MARC", "MBEW", "MARD"],
+      "fields": {
+        "sku": "MARA.MATNR",
+        "name": "MAKT.MAKTX",
+        "type": "MARA.MTART",
+        "uom": "MARA.MEINS",
+        "unitPrice": "MBEW.STPRS",
+        "qtyOnHand": "MARD.LABST",
+        "warehouse": "MARC.WERKS / MARD.LGORT",
+        "reorderPoint": "MARC.MINBE",
+        "procurementType": "MARC.BESKZ (E=in-house, F=external)",
+        "leadTimeDays": "MARC.DZEIT / MARC.PLIFZ",
+        "safetyStock": "MARC.EISBE",
+        "lotSize": "MARC.DISLS",
+        "minLotSize": "MARC.BSTMI"
+      }
+    },
+    "manufacturing.bom": {
+      "turtleCollection": "manufacturing_boms",
+      "turtleRoutes": ["/api/manufacturing/boms", "/api/manufacturing/bom"],
+      "sapModule": "PP",
+      "sapTransactions": ["CS01", "CS02", "CS03", "CS11", "CS12"],
+      "sapTables": ["MAST", "STKO", "STPO"],
+      "fields": {
+        "code": "STKO.STLNR",
+        "productUid": "MAST.MATNR",
+        "baseQuantity": "STKO.BMENG",
+        "status": "STKO.STLST",
+        "components[].itemUid": "STPO.IDNRK",
+        "components[].quantity": "STPO.MENGE",
+        "components[].scrapPct": "STPO.AUSCH"
+      }
+    },
+    "manufacturing.workcenter": {
+      "turtleCollection": "manufacturing_workcenters",
+      "turtleRoutes": ["/api/manufacturing/workcenters", "/api/manufacturing/workcenter"],
+      "sapModule": "PP",
+      "sapTransactions": ["CR01", "CR02", "CR03"],
+      "sapTables": ["CRHD", "CRCA", "KAKO"],
+      "fields": {
+        "code": "CRHD.ARBPL",
+        "name": "CRTX.KTEXT",
+        "capacityHoursPerDay": "KAKO (available capacity)",
+        "efficiency": "KAKO.NGRAD (utilization/efficiency)",
+        "costPerHour": "CRCO (cost center rate)"
+      }
+    },
+    "manufacturing.routing": {
+      "turtleCollection": "manufacturing_routings",
+      "turtleRoutes": ["/api/manufacturing/routings", "/api/manufacturing/routing"],
+      "sapModule": "PP",
+      "sapTransactions": ["CA01", "CA02", "CA03"],
+      "sapTables": ["PLKO", "PLPO", "PLAS"],
+      "fields": {
+        "code": "PLKO.PLNNR",
+        "productUid": "MAPL.MATNR",
+        "operations[].workCenterUid": "PLPO.ARBID",
+        "operations[].setupMinutes": "PLPO.VGW01",
+        "operations[].runMinutesPerUnit": "PLPO.VGW02"
+      }
+    },
+    "manufacturing.demand": {
+      "turtleCollection": "manufacturing_demand",
+      "turtleRoutes": ["/api/manufacturing/demands", "/api/manufacturing/demand"],
+      "sapModule": "PP / SD",
+      "sapTransactions": ["MD61", "MD62", "VA01"],
+      "sapTables": ["PBIM", "PBED", "VBAK", "VBAP"],
+      "fields": {
+        "productUid": "PBIM.MATNR",
+        "quantity": "PBED.PLNMG",
+        "dueDate": "PBED.PDATU",
+        "demandType": "sales=VBAK / forecast=PIR (PBIM.BEDAE)"
+      }
+    },
+    "manufacturing.mrp": {
+      "turtleRoutes": ["/api/manufacturing/mrp/run"],
+      "sapModule": "PP-MRP",
+      "sapTransactions": ["MD01", "MD02", "MD03", "MD04", "MD05"],
+      "sapTables": ["PLAF", "EBAN"],
+      "outputs": {
+        "plannedOrder(production)": "planned order PLAF → production order via CO40/CO41 (AFKO)",
+        "plannedOrder(purchase)": "purchase requisition EBAN → PO EKKO",
+        "requirementRow": "MD04 stock/requirements list line",
+        "exception": "SAP MRP exception messages (e.g. 07, 10, 30)"
+      },
+      "algorithm": "aggregate MRP: low-level coding, net = gross + safetyStock - onHand, min-lot then fixed-lot rounding, lead-time offset, BOM explosion for make items"
+    },
+    "manufacturing.aps": {
+      "turtleRoutes": ["/api/manufacturing/aps/run"],
+      "sapModule": "PP-DS / APO",
+      "sapTransactions": ["/SAPAPO/CDPS0", "CM01", "CM21", "MF50"],
+      "sapTables": ["/SAPAPO/*", "AFKO", "AFVC"],
+      "outputs": {
+        "scheduledOperation": "PP-DS scheduled operation on the detailed scheduling board",
+        "workCenterLoad": "capacity load / utilization (CM01)"
+      },
+      "algorithm": "finite-capacity forward scheduling of production orders (earliest-due-first), each work center a single-capacity resource, duration = (setup + run*qty)/efficiency"
+    }
+  }
+}
