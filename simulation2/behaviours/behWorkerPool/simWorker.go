@@ -1,4 +1,4 @@
-package behaviours
+package behWorkerPool
 
 import (
 	"turtle/simulation2/entities"

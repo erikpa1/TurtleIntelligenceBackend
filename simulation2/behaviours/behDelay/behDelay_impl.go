@@ -1,4 +1,4 @@
-package behaviours
+package behDelay
 
 import (
 	"slices"

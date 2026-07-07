@@ -22,6 +22,7 @@ type SimEntity struct {
 	Functions map[string]any `json:"-"`
 	Data      SimBehData
 	Impl      any
+	Aee       *tools.AnyEventEmitter `json:"-"`
 }
 
 func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {
@@ -30,6 +31,7 @@ func (self *SimEntity) FromEntity(def *modelsApp.WorldEntity) {
 	self.Type = def.Type
 	self.Position = def.Position
 	self.TypeData = def.TypeData
+	self.Aee = tools.NewAnyEventEmitter()
 
 }
 

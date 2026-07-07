@@ -1,4 +1,4 @@
-package behaviours
+package behWorkerPool
 
 import (
 	"turtle/core/lgr"

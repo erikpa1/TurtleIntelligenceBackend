@@ -1,4 +1,4 @@
-package behaviours
+package entryStats
 
 import (
 	"turtle/simulation2/entities"

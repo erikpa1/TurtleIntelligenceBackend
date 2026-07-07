@@ -1,4 +1,4 @@
-package behaviours
+package behProcess
 
 import (
 	"turtle/core/lgr"

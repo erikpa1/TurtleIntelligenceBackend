@@ -1,4 +1,4 @@
-package behaviours
+package behBuffer
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"

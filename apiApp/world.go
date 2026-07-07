@@ -6,7 +6,6 @@ import (
 	"turtle/core/serverKit"
 	"turtle/ctrlApp"
 	"turtle/modelsApp"
-	"turtle/simulation"
 	"turtle/tools"
 
 	"github.com/gin-gonic/gin"
@@ -76,32 +75,8 @@ func _GetWorld(c *gin.Context) {
 
 }
 
-func _PlayWorld(c *gin.Context) {
-	uid := serverKit.MongoObjectIdFromQuery(c)
-	serverKit.ReturnOkJson(c, simulation.RunSimulation(uid, bson.M{}))
-}
-
-func _PauseWorld(c *gin.Context) {
-	uid := serverKit.MongoObjectIdFromQuery(c)
-	simulation.PauseSimulation(uid)
-}
-
-func _StopWorld(c *gin.Context) {
-	uid := serverKit.MongoObjectIdFromQuery(c)
-	simulation.StopSimulation(uid)
-}
-
-func _ResumeWorld(c *gin.Context) {
-	uid := serverKit.MongoObjectIdFromQuery(c)
-	simulation.ResumeSimulation(uid)
-}
-
 func init_api_world(r *gin.Engine) {
 	r.GET("/api/w", auth.LoginRequired, _GetWorld)
 	r.POST("/api/w/save", auth.LoginRequired, _SaveWorld)
-	r.POST("/api/w/simulate", _PlayWorld)
-	r.POST("/api/w/stop", _StopWorld)
-	r.POST("/api/w/pause", _PauseWorld)
-	r.POST("/api/w/resume", _ResumeWorld)
 
 }

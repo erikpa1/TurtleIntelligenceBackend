@@ -1,4 +1,4 @@
-package behaviours
+package behSpawn
 
 import (
 	"turtle/core/lgr"

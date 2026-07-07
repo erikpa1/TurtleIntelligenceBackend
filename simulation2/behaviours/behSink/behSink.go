@@ -1,4 +1,4 @@
-package behaviours
+package behSink
 
 import "turtle/simulation2/entities"
 

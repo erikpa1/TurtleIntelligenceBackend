@@ -1,4 +1,4 @@
-package behaviours
+package behBuffer
 
 import "turtle/simulation2/entities"
 

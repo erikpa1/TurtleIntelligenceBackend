@@ -1,19 +1,31 @@
 package simulation2
 
-import "turtle/simulation2/behaviours"
+import (
+	"turtle/simulation2/behaviours/behBuffer"
+	"turtle/simulation2/behaviours/behDelay"
+	"turtle/simulation2/behaviours/behLogisticsControl"
+	"turtle/simulation2/behaviours/behProcess"
+	"turtle/simulation2/behaviours/behSink"
+	"turtle/simulation2/behaviours/behSpawn"
+	"turtle/simulation2/behaviours/behWorkerPool"
+	"turtle/simulation2/behaviours/entryStats"
+)
 
 func InitSimFunctions() bool {
-	behaviours.InitBehBuffer()
-	behaviours.InitBehProcess()
-	behaviours.InitBehDelay()
-	behaviours.InitBehSpawn()
-	behaviours.InitBehSink()
+	behBuffer.InitBehBuffer()
+	behProcess.InitBehProcess()
+	behDelay.InitBehDelay()
+	behSpawn.InitBehSpawn()
+	behSink.InitBehSink()
 
 	//Movable antities
-	behaviours.InitBehWorkerPool()
+	behWorkerPool.InitBehWorkerPool()
 
 	//Statistiscs
-	behaviours.InitEntryStatistics()
+	entryStats.InitEntryStatistics()
+
+	//Contorls
+	behLogisticsControl.InitBehWorkerPool()
 
 	return true
 }

@@ -2,7 +2,9 @@ package simulation2
 
 import (
 	"turtle/core/lgr"
-	"turtle/simulation2/behaviours"
+	"turtle/simulation2/behaviours/behBuffer"
+	"turtle/simulation2/behaviours/behProcess"
+	"turtle/simulation2/behaviours/behSpawn"
 	"turtle/simulation2/entities"
 )
 
@@ -13,10 +15,10 @@ func Run() {
 	newActor := entities.NewSimActor()
 
 	spawn := entities.NewSimEntity()
-	behaviours.NewSpawnBehaviour(spawn)
+	behSpawn.NewSpawnBehaviour(spawn)
 
 	buffer := entities.NewSimEntity()
-	behaviours.NewBufferBehaviour(buffer)
+	behBuffer.NewBufferBehaviour(buffer)
 
 	takeEntity, haveTakeEntity := entities.GetSimFunction[entities.FnTakeActor](buffer, entities.FN_TAKE_ACTOR_FUNCTION_NAME)
 
@@ -25,7 +27,7 @@ func Run() {
 	}
 
 	process := entities.NewSimEntity()
-	behaviours.NewProcessBehaviour(process)
+	behProcess.NewProcessBehaviour(process)
 
 	takeEntity, haveTakeEntity = entities.GetSimFunction[entities.FnTakeActor](process, entities.FN_TAKE_ACTOR_FUNCTION_NAME)
 
