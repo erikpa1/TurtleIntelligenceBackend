@@ -55,7 +55,6 @@ func (self *BehWorkerPool) GetFreeWorker() *Worker {
 func (self *BehWorkerPool) Step() {
 
 	for _, worker := range self.WorkersMap {
-		worker.Actor.UpdatePosition(worker.Actor.Position.RandomizeXZ(5))
-		lgr.Error("%v", worker.Actor.Id)
+		worker.Step()
 	}
 }
