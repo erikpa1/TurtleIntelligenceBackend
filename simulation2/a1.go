@@ -7,6 +7,7 @@ import (
 	"turtle/simulation2/behaviours/behProcess"
 	"turtle/simulation2/behaviours/behSink"
 	"turtle/simulation2/behaviours/behSpawn"
+	"turtle/simulation2/behaviours/behTable"
 	"turtle/simulation2/behaviours/behWorkerPool"
 	"turtle/simulation2/behaviours/entryStats"
 )
@@ -26,6 +27,9 @@ func InitSimFunctions() bool {
 
 	//Contorls
 	behLogisticsControl.InitBehWorkerPool()
+
+	//Data
+	behTable.InitBehTable()
 
 	return true
 }

@@ -1,7 +1,6 @@
 package behLogisticsControl
 
 import (
-	"turtle/simulation2/behaviours/behWorkerPool"
 	"turtle/simulation2/entities"
 )
 
@@ -22,15 +21,14 @@ func NewBehWorkerPool(entity *entities.SimEntity) {
 	control := &BehLogisticsControl{}
 	control.Entity = entity
 	control.World = entity.World
-	control.WorkerPools = make(map[int64]*behWorkerPool.BehWorkerPool)
 
 	entity.Impl = control
 	entity.Functions = BEH_LOGISTICS_CONTROL
 }
 
 func _BehWorkerInit1(self *entities.SimEntity) {
-	_ = GetLogisticsControl(self)
-	//Do nothing
+	control := GetLogisticsControl(self)
+	control.Init()
 }
 
 func _BehWorkerStep(self *entities.SimEntity) {

@@ -1,7 +1,6 @@
 package behWorkerPool
 
 import (
-	"turtle/core/lgr"
 	"turtle/simulation2/entities"
 	"turtle/simulation2/rvar"
 )
@@ -39,14 +38,13 @@ func (self *BehWorkerPool) SpawnWorker() {
 
 	worker.Actor.Color = "#ffffff"
 	worker.Actor.UpdatePosition(self.Entity.Position)
-
-	lgr.ErrorJson(self.Entity.Position)
-
 }
 
 func (self *BehWorkerPool) GetFreeWorker() *Worker {
 	for _, worker := range self.WorkersMap {
-		return worker
+		if worker.IsFree() {
+			return worker
+		}
 	}
 
 	return nil
