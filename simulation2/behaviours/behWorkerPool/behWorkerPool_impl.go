@@ -44,6 +44,14 @@ func (self *BehWorkerPool) SpawnWorker() {
 
 }
 
+func (self *BehWorkerPool) GetFreeWorker() *Worker {
+	for _, worker := range self.WorkersMap {
+		return worker
+	}
+
+	return nil
+}
+
 func (self *BehWorkerPool) Step() {
 
 	for _, worker := range self.WorkersMap {

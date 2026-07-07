@@ -1,8 +1,9 @@
 package behBuffer
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"turtle/simulation2/entities"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type BehBuffer struct {
@@ -29,10 +30,12 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 	for _, conn := range self.World.GetConnectionsOf(self.Entity.Uid) {
 		for len(self.Actors) > 0 {
 			lastOne := self.Actors[len(self.Actors)-1]
-			if !conn.TakeActor(lastOne) {
+			if conn.TakeActor(lastOne) == false {
+
 				break
 			}
 			self.PopActor()
+			self.EmitActorLeft(lastOne)
 		}
 		if len(self.Actors) == 0 {
 			break
@@ -56,6 +59,7 @@ func (self *BehBuffer) TakeActor(actor *entities.SimActor) bool {
 	if canTake {
 		self.Actors = append(self.Actors, actor)
 		actor.UpdatePosition(self.Entity.Position.RandomizeXZ(1))
+		self.EmitActorTaken(actor)
 		self.UpdateCountToClient()
 	}
 

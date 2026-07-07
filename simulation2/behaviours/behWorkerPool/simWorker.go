@@ -22,3 +22,7 @@ func NewWorker(actor *entities.SimActor) *Worker {
 		Actor: actor,
 	}
 }
+
+func (self *Worker) GoForActor(actor *entities.SimActor) {
+
+}
