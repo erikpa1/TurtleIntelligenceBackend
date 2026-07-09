@@ -100,7 +100,7 @@ func GetDBConnStr() string {
 // db.SC should use. Defaults to "fs" (local filesystem). Set to "mongo" to
 // store files in MongoDB via db.MongoStorageClient.
 func GetStorageBackend() string {
-	return GetEnvOrDefault("TURTLE_STORAGE_BACKEND", "mongo") //fs
+	return GetEnvOrDefault("TURTLE_STORAGE_BACKEND", "fs") //mongo
 }
 
 // Network-related configuration

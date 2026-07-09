@@ -15,6 +15,7 @@ import (
 	"turtle/inventory"
 	manufacturing "turtle/manufacutring"
 	"turtle/netess"
+	"turtle/pointcloudApp"
 	"turtle/simulation2"
 	"turtle/testRoutes"
 	"turtle/themes"
@@ -111,6 +112,7 @@ func dev_main() {
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
 	filesApp.InitFilesApi(r)
+	pointcloudApp.InitPointCloudApi(r)
 	auth.Init_api_auth0(r)
 	nn.InitNNApi(r)
 	fn.InitFnApi(r)
@@ -214,7 +216,7 @@ func dev_main() {
 		error := srv.ListenAndServe()
 
 		if error != nil {
-			lgr.ErrorJson(error)
+			lgr.Error("%s", error)
 		}
 	}
 
