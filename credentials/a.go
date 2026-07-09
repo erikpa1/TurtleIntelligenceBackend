@@ -96,6 +96,13 @@ func GetDBConnStr() string {
 	return GetParamFromEnvOrArg("TURTLE_DB_CONN_STRING", "mongodb://localhost:27017/", GetValue(arguments, "db_conn_str"))
 }
 
+// GetStorageBackend returns which db.IStorageController implementation
+// db.SC should use. Defaults to "fs" (local filesystem). Set to "mongo" to
+// store files in MongoDB via db.MongoStorageClient.
+func GetStorageBackend() string {
+	return GetEnvOrDefault("TURTLE_STORAGE_BACKEND", "mongo") //fs
+}
+
 // Network-related configuration
 
 // GetIpAddress returns the IP address

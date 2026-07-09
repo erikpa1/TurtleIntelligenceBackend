@@ -200,6 +200,23 @@ func (sc *StorageClient) DeleteFileNew(filePath string) error {
 	return sc.conn.GetContainerHandler(container).DeleteFile(file)
 }
 
+func (sc *StorageClient) MoveFileNew(oldFilePath, newFilePath string) error {
+	oldContainer, oldFile := sc._PathSplit(oldFilePath)
+	newContainer, newFile := sc._PathSplit(newFilePath)
+
+	handler := sc.conn.GetContainerHandler(oldContainer)
+	data, err := handler.GetFile(oldFile)
+	if err != nil {
+		return err
+	}
+
+	if _, err := sc.conn.GetContainerHandler(newContainer).SaveFile(newFile, data); err != nil {
+		return err
+	}
+
+	return handler.DeleteFile(oldFile)
+}
+
 func (sc *StorageClient) GetFileFolder(container, filePath string) string {
 	return filepath.Dir(filePath)
 }

@@ -39,6 +39,10 @@ func (DesktopClient) DeleteFileNew(filePath string) error {
 	return vfs.DeleteFileNew(filePath)
 }
 
+func (DesktopClient) MoveFileNew(oldFilePath, newFilePath string) error {
+	return vfs.MoveFileNew(oldFilePath, newFilePath)
+}
+
 func (DesktopClient) UploadFileString(container, fileName, content string) error {
 	return vfs.WriteFileStringToWD(container, fileName, content)
 }

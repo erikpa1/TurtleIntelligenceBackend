@@ -11,6 +11,7 @@ import (
 	"turtle/blueprints"
 	"turtle/core/usersApi"
 	"turtle/docmining"
+	"turtle/filesApp"
 	"turtle/inventory"
 	manufacturing "turtle/manufacutring"
 	"turtle/netess"
@@ -109,6 +110,7 @@ func dev_main() {
 	documents.InitDocumentCollectionsApi(r)
 	api.InitApi(r)
 	apiApp.InitApiApp(r)
+	filesApp.InitFilesApi(r)
 	auth.Init_api_auth0(r)
 	nn.InitNNApi(r)
 	fn.InitFnApi(r)

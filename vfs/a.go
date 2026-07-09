@@ -295,6 +295,19 @@ func DeleteFileNew(filePath string) error {
 	return os.Remove(finalPath)
 }
 
+// MoveFileNew - Moves/renames a file in the working directory, creating the
+// destination folder if needed
+func MoveFileNew(oldFilePath, newFilePath string) error {
+	wdPath := GetWorkingDirectory()
+	oldFinalPath := filepath.Join(wdPath, oldFilePath)
+	newFinalPath := filepath.Join(wdPath, newFilePath)
+
+	if err := os.MkdirAll(filepath.Dir(newFinalPath), 0755); err != nil {
+		return err
+	}
+	return os.Rename(oldFinalPath, newFinalPath)
+}
+
 // MakeDirs - Creates a directory (recursive)
 func MakeDirs(folder string) error {
 	wdPath := GetWorkingDirectory()

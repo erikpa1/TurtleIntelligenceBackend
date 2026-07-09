@@ -3,6 +3,7 @@ package db
 import (
 	"encoding/base64"
 	"turtle/core/lgr"
+	"turtle/credentials"
 )
 
 // StorageController controls which client to use based on credentials
@@ -13,11 +14,13 @@ type StorageController struct {
 func NewStorageController() *StorageController {
 	sc := &StorageController{}
 
-	if false {
-		//sc.client = &StorageClient{conn: nil}
-	} else {
+	switch credentials.GetStorageBackend() {
+	case "mongo":
+		sc.client = NewMongoStorageClient()
+	default:
 		sc.client = &DesktopClient{}
 	}
+
 	return sc
 }
 
@@ -81,6 +84,10 @@ func (sc *StorageController) DeleteFolder(container, folderName string) error {
 
 func (sc *StorageController) DeleteFileNew(filePath string) error {
 	return sc.client.DeleteFileNew(filePath)
+}
+
+func (sc *StorageController) MoveFileNew(oldFilePath, newFilePath string) error {
+	return sc.client.MoveFileNew(oldFilePath, newFilePath)
 }
 
 func (sc *StorageController) GetFileFolder(container, filePath string) string {
