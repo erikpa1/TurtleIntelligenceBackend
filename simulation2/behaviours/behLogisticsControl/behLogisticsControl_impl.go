@@ -159,7 +159,7 @@ func (self *BehLogisticsControl) DispatchMission(source *entities.SimEntity, ite
 	for _, target := range targets {
 		worker := target.Pool.GetFreeWorker()
 		if worker != nil {
-			worker.StartMission(item, target.Destination.Position, target.ActorType)
+			worker.StartMission(item, target.Destination, target.ActorType)
 			return
 		}
 	}

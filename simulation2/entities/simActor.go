@@ -9,13 +9,14 @@ import (
 )
 
 type SimActor struct {
-	Name      string             `json:"name"`
-	Id        int64              `json:"id"`
-	Uid       primitive.ObjectID `json:"definition_uid"`
-	Position  simMath.Position   `json:"position"`
-	Color     string             `json:"color"`
-	World     *SimWorld          `json:"-"`
-	WalkSpeed int32              `json:"walkSpeed"`
+	Name         string             `json:"name"`
+	Id           int64              `json:"id"`
+	Uid          primitive.ObjectID `json:"definition_uid"`
+	Position     simMath.Position   `json:"position"`
+	Color        string             `json:"color"`
+	World        *SimWorld          `json:"-"`
+	WalkSpeed    int32              `json:"walkSpeed"`
+	ParentEntity *SimEntity         `json:"-"`
 }
 
 func NewSimActor() *SimActor {

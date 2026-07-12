@@ -1,6 +1,7 @@
 package behWorkerPool
 
 import (
+	"turtle/core/lgr"
 	"turtle/simulation/simMath"
 	"turtle/simulation2/entities"
 	"turtle/simulation2/models"
@@ -22,7 +23,7 @@ const (
 type WorkerMission struct {
 	Item      *entities.SimActor
 	Pickup    simMath.Position
-	Dropoff   simMath.Position
+	Dropoff   *entities.SimEntity
 	ActorType string
 	Phase     int
 }
@@ -35,7 +36,7 @@ type Worker struct {
 	Actor      *entities.SimActor
 
 	WalkSpeed   float32 // km/h
-	Destination simMath.Position
+	Destination *entities.SimEntity
 	IsWalking   bool
 }
 
@@ -47,13 +48,13 @@ func NewWorker(actor *entities.SimActor) *Worker {
 }
 
 func (self *Worker) GoForActor(actor *entities.SimActor) {
-	self.WalkTo(actor.Position)
+	self.WalkTo(actor.ParentEntity)
 }
 
 // StartMission dispatches the worker to pick up an item and deliver it to a
 // drop-off position. actorType is carried on the mission for future actor-type
 // specific handling.
-func (self *Worker) StartMission(item *entities.SimActor, dropoff simMath.Position, actorType string) {
+func (self *Worker) StartMission(item *entities.SimActor, dropoff *entities.SimEntity, actorType string) {
 	self.Mission = &WorkerMission{
 		Item:      item,
 		Pickup:    item.Position,
@@ -61,7 +62,7 @@ func (self *Worker) StartMission(item *entities.SimActor, dropoff simMath.Positi
 		ActorType: actorType,
 		Phase:     MissionToPickup,
 	}
-	self.WalkTo(item.Position)
+	self.WalkTo(item.ParentEntity)
 }
 
 // IsFree reports whether the worker can take a new mission.
@@ -70,7 +71,7 @@ func (self *Worker) IsFree() bool {
 }
 
 // WalkTo sets a destination and starts walking towards it on each Step.
-func (self *Worker) WalkTo(dest simMath.Position) {
+func (self *Worker) WalkTo(dest *entities.SimEntity) {
 	self.Destination = dest
 	self.IsWalking = true
 }
@@ -83,7 +84,7 @@ func (self *Worker) Step() {
 	}
 
 	position := self.Actor.Position
-	remaining := position.MoveTo(self.Destination, self.WalkSpeed)
+	remaining := position.MoveTo(self.Destination.Position, self.WalkSpeed)
 	self.Actor.UpdatePosition(position)
 
 	// While carrying, the item follows the worker.
@@ -105,14 +106,23 @@ func (self *Worker) arrived() {
 		return
 	}
 
+	targetPosition := self.Mission.Dropoff
+
 	switch self.Mission.Phase {
 	case MissionToPickup:
 		// Reached the item — carry it towards the drop-off.
 		self.Mission.Phase = MissionToDropoff
-		self.WalkTo(self.Mission.Dropoff)
+		self.WalkTo(targetPosition)
 	case MissionToDropoff:
 		// Delivered.
-		self.Mission.Item.UpdatePosition(self.Mission.Dropoff)
-		self.Mission = nil
+		self.Mission.Item.UpdatePosition(self.Mission.Dropoff.Position)
+
+		if targetPosition.TakeActor(self.Mission.Item) {
+			self.Mission = nil
+		} else {
+			lgr.Info("Target can't take Item")
+		}
+
 	}
+
 }

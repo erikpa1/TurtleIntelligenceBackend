@@ -31,7 +31,6 @@ func (self *BehBuffer) _TryToPassActorsNext() {
 		for len(self.Actors) > 0 {
 			lastOne := self.Actors[len(self.Actors)-1]
 			if conn.TakeActor(lastOne) == false {
-
 				break
 			}
 			self.PopActor()
